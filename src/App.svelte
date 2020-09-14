@@ -1,30 +1,49 @@
 <script lang="ts">
-	export let name: string;
+  import { ViewMode, viewMode } from "./tournament";
+  import Header from "./Header.svelte";
+  import ViewToggle from "./ViewToggle.svelte";
+
+  import PagePlanning from "./Pages/Planning.svelte";
+  import PagePlayers from "./Pages/Players.svelte";
+  import PageTournament from "./Pages/Tournament.svelte";
+  import Tournament from "./Pages/Tournament.svelte";
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
-
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,300;1,400&display=swap");
+  :root {
+    --nttb-blue: #262acc;
+    --nttb-orange: #f4612d;
+    --text-white: white;
+    --font-family-default: "Roboto", sans-serif;
+  }
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+  :global(body) {
+    font-family: var(--font-family-default);
+    margin: 0;
+    padding: 0;
+  }
+  :global(input),
+  :global(select) {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 8px 10px;
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+    width: 100%;
+    font-size: 14px;
+  }
 </style>
+
+<main>
+  <Header />
+  <ViewToggle />
+  {#if $viewMode === ViewMode.tournament}
+    <PageTournament />
+  {/if}
+  {#if $viewMode === ViewMode.players}
+    <PagePlayers />
+  {/if}
+  {#if $viewMode === ViewMode.planning}
+    <PagePlanning />
+  {/if}
+</main>
