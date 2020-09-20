@@ -66,6 +66,6 @@
     class="option last"
     class:selected={$viewMode == ViewMode.poule}
     on:click={switchToPoule}>
-    Planning
+    Indeling
   </div>
 </div>

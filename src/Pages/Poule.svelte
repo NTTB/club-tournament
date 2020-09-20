@@ -6,6 +6,7 @@
 
   import { tournamentPlayers } from "../data/tournament-player";
   import { poules, META } from "../data/poule";
+  import type { TouchRepositionEvent } from "../TouchRepositionEvent";
 
   $: unassignedPlayers = $tournamentPlayers.filter(
     (tp) =>
@@ -41,14 +42,13 @@
       const pouleId = META.nextId++;
       const playerId = parseInt(e.dataTransfer.getData("text"));
 
-      
       // Remove the player from all poules
       _poules.forEach((p) => {
         p.players = p.players.filter(
           (pp) => pp.playerTournamentId !== playerId
         );
       });
-      
+
       _poules.push({
         index: pouleId,
         name: "Poule " + pouleId,
@@ -63,6 +63,10 @@
       return _poules;
     });
     e.preventDefault();
+  }
+
+  function onTouchReposition(e: CustomEvent<TouchRepositionEvent>) {
+    const ev = e.detail;
   }
 </script>
 
@@ -105,7 +109,7 @@
 </style>
 
 {#each $poules as poule}
-  <PouleSection {poule} />
+  <PouleSection {poule} on:touchReposition={onTouchReposition} />
 {/each}
 
 <div class="section">
@@ -138,7 +142,10 @@
       <Hint>Sleep spelers hier naar toe om ze uit het toernooi te halen</Hint>
     {/if}
     {#each unassignedPlayers as player}
-      <PoulePlayerCard player={player.info} playerTournamentId={player.id} />
+      <PoulePlayerCard
+        player={player.info}
+        playerTournamentId={player.id}
+        on:touchReposition={onTouchReposition} />
     {/each}
   </div>
 </div>

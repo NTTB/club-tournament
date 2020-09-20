@@ -36,6 +36,7 @@
     searchQuery = "";
     if (searchInput) searchInput.focus();
   });
+
 </script>
 
 <style>

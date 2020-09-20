@@ -7,6 +7,7 @@
   import { tournamentPlayers } from "../data/tournament-player";
 
   export let poule: Poule;
+
   function dragOverSection(e: DragEvent) {
     e.dataTransfer.effectAllowed = "move";
     e.preventDefault();
@@ -81,7 +82,8 @@
       {#each poule.players as player}
         <PoulePlayerCard
           player={player.info}
-          playerTournamentId={player.playerTournamentId} />
+          playerTournamentId={player.playerTournamentId}
+          on:touchReposition />
       {/each}
     {/if}
   </div>
