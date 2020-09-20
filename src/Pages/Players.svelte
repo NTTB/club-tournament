@@ -8,6 +8,7 @@
   import { tournamentPlayers } from "../data/tournament-player";
 
   let searchQuery = "";
+  let searchInput: HTMLInputElement;
   $: searchTerms = [
     ...new Set(searchQuery.split(/\W+/).map((x) => x.trim().toLowerCase())),
   ];
@@ -33,6 +34,7 @@
 
   tournamentPlayers.subscribe(() => {
     searchQuery = "";
+    if (searchInput) searchInput.focus();
   });
 </script>
 
@@ -56,7 +58,8 @@
     <input
       type="text"
       placeholder="zoek op club, spelernaam of bondsnummer"
-      bind:value={searchQuery} />
+      bind:value={searchQuery}
+      bind:this={searchInput} />
     {#if showSearch}
       <div class="results">
         {#each clubResults as club}

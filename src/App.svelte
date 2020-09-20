@@ -3,10 +3,9 @@
   import Header from "./Header.svelte";
   import ViewToggle from "./ViewToggle.svelte";
 
-  import PagePlanning from "./Pages/Planning.svelte";
+  import PagePoule from "./Pages/Poule.svelte";
   import PagePlayers from "./Pages/Players.svelte";
   import PageTournament from "./Pages/Tournament.svelte";
-  import Tournament from "./Pages/Tournament.svelte";
 </script>
 
 <style>
@@ -43,7 +42,7 @@
   {#if $viewMode === ViewMode.players}
     <PagePlayers />
   {/if}
-  {#if $viewMode === ViewMode.planning}
-    <PagePlanning />
+  {#if $viewMode === ViewMode.poule}
+    <PagePoule />
   {/if}
 </main>

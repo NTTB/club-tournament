@@ -11,8 +11,8 @@
     viewMode.set(ViewMode.players);
   }
 
-  function switchToPlanning() {
-    viewMode.set(ViewMode.planning);
+  function switchToPoule() {
+    viewMode.set(ViewMode.poule);
   }
 </script>
 
@@ -64,8 +64,8 @@
   </div>
   <div
     class="option last"
-    class:selected={$viewMode == ViewMode.planning}
-    on:click={switchToPlanning}>
+    class:selected={$viewMode == ViewMode.poule}
+    on:click={switchToPoule}>
     Planning
   </div>
 </div>
