@@ -3,6 +3,7 @@
   import type { TouchRepositionEvent } from "../TouchRepositionEvent";
   import { tournamentPlayers } from "../data/tournament-player";
   import MdRemoveCircleOutline from "svelte-icons/md/MdRemoveCircleOutline.svelte";
+  import MdDragHandle from "svelte-icons/md/MdDragHandle.svelte";
   import { createEventDispatcher } from "svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import type { PlayerInfo } from "../data/player-info";
@@ -135,8 +136,12 @@
         <div class="bondsnumber">{nttbId}</div>
       {/if}
     </div>
-    <div class="button">
-      <MdMoreVert />
+    <div
+      class="button"
+      on:touchstart={onTouchStart}
+      on:touchmove={onTouchMove}
+      on:touchend={onTouchEnd}>
+      <MdDragHandle />
     </div>
   </div>
 </div>
