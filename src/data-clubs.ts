@@ -6,4 +6,5 @@ export const ClubData: Club[] = [
     { name: "TTV Gispen" },
     { name: "Vice-Versa" },
     { name: "Alexandria '66" },
+    { name: "test" }
 ];

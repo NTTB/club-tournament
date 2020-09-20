@@ -1,8 +1,78 @@
 import type { NttbPlayer } from './data/nttb-player';
+let biggestNumber = -1;
 export const PlayerData: NttbPlayer[] = [
     { id: 111111111, name: "Wouter Lindenhof", club: "Tielse TC", rating: 1234, class: '6de klas', img: '/assets/wouter.png' },
     { id: 222222222, name: "Rutger Lindenhof", club: "TTV VVV", rating: 1234, class: '6de klas', img: '/assets/rutger.png' },
     { id: 333333333, name: "Joke Lindenhof", club: "Vice-Versa", rating: 1234, class: '6de klas', img: '/assets/joke.png' },
     { id: 444444444, name: "Jan Lindenhof", club: "Alexandria '66", rating: 1234, class: '6de klas', img: '/assets/jan.png' },
     { id: 555555555, name: "Sirus 't Keijzershof", club: "Tielse TC", rating: 1234, class: '6de klas', img: '/assets/sirus.png' },
-];
+    { id: -1, "name": "Reggie test", "club": "test", "rating": 3626, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Merralee test", "club": "test", "rating": 2122, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Hagen test", "club": "test", "rating": 2701, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Bianka test", "club": "test", "rating": 3794, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Coop test", "club": "test", "rating": 1791, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Rosita test", "club": "test", "rating": 735, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Clevey test", "club": "test", "rating": 2569, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Berky test", "club": "test", "rating": 3422, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Rhys test", "club": "test", "rating": 1055, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Emmeline test", "club": "test", "rating": 1243, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Thomasine test", "club": "test", "rating": 3360, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Bunny test", "club": "test", "rating": 1617, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Terri test", "club": "test", "rating": 1250, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Chrysler test", "club": "test", "rating": 3011, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Edwin test", "club": "test", "rating": 2925, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Aubry test", "club": "test", "rating": 3468, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Ardene test", "club": "test", "rating": 1260, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Henry test", "club": "test", "rating": 707, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Linnet test", "club": "test", "rating": 1577, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Shelbi test", "club": "test", "rating": 657, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Kerwinn test", "club": "test", "rating": 2660, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Charita test", "club": "test", "rating": 3252, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Bar test", "club": "test", "rating": 312, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Abagael test", "club": "test", "rating": 3219, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Nadeen test", "club": "test", "rating": 3644, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Bonita test", "club": "test", "rating": 1029, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Giacopo test", "club": "test", "rating": 364, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Enid test", "club": "test", "rating": 923, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Cher test", "club": "test", "rating": 240, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Yolande test", "club": "test", "rating": 2082, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Colin test", "club": "test", "rating": 3560, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Kaleb test", "club": "test", "rating": 2664, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Emmalee test", "club": "test", "rating": 1970, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Leyla test", "club": "test", "rating": 3802, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Auguste test", "club": "test", "rating": 1013, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Traci test", "club": "test", "rating": 175, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Toddie test", "club": "test", "rating": 1762, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Say test", "club": "test", "rating": 428, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Phip test", "club": "test", "rating": 3972, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Pauly test", "club": "test", "rating": 750, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Merissa test", "club": "test", "rating": 3156, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Jyoti test", "club": "test", "rating": 1844, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Gilemette test", "club": "test", "rating": 751, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Bern test", "club": "test", "rating": 443, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Yoshiko test", "club": "test", "rating": 59, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Packston test", "club": "test", "rating": 663, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Lowell test", "club": "test", "rating": 3083, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Marguerite test", "club": "test", "rating": 47, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Ange test", "club": "test", "rating": 815, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Mattias test", "club": "test", "rating": 749, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Kellen test", "club": "test", "rating": 2474, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Honey test", "club": "test", "rating": 2750, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Ricca test", "club": "test", "rating": 1239, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Baxie test", "club": "test", "rating": 3784, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Kale test", "club": "test", "rating": 143, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Haroun test", "club": "test", "rating": 3761, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Muire test", "club": "test", "rating": 1202, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Giffer test", "club": "test", "rating": 101, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Morlee test", "club": "test", "rating": 2416, "class": "6de klas", "img": "/assets/sirus.png" },
+    { id: -1, "name": "Jacynth test", "club": "test", "rating": 2081, "class": "6de klas", "img": "/assets/sirus.png" }
+].map((x, i, array) => {
+    if (x.id === -1) {
+        if (biggestNumber == -1) {
+            biggestNumber = array.map(y => y.id).sort((a, b) => b - a)[0];
+        }
+        x.id = biggestNumber++;
+    }
+
+    return x;
+});
