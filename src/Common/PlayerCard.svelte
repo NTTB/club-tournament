@@ -1,5 +1,16 @@
 <script lang="ts">
+  import type { TournamentPlayer } from "../data/tournament-player";
+  import { tournamentPlayers } from "../data/tournament-player";
   import MdRemoveCircleOutline from "svelte-icons/md/MdRemoveCircleOutline.svelte";
+  export let player: TournamentPlayer;
+
+  function removePlayer() {
+    tournamentPlayers.update((src) => {
+      const index = src.findIndex((x) => x.id === player.id);
+      src.splice(index, 1);
+      return src;
+    });
+  }
 </script>
 
 <style>
@@ -40,14 +51,16 @@
     grid-area: row2;
   }
 
-  .player-name, .club-name {
+  .player-name,
+  .club-name {
     flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: pre;
     margin-right: 4px;
   }
-  .class-rating, .bondsnumber {
+  .class-rating,
+  .bondsnumber {
     flex-shrink: 0;
   }
 
@@ -57,16 +70,16 @@
 </style>
 
 <div class="card">
-  <img class="avatar" src="assets/wouter.png" alt="Wouter" />
+  <img class="avatar" src={player.info.img} alt="Wouter" />
   <div class="row row-1">
-    <div class="player-name">Wouter Lindenhof</div>
-    <div class="class-rating">6e klas - 1234</div>
+    <div class="player-name">{player.info.name}</div>
+    <div class="class-rating">{player.info.class} - {player.info.rating}</div>
   </div>
   <div class="row row-2">
-    <div class="club-name">Tielse TC</div>
-    <div class="bondsnumber">01234567</div>
+    <div class="club-name">{player.info.club}</div>
+    <div class="bondsnumber">{player.nttbId}</div>
   </div>
-  <div class="remove-button">
+  <div class="remove-button" on:click={removePlayer}>
     <MdRemoveCircleOutline />
   </div>
 </div>

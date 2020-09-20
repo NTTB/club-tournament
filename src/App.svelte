@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ViewMode, viewMode } from "./tournament";
+  import { ViewMode, viewMode } from "./data/app-state";
   import Header from "./Header.svelte";
   import ViewToggle from "./ViewToggle.svelte";
 

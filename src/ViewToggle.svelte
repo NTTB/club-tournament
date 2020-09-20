@@ -1,12 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import {  ViewMode, viewMode } from "./tournament";
+  import { ViewMode, viewMode } from "./data/app-state";
   const dispatch = createEventDispatcher();
 
   function switchToTournament() {
     viewMode.set(ViewMode.tournament);
   }
-
 
   function switchToPlayers() {
     viewMode.set(ViewMode.players);

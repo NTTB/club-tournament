@@ -1,19 +1,81 @@
 <script lang="ts">
   import PlayerCard from "../Common/PlayerCard.svelte";
+  import SearchCardPlayer from "../Common/SearchCardPlayer.svelte";
+  import SearchCardClub from "../Common/SearchCardClub.svelte";
+  import SearchCardCustomPlayer from "../Common/SearchCardCustomPlayer.svelte";
+  import { PlayerData } from "../data-players";
+  import { ClubData } from "../data-clubs";
+  import { tournamentPlayers } from "../data/tournament-player";
+
+  let searchQuery = "";
+  $: searchTerms = [
+    ...new Set(searchQuery.split(/\W+/).map((x) => x.trim().toLowerCase())),
+  ];
+  $: playerResults = PlayerData.filter(
+    // Don't include players, that are already on the list
+    (x) => !$tournamentPlayers.find((y) => y.nttbId === x.id)
+  ).filter((x) => {
+    return (
+      searchTerms.every((t) => x.name.toLowerCase().includes(t)) ||
+      searchTerms.every((t) => x.club.toLowerCase().includes(t)) ||
+      x.id.toString(10) == searchQuery.trim()
+    );
+  });
+
+  $: searchIsNumeric = searchQuery.trim().match(/\d+/);
+
+  $: clubResults = ClubData.filter((x) =>
+    x.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  $: showSearch = searchQuery.length > 2;
+  $: showCustom = !searchIsNumeric;
+
+  tournamentPlayers.subscribe(() => {
+    searchQuery = "";
+  });
 </script>
 
 <style>
   .container {
     margin: 16px;
   }
+  .results {
+    z-index: 1;
+    position: fixed;
+    background-color: white;
+    box-shadow: 0 0 50px black;
+    width: calc(100% - 32px);
+    max-height: calc(100vh - 186px);
+    overflow: auto;
+  }
 </style>
 
 <div class="container">
   <div class="field">
-    <input type="text" placeholder="zoek op club, spelernaam of bondsnummer" />
+    <input
+      type="text"
+      placeholder="zoek op club, spelernaam of bondsnummer"
+      bind:value={searchQuery} />
+    {#if showSearch}
+      <div class="results">
+        {#each clubResults as club}
+          <SearchCardClub {club} />
+        {/each}
+
+        {#each playerResults as result}
+          <SearchCardPlayer player={result} />
+        {/each}
+        {#if showCustom}
+          <SearchCardCustomPlayer />
+        {/if}
+      </div>
+    {/if}
   </div>
 
   <div class="player-list">
-    <PlayerCard />
+    {#each $tournamentPlayers as player}
+      <PlayerCard {player} />
+    {/each}
   </div>
 </div>

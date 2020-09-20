@@ -6,7 +6,7 @@
     pointsPerMatch,
     pointsPerSet,
     setsPerMatch,
-  } from "../tournament";
+  } from "../data/tournament";
 </script>
 
 <style>
