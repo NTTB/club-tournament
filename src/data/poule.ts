@@ -14,5 +14,15 @@ export interface Poule {
 }
 
 export let META = { nextId: 1 };
-export const poules = writable<Poule[]>([]);
 
+export const poules = writable<Poule[]>([]);
+try {
+    const pouleData = JSON.parse(localStorage.getItem("data.poules")) as Poule[];
+    poules.set(pouleData || []);
+}catch{
+    console.info("No previous data");
+}
+
+poules.subscribe(values => {
+    localStorage.setItem("data.poules", JSON.stringify(values, undefined, 2));
+});
