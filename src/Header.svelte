@@ -17,7 +17,7 @@
     background-color: var(--nttb-blue);
     color: var(--text-white);
     height: 56px;
-    font-size: 28px;
+    font-size: 20px;
     font-weight: bold;
 
     display: grid;

@@ -14,6 +14,7 @@
     --nttb-blue: #262acc;
     --nttb-orange: #f4612d;
     --text-white: white;
+    --text-dimmed-black: rgb(84, 84, 84);
     --font-family-default: "Roboto", sans-serif;
   }
 

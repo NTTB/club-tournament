@@ -1,39 +1,22 @@
 <script lang="ts">
   import Hint from "../Common/Hint.svelte";
-  import PoulePlayerCard from "../Common/PoulePlayerCard.svelte";
+  import { createEventDispatcher } from "svelte";
+  import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdGroup from "svelte-icons/md/MdGroup.svelte";
-  import type { Poule } from "../data/poule";
-  import { poules } from "../data/poule";
-  import { tournamentPlayers } from "../data/tournament-player";
+  import type { Poule, PoulePlayer } from "../data/poule";
 
   export let poule: Poule;
 
-  function dragOverSection(e: DragEvent) {
-    e.dataTransfer.effectAllowed = "move";
-    e.preventDefault();
-  }
+  interface AllEvents{
+    PoulePlayerSelected: PoulePlayer
+  };
 
-  function dropOnExistingSection(e: DragEvent) {
-    e.preventDefault();
-    poules.update((_poules) => {
-      const playerId = parseInt(e.dataTransfer.getData("text"));
+  const onPoulePlayerSelect = createEventDispatcher<AllEvents>();
+  
 
-      // Remove the player from all the poules
-      _poules.forEach((p) => {
-        p.players = p.players.filter(
-          (pp) => pp.playerTournamentId !== playerId
-        );
-      });
-
-      // Add the player to the found poule
-      const foundPoule = _poules.find((p) => p.index === poule.index);
-      foundPoule.players.push({
-        playerTournamentId: playerId,
-        info: $tournamentPlayers.find((x) => x.id === playerId).info,
-      });
-
-      return _poules;
-    });
+  function onPlayerClick(player: PoulePlayer) {
+    onPoulePlayerSelect("PoulePlayerSelected", player);
+    console.log(arguments);
   }
 </script>
 
@@ -58,11 +41,6 @@
     width: 32px;
     padding: 8px;
   }
-
-  .section-body {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
 </style>
 
 <div class="section">
@@ -72,18 +50,14 @@
     </div>
     <div class="title">{poule.name}</div>
   </div>
-  <div
-    class="section-body"
-    on:dragover={dragOverSection}
-    on:drop={dropOnExistingSection}>
+  <div class="section-body">
     {#if poule.players.length === 0}
       <Hint>Deze poule is leeg</Hint>
     {:else}
       {#each poule.players as player}
-        <PoulePlayerCard
+        <PoulePlayerCard2
           player={player.info}
-          playerTournamentId={player.playerTournamentId}
-          on:touchReposition />
+          on:click={() => onPlayerClick(player)} />
       {/each}
     {/if}
   </div>

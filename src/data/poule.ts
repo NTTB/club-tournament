@@ -5,6 +5,7 @@ export interface PoulePlayer {
     playerTournamentId: number; // The id of the player in the tournament
     info: PlayerInfo;
 }
+
 export interface Poule {
     name: string;
     index: number; // First, second, third and so on.
