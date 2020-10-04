@@ -4,6 +4,7 @@
   import { poules } from "../data/poule";
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
+  import Hint from "../Common/Hint.svelte";
 
   let showCard = false;
 
@@ -174,21 +175,21 @@
 <div class="container">
   <div class="left">
     <div class="left__center" class:noscroll={showCard}>
-      <div class="tab">P1</div>
-      <div class="tab">P2</div>
-      <div class="tab">P3</div>
-      <div class="tab">P4</div>
-      <div class="tab">P5</div>
-      <div class="tab">P6</div>
-      <div class="tab">P7</div>
-      <div class="tab">P8</div>
-      <div class="tab">P9</div>
-      <div class="tab">P10</div>
-      <div class="tab">P11</div>
-      <div class="tab">P12</div>
-      <div class="tab">P13</div>
-      <div class="tab">P14</div>
-      <div class="tab">P99</div>
+      <div class="tab">A:5</div>
+      <div class="tab">B</div>
+      <div class="tab">C</div>
+      <div class="tab">4</div>
+      <div class="tab">5</div>
+      <div class="tab">6</div>
+      <div class="tab">7</div>
+      <div class="tab">8</div>
+      <div class="tab">9</div>
+      <div class="tab">10</div>
+      <div class="tab">11</div>
+      <div class="tab">12</div>
+      <div class="tab">13</div>
+      <div class="tab">14</div>
+      <div class="tab">ZZ:20</div>
     </div>
     <div class="left__bottom">
       <div class="tab new">+</div>
@@ -239,6 +240,7 @@
           <option>P5: Poule 5</option>
         </select>
       </div>
+      <Hint>Hier kan je spelers verplaatsen</Hint>
     </div>
   </div>
 {/if}

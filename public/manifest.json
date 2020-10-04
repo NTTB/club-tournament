@@ -1,0 +1,10 @@
+{
+    "name": "NTTB Tournament",
+    "short_name": "NTTB Tournament",
+    "theme_color": "#f4612d",
+    "background_color": "#262acc",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/"
+}
