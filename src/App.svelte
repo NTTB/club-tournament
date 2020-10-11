@@ -32,20 +32,6 @@
     width: 100%;
     font-size: 14px;
   }
-
-  /** Media query to simulate iPhone 8 */
-  @media screen and (min-width: 600px) {
-    main {
-      height: 667px;
-      width: calc(389px + 40px);
-      max-height: 667px;
-      max-width: calc(389px + 40px);
-      margin: auto;
-      overflow: auto;
-      border: solid black 20px;
-      max-width: calc(389px + 40px);
-    }
-  }
 </style>
 
 <main>
