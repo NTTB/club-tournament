@@ -22,6 +22,8 @@
     grid-template-columns: 1fr 1fr 1fr;
     max-width: 600px;
     margin: 16px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .option {
     padding: 8px 16px;
