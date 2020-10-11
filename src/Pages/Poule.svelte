@@ -125,14 +125,17 @@
     display: flex;
     flex-direction: column;
     overflow: auto;
+    
   }
   .left__center.noscroll {
     overflow: hidden;
   }
   .tab {
+    flex-shrink: 0;
     font-weight: bold;
     height: 48px;
     width: 48px;
+    min-height: 48px;
     line-height: 48px;
     text-align: center;
     /** Remove the button style */
