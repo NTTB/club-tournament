@@ -1,7 +1,12 @@
 <script lang="ts">
   import { fade, slide } from "svelte/transition";
   import { tournamentPlayers } from "../data/tournament-player";
-  import { poules, createNewPoule, movePlayerToPoule, deletePoule } from "../data/poule";
+  import {
+    poules,
+    createNewPoule,
+    movePlayerToPoule,
+    deletePoule,
+  } from "../data/poule";
   import type { TournamentPlayer } from "../data/tournament-player";
   import type { Poule } from "../data/poule";
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
@@ -34,10 +39,9 @@
       let outsidePlayersIds = $poules
         .flatMap((x) => x.players)
         .map((x) => x.playerTournamentId);
-
-      currentPlayers = $tournamentPlayers.filter(
-        (x) => !outsidePlayersIds.includes(x.id)
-      );
+      currentPlayers = $tournamentPlayers
+        .sort((a, b) => b.info.rating - a.info.rating)
+        .filter((x) => !outsidePlayersIds.includes(x.id));
     } else {
       playerHeaderTitle = `Poule ${selectedPoule.name}`;
       if (selectedPoule.maxPlayerCount !== undefined) {
@@ -59,9 +63,9 @@
       let placedPlayersIds = selectedPoule.players.map(
         (player) => player.playerTournamentId
       );
-      currentPlayers = $tournamentPlayers.filter((x) =>
-        placedPlayersIds.includes(x.id)
-      );
+      currentPlayers = $tournamentPlayers
+        .sort((a, b) => b.info.rating - a.info.rating)
+        .filter((x) => placedPlayersIds.includes(x.id));
     }
   }
 
@@ -89,7 +93,6 @@
     var currentPoule = selectedPoule;
     selectReservePoule();
     deletePoule(currentPoule);
-
   }
   function moveToPoule(poule: Poule) {
     movePlayerToPoule(selectedPlayer, poule);
@@ -125,7 +128,6 @@
     display: flex;
     flex-direction: column;
     overflow: auto;
-    
   }
   .left__center.noscroll {
     overflow: hidden;
