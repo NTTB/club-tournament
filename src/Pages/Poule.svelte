@@ -45,24 +45,6 @@
   }
   function deletePoule() {}
   function movePlayer() {}
-
-  function getPouleName(n: number) {
-    var numbers = [];
-    do {
-      n -= 1; // Start at 1
-      var remainder = n % 26;
-      numbers.unshift(remainder);
-      n -= remainder;
-      n /= 26;
-    } while (n != 0);
-
-    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    var letters = [];
-    numbers.forEach((element) => {
-      letters.push(alpha.charAt(element));
-    });
-    return letters.join("");
-  }
 </script>
 
 <style>
