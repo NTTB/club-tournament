@@ -36,13 +36,19 @@
     searchQuery = "";
     if (searchInput) searchInput.focus();
   });
-
 </script>
 
 <style>
   .container {
-    margin: 16px;
+    --pageHeaderHeight: 125px;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    height: calc(100vh - var(--pageHeaderHeight));
+    max-height: calc(100vh - var(--pageHeaderHeight));
+    padding-left: 16px;
+    padding-right: 16px;
   }
+
   .results {
     z-index: 1;
     position: fixed;
@@ -50,6 +56,12 @@
     box-shadow: 0 0 50px black;
     width: calc(100% - 32px);
     max-height: calc(100vh - 186px);
+    overflow: auto;
+  }
+
+  .player-list {
+    margin-right: -8px;
+    padding-right: 8px;
     overflow: auto;
   }
 </style>
