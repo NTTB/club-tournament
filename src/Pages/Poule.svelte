@@ -247,7 +247,8 @@
     flex-wrap: wrap;
   }
   .tournament-actions button {
-    width: 50px;
+    width: 48px;
+    height: 48px;
     margin: 0;
     margin-right: 8px;
     margin-bottom: 8px;
