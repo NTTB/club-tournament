@@ -1,15 +1,12 @@
 <script lang="ts">
   import type { TournamentPlayer } from "../data/tournament-player";
-  import { tournamentPlayers } from "../data/tournament-player";
+  import { removePlayerFromTournament } from "../data/tournament-player";
   import MdRemoveCircleOutline from "svelte-icons/md/MdRemoveCircleOutline.svelte";
+
   export let player: TournamentPlayer;
 
-  function removePlayer() {
-    tournamentPlayers.update((src) => {
-      const index = src.findIndex((x) => x.id === player.id);
-      src.splice(index, 1);
-      return src;
-    });
+  function onRemoveClick() {
+    removePlayerFromTournament(player);
   }
 </script>
 
@@ -79,7 +76,7 @@
     <div class="club-name">{player.info.club}</div>
     <div class="bondsnumber">{player.nttbId}</div>
   </div>
-  <div class="remove-button" on:click={removePlayer}>
+  <div class="remove-button" on:click={onRemoveClick}>
     <MdRemoveCircleOutline />
   </div>
 </div>
