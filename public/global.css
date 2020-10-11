@@ -1,6 +1,6 @@
 :root {
-	--nttb-blue: #262ACC;
-	--nttb-orange: #F4612D;
+	--nttb-blue: #262acc;
+	--nttb-orange: #f4612d;
 }
 
 html,
@@ -11,7 +11,7 @@ body {
 }
 
 html {
-    -webkit-text-size-adjust: none
+	-webkit-text-size-adjust: none;
 }
 
 body {
@@ -35,7 +35,10 @@ a:hover {
 a:visited {
 	color: rgb(0, 80, 160);
 }
-
+* {
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
+}
 label {
 	display: block;
 }
