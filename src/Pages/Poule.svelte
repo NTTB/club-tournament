@@ -39,13 +39,14 @@
       playerHeaderTitle = `Poule ${selectedPoule.name}`;
       if (selectedPoule.maxPlayerCount !== undefined) {
         playerHeaderTitle += ` - MK${selectedPoule.maxPlayerCount}`;
-      }else{
+      } else {
         playerHeaderTitle += ` - MK?`;
       }
 
       if (selectedPoule.tableIds !== undefined) {
         if (selectedPoule.tableIds.length !== 0) {
-          playerHeaderTitle += ` (`+ selectedPoule.tableIds.map(x=> `T${x}`).join(',') + `)`;
+          playerHeaderTitle +=
+            ` (` + selectedPoule.tableIds.map((x) => `T${x}`).join(",") + `)`;
         } else {
           playerHeaderTitle += ` (T??)`;
         }
@@ -231,16 +232,12 @@
   .tournament-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
   }
   .tournament-actions button {
     width: 50px;
     margin: 0;
-  }
-
-  .tournament-actions button.current {
-    width: 50px;
-    margin: 0;
+    margin-right: 8px;
+    margin-bottom: 8px;
   }
 </style>
 
