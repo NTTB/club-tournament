@@ -1,14 +1,24 @@
 <script lang="ts">
   import { fade, slide } from "svelte/transition";
   import { tournamentPlayers } from "../data/tournament-player";
-  import { poules } from "../data/poule";
+  import { poules, createNewPoule } from "../data/poule";
+  import type { TournamentPlayer } from "../data/tournament-player";
+  import type { Poule } from "../data/poule";
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import Hint from "../Common/Hint.svelte";
+  import { xlink_attr } from "svelte/internal";
 
   let showCard = false;
 
-  let currentPlayers = [];
+  let currentPouleIndex = -1;
+
+  let currentPlayers: TournamentPlayer[] = [];
+  let currentPoules: Poule[] = [];
+
+  $: {
+    currentPoules = $poules;
+  }
 
   $: {
     let placedPlayersIds = $poules
@@ -30,8 +40,28 @@
     showCard = false;
   }
 
-  function onPouleChanged() {
-    confirm("Do you want to move the player to another poule?");
+  function createPoule() {
+    createNewPoule();
+  }
+  function deletePoule() {}
+  function movePlayer() {}
+
+  function getPouleName(n: number) {
+    var numbers = [];
+    do {
+      n -= 1; // Start at 1
+      var remainder = n % 26;
+      numbers.unshift(remainder);
+      n -= remainder;
+      n /= 26;
+    } while (n != 0);
+
+    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var letters = [];
+    numbers.forEach((element) => {
+      letters.push(alpha.charAt(element));
+    });
+    return letters.join("");
   }
 </script>
 
@@ -175,25 +205,13 @@
 <div class="container">
   <div class="left">
     <div class="left__center" class:noscroll={showCard}>
-      <div class="tab">A:5</div>
-      <div class="tab">B</div>
-      <div class="tab">C</div>
-      <div class="tab">4</div>
-      <div class="tab">5</div>
-      <div class="tab">6</div>
-      <div class="tab">7</div>
-      <div class="tab">8</div>
-      <div class="tab">9</div>
-      <div class="tab">10</div>
-      <div class="tab">11</div>
-      <div class="tab">12</div>
-      <div class="tab">13</div>
-      <div class="tab">14</div>
-      <div class="tab">ZZ:20</div>
+      {#each currentPoules as poule}
+        <div class="tab">{poule.name}:{poule.players.length}</div>
+      {/each}
     </div>
     <div class="left__bottom">
-      <div class="tab new">+</div>
-      <div class="tab active">R</div>
+      <div class="tab new" on:click={createPoule}>+</div>
+      <div class="tab active" on:click={() => (currentPouleIndex = -1)}>R</div>
     </div>
   </div>
   <div class="right">
