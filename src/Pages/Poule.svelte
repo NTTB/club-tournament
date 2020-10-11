@@ -20,12 +20,22 @@
   }
 
   $: {
-    let placedPlayersIds = $poules
-      .flatMap((x) => x.players)
-      .map((x) => x.playerTournamentId);
-    currentPlayers = $tournamentPlayers.filter(
-      (x) => !placedPlayersIds.includes(x.id)
-    );
+    if (selectedPoule === undefined) {
+      // Add players that are NOT in a poule (aka the reserves)
+      let placedPlayersIds = $poules
+        .flatMap((x) => x.players)
+        .map((x) => x.playerTournamentId);
+
+      currentPlayers = $tournamentPlayers.filter(
+        (x) => !placedPlayersIds.includes(x.id)
+      );
+    } else {
+      // Add players that are in a poule
+      let placedPlayersIds = selectedPoule.players.map(
+        (player) => player.playerTournamentId
+      );
+      $tournamentPlayers.filter((x) => placedPlayersIds.includes(x.id));
+    }
   }
 
   function onPlayerClick(x) {
