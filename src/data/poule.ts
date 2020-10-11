@@ -13,6 +13,20 @@ export interface Poule {
   // List of assigned players
   players: PoulePlayer[];
 
+  /**
+   * The maximum amount of players in this poule.
+   * If undefined, then no maximum was set
+   */
+  maxPlayerCount?: number;
+
+  /**
+   * The id of the tables assigned to this poule.
+   * If undefined, the no tables are set
+   * If empty then this poule has no available table
+   * If multiple values are assigned the poule is played on multiple tables.
+   */
+  tableIds?: number[];
+
 }
 
 export let META = { nextId: 1 };

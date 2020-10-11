@@ -37,6 +37,19 @@
       );
     } else {
       playerHeaderTitle = `Poule ${selectedPoule.name}`;
+      if (selectedPoule.maxPlayerCount !== undefined) {
+        playerHeaderTitle += ` - MK${selectedPoule.maxPlayerCount}`;
+      }else{
+        playerHeaderTitle += ` - MK?`;
+      }
+
+      if (selectedPoule.tableIds !== undefined) {
+        if (selectedPoule.tableIds.length !== 0) {
+          playerHeaderTitle += ` (`+ selectedPoule.tableIds.map(x=> `T${x}`).join(',') + `)`;
+        } else {
+          playerHeaderTitle += ` (T??)`;
+        }
+      }
 
       // Add players that are in a poule
       let placedPlayersIds = selectedPoule.players.map(
@@ -247,7 +260,7 @@
   </div>
   <div class="right">
     <div class="right__header">
-      <div class="header">{playerHeaderTitle} - MK4 - (T1,T2)</div>
+      <div class="header">{playerHeaderTitle}</div>
       <button><MdMoreVert /></button>
     </div>
     <div class="right__bottom" class:noscroll={showCard}>
