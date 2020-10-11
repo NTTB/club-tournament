@@ -1,11 +1,12 @@
 <script lang="ts">
   import { fade, slide } from "svelte/transition";
   import { tournamentPlayers } from "../data/tournament-player";
-  import { poules, createNewPoule, movePlayerToPoule } from "../data/poule";
+  import { poules, createNewPoule, movePlayerToPoule, deletePoule } from "../data/poule";
   import type { TournamentPlayer } from "../data/tournament-player";
   import type { Poule } from "../data/poule";
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
+  import MdDelete from "svelte-icons/md/MdDelete.svelte";
   import Hint from "../Common/Hint.svelte";
 
   let showCard = false;
@@ -15,6 +16,8 @@
 
   let currentPlayers: TournamentPlayer[] = [];
   let currentPoules: Poule[] = [];
+
+  $: canDeletePoule = selectedPoule !== undefined;
 
   $: {
     currentPoules = $poules;
@@ -82,7 +85,12 @@
     selectPoule(undefined);
   }
 
-  function deletePoule() {}
+  function onPouleDeleteClick() {
+    var currentPoule = selectedPoule;
+    selectReservePoule();
+    deletePoule(currentPoule);
+
+  }
   function moveToPoule(poule: Poule) {
     movePlayerToPoule(selectedPlayer, poule);
     selectedPlayer = undefined;
@@ -258,7 +266,9 @@
   <div class="right">
     <div class="right__header">
       <div class="header">{playerHeaderTitle}</div>
-      <button><MdMoreVert /></button>
+      {#if canDeletePoule}
+        <button on:click={onPouleDeleteClick}><MdDelete /></button>
+      {/if}
     </div>
     <div class="right__bottom" class:noscroll={showCard}>
       {#each currentPlayers as player}

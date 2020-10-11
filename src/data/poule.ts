@@ -73,7 +73,15 @@ export function movePlayerToPoule(player: TournamentPlayer, poule: Poule) {
     }
 
     return collection;
-  })
+  });
+}
+
+export function deletePoule(poule: Poule) {
+  if (!poule) return;
+  poules.update(collection => {
+    collection = collection.filter(x => x.index != poule.index);
+    return collection;
+  });
 }
 
 export function createNewPoule() {
