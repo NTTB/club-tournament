@@ -7,7 +7,6 @@
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import Hint from "../Common/Hint.svelte";
-  import { xlink_attr } from "svelte/internal";
 
   let showCard = false;
 
@@ -233,11 +232,9 @@
       <div class="tournament-actions">
         <select class="poule-mover__select">
           <option value="-1">R: Reserve poule / Niet ingedeeld</option>
-          <option>P1: Poule 1</option>
-          <option>P2: Poule 2</option>
-          <option>P3: Poule 3</option>
-          <option>P4: Poule 4</option>
-          <option>P5: Poule 5</option>
+          {#each currentPoules as poule}
+            <option>Poule {poule.name}:{poule.players.length}</option>
+          {/each}
         </select>
       </div>
       <Hint>Hier kan je spelers verplaatsen</Hint>
