@@ -1,52 +1,80 @@
 <script lang="ts">
   import { fade, slide } from "svelte/transition";
   import { tournamentPlayers } from "../data/tournament-player";
-  import { poules, createNewPoule } from "../data/poule";
+  import { poules, createNewPoule, movePlayerToPoule } from "../data/poule";
   import type { TournamentPlayer } from "../data/tournament-player";
   import type { Poule } from "../data/poule";
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import Hint from "../Common/Hint.svelte";
 
-  let showCard = false;
+  interface CardInfo {
+    currentPoule: Poule | undefined;
+  }
 
+  let showCard = false;
   let selectedPoule: Poule = undefined;
+  let selectedPlayer: TournamentPlayer = undefined;
+  let playerHeaderTitle = "Reserve spelers";
 
   let currentPlayers: TournamentPlayer[] = [];
   let currentPoules: Poule[] = [];
 
+  let cardState: {
+    old: CardInfo;
+    cur: CardInfo;
+  };
+
   $: {
     currentPoules = $poules;
+  }
+  $: {
+    showCard = !!selectedPlayer;
   }
 
   $: {
     if (selectedPoule === undefined) {
+      playerHeaderTitle = "Reserve spelers";
       // Add players that are NOT in a poule (aka the reserves)
-      let placedPlayersIds = $poules
+
+      let outsidePlayersIds = $poules
         .flatMap((x) => x.players)
         .map((x) => x.playerTournamentId);
 
       currentPlayers = $tournamentPlayers.filter(
-        (x) => !placedPlayersIds.includes(x.id)
+        (x) => !outsidePlayersIds.includes(x.id)
       );
     } else {
+      playerHeaderTitle = `Poule ${selectedPoule.name}`;
+
       // Add players that are in a poule
       let placedPlayersIds = selectedPoule.players.map(
         (player) => player.playerTournamentId
       );
-      $tournamentPlayers.filter((x) => placedPlayersIds.includes(x.id));
+      currentPlayers = $tournamentPlayers.filter((x) =>
+        placedPlayersIds.includes(x.id)
+      );
     }
   }
 
-  function onPlayerClick(x) {
-    showPlayerCard();
+  function onPlayerClick(player) {
+    cardState = {
+      old: {
+        currentPoule: selectedPoule,
+      },
+      cur: {
+        currentPoule: selectedPoule,
+      },
+    };
+    selectedPlayer = player;
   }
 
-  function showPlayerCard() {
-    showCard = true;
-  }
   function hidePlayerCard() {
-    showCard = false;
+    if (cardState.cur.currentPoule != cardState.old.currentPoule) {
+      movePlayerToPoule(selectedPlayer, cardState.cur.currentPoule);
+    }
+    selectedPlayer = undefined;
+    cardState = undefined;
   }
 
   function createPoule() {
@@ -222,7 +250,7 @@
   </div>
   <div class="right">
     <div class="right__header">
-      <div class="header">Reserve spelers</div>
+      <div class="header">{playerHeaderTitle}</div>
       <button><MdMoreVert /></button>
     </div>
     <div class="right__bottom" class:noscroll={showCard}>
@@ -241,24 +269,28 @@
   <div transition:slide={{ duration: 200 }} class="card foreground">
     <div class="card__header">
       <div class="slider" />
-      <div class="title">Wouter Lindenhof</div>
+      <div class="title">{selectedPlayer.info.name}</div>
     </div>
     <div class="card__content">
       <div class="sub-header">Speler informatie</div>
       <div class="player-info">
         <div class="label">Club</div>
-        <div class="value">Tielse TC</div>
+        <div class="value">{selectedPlayer.info.club}</div>
         <div class="label">Rating</div>
-        <div class="value">1234</div>
+        <div class="value">{selectedPlayer.info.rating}</div>
         <div class="label">Niveau</div>
-        <div class="value">6de klas</div>
+        <div class="value">{selectedPlayer.info.class}</div>
       </div>
       <div class="sub-header">Toernooi</div>
       <div class="tournament-actions">
-        <select class="poule-mover__select">
-          <option value="-1">R: Reserve poule / Niet ingedeeld</option>
+        <select
+          class="poule-mover__select"
+          bind:value={cardState.cur.currentPoule}>
+          <option value={undefined}>R: Reserve poule / Niet ingedeeld</option>
           {#each currentPoules as poule}
-            <option>Poule {poule.name}:{poule.players.length}</option>
+            <option value={poule}>
+              Poule {poule.name}:{poule.players.length}
+            </option>
           {/each}
         </select>
       </div>

@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import type { PlayerInfo } from "./player-info";
+import type { TournamentPlayer } from "./tournament-player";
 
 export interface PoulePlayer {
   playerTournamentId: number; // The id of the player in the tournament
@@ -46,6 +47,21 @@ function generatePouleName(n: number) {
   return letters.join("");
 }
 
+export function movePlayerToPoule(player: TournamentPlayer, poule: Poule) {
+  poules.update(collection => {
+    // Remove the player from all poules
+    collection.forEach(p => {
+      p.players = p.players.filter(x => x.playerTournamentId != player.id);
+    });
+
+    if (poule) {
+      poule.players.push({ playerTournamentId: player.id, info: player.info });
+    }
+
+    return collection;
+  })
+}
+
 export function createNewPoule() {
   var newPouleId = META.nextId;
   META.nextId++;
@@ -58,5 +74,4 @@ export function createNewPoule() {
     collection.push(poule);
     return collection;
   });
-
 }
