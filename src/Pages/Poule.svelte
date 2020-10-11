@@ -10,7 +10,7 @@
 
   let showCard = false;
 
-  let currentPouleIndex = -1;
+  let selectedPoule: Poule = undefined;
 
   let currentPlayers: TournamentPlayer[] = [];
   let currentPoules: Poule[] = [];
@@ -42,6 +42,15 @@
   function createPoule() {
     createNewPoule();
   }
+
+  function selectPoule(poule: Poule) {
+    selectedPoule = poule;
+  }
+
+  function selectReservePoule() {
+    selectPoule(undefined);
+  }
+
   function deletePoule() {}
   function movePlayer() {}
 </script>
@@ -84,6 +93,10 @@
     width: 48px;
     line-height: 48px;
     text-align: center;
+    /** Remove the button style */
+    padding: 0;
+    margin: 0;
+    border: none;
     border-bottom: 1px solid var(--nttb-orange);
   }
   .tab.active {
@@ -187,12 +200,14 @@
   <div class="left">
     <div class="left__center" class:noscroll={showCard}>
       {#each currentPoules as poule}
-        <div class="tab">{poule.name}:{poule.players.length}</div>
+        <button
+          class="tab"
+          on:click={() => selectPoule(poule)}>{`${poule.name}:${poule.players.length}`}</button>
       {/each}
     </div>
     <div class="left__bottom">
-      <div class="tab new" on:click={createPoule}>+</div>
-      <div class="tab active" on:click={() => (currentPouleIndex = -1)}>R</div>
+      <button class="tab new" on:click={createPoule}>+</button>
+      <button class="tab active" on:click={selectReservePoule}>R</button>
     </div>
   </div>
   <div class="right">
