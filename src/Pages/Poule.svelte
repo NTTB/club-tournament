@@ -7,10 +7,6 @@
   import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import Hint from "../Common/Hint.svelte";
-  
-  interface CardInfo {
-    currentPoule: Poule | undefined;
-  }
 
   let showCard = false;
   let selectedPoule: Poule = undefined;
@@ -19,11 +15,6 @@
 
   let currentPlayers: TournamentPlayer[] = [];
   let currentPoules: Poule[] = [];
-
-  let cardState: {
-    old: CardInfo;
-    cur: CardInfo;
-  };
 
   $: {
     currentPoules = $poules;
@@ -58,23 +49,11 @@
   }
 
   function onPlayerClick(player) {
-    cardState = {
-      old: {
-        currentPoule: selectedPoule,
-      },
-      cur: {
-        currentPoule: selectedPoule,
-      },
-    };
     selectedPlayer = player;
   }
 
   function hidePlayerCard() {
-    if (cardState.cur.currentPoule != cardState.old.currentPoule) {
-      movePlayerToPoule(selectedPlayer, cardState.cur.currentPoule);
-    }
     selectedPlayer = undefined;
-    cardState = undefined;
   }
 
   function createPoule() {
@@ -93,7 +72,6 @@
   function moveToPoule(poule: Poule) {
     movePlayerToPoule(selectedPlayer, poule);
     selectedPlayer = undefined;
-    cardState = undefined;
   }
 </script>
 
