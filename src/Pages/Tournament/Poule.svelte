@@ -15,8 +15,10 @@
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import MdDelete from "svelte-icons/md/MdDelete.svelte";
   import Hint from "../../Common/Hint.svelte";
+  import { findTournamentById } from "../../data/tournament";
 
   export let id: string;
+  var tournamentPromise = findTournamentById(+id);
 
   let showCard = false;
   let selectedPoule: Poule = undefined;
@@ -259,86 +261,94 @@
   }
 </style>
 
-<TournamentHeader />
-<PageToggle {id} mode="poule" />
-
-<div class="container">
-  <div class="left">
-    <div class="left__center" class:noscroll={showCard}>
-      {#each currentPoules as poule}
-        <button
-          class="tab"
-          on:click={() => selectPoule(poule)}>{`${poule.name}:${poule.players.length}`}</button>
-      {/each}
-    </div>
-    <div class="left__bottom">
-      <button class="tab new" on:click={createPoule}>+</button>
-      <button class="tab active" on:click={selectReservePoule}>RES</button>
-    </div>
+{#await tournamentPromise}
+  <TournamentHeader />
+  <PageToggle {id} mode="poule" />
+  <div class="container">
+    <p>Loading...</p>
   </div>
-  <div class="right">
-    <div class="right__header">
-      <div class="header">{playerHeaderTitle}</div>
-      {#if canDeletePoule}
-        <button on:click={onPouleDeleteClick}><MdDelete /></button>
-      {/if}
-    </div>
-    <div class="right__bottom" class:noscroll={showCard}>
-      {#each currentPlayers as player}
-        <PoulePlayerCard2 {player} on:click={() => onPlayerClick(player)} />
-      {/each}
+{:then tournament}
+  <TournamentHeader title={tournament.name} />
+  <PageToggle {id} mode="poule" />
 
-      {#if currentPlayers.length == 0}
-        <Hint>
-          {selectedPoule == undefined ? `Er zijn geen reserve spelers` : `Er zijn geen spelers in Poule ${selectedPoule.name}`}
-        </Hint>
-      {/if}
-    </div>
-  </div>
-</div>
-
-{#if showCard}
-  <div
-    transition:fade={{ duration: 200 }}
-    class="card background"
-    on:click={hidePlayerCard} />
-  <div transition:slide={{ duration: 200 }} class="card foreground">
-    <div class="card__header">
-      <div class="slider" />
-      <div class="title">{selectedPlayer.info.name}</div>
-    </div>
-    <div class="card__content">
-      <div class="sub-header">Speler informatie</div>
-      <div class="player-info">
-        <div class="label">Club</div>
-        <div class="value">{selectedPlayer.info.club}</div>
-        <div class="label">Rating</div>
-        <div class="value">{selectedPlayer.info.rating}</div>
-        <div class="label">Niveau</div>
-        <div class="value">{selectedPlayer.info.class}</div>
-      </div>
-      <div class="sub-header">Verplaats naar Poule</div>
-      <div class="tournament-actions">
+  <div class="container">
+    <div class="left">
+      <div class="left__center" class:noscroll={showCard}>
         {#each currentPoules as poule}
           <button
-            on:click={() => moveToPoule(poule)}
-            class:current={selectedPoule == poule}
-            disabled={selectedPoule == poule}>
-            {poule.name}:{poule.players.length}
-          </button>
+            class="tab"
+            on:click={() => selectPoule(poule)}>{`${poule.name}:${poule.players.length}`}</button>
         {/each}
-        {#if currentPoules.length == 0}
+      </div>
+      <div class="left__bottom">
+        <button class="tab new" on:click={createPoule}>+</button>
+        <button class="tab active" on:click={selectReservePoule}>RES</button>
+      </div>
+    </div>
+    <div class="right">
+      <div class="right__header">
+        <div class="header">{playerHeaderTitle}</div>
+        {#if canDeletePoule}
+          <button on:click={onPouleDeleteClick}><MdDelete /></button>
+        {/if}
+      </div>
+      <div class="right__bottom" class:noscroll={showCard}>
+        {#each currentPlayers as player}
+          <PoulePlayerCard2 {player} on:click={() => onPlayerClick(player)} />
+        {/each}
+
+        {#if currentPlayers.length == 0}
           <Hint>
-            Er zijn geen poules beschikbaar waar je de speler heen kan
-            verplaatsen
+            {selectedPoule == undefined ? `Er zijn geen reserve spelers` : `Er zijn geen spelers in Poule ${selectedPoule.name}`}
           </Hint>
-        {:else}
-          <button
-            on:click={() => moveToPoule(undefined)}
-            class:current={selectedPoule == undefined}
-            disabled={selectedPoule == undefined}>RES</button>
         {/if}
       </div>
     </div>
   </div>
-{/if}
+
+  {#if showCard}
+    <div
+      transition:fade={{ duration: 200 }}
+      class="card background"
+      on:click={hidePlayerCard} />
+    <div transition:slide={{ duration: 200 }} class="card foreground">
+      <div class="card__header">
+        <div class="slider" />
+        <div class="title">{selectedPlayer.info.name}</div>
+      </div>
+      <div class="card__content">
+        <div class="sub-header">Speler informatie</div>
+        <div class="player-info">
+          <div class="label">Club</div>
+          <div class="value">{selectedPlayer.info.club}</div>
+          <div class="label">Rating</div>
+          <div class="value">{selectedPlayer.info.rating}</div>
+          <div class="label">Niveau</div>
+          <div class="value">{selectedPlayer.info.class}</div>
+        </div>
+        <div class="sub-header">Verplaats naar Poule</div>
+        <div class="tournament-actions">
+          {#each currentPoules as poule}
+            <button
+              on:click={() => moveToPoule(poule)}
+              class:current={selectedPoule == poule}
+              disabled={selectedPoule == poule}>
+              {poule.name}:{poule.players.length}
+            </button>
+          {/each}
+          {#if currentPoules.length == 0}
+            <Hint>
+              Er zijn geen poules beschikbaar waar je de speler heen kan
+              verplaatsen
+            </Hint>
+          {:else}
+            <button
+              on:click={() => moveToPoule(undefined)}
+              class:current={selectedPoule == undefined}
+              disabled={selectedPoule == undefined}>RES</button>
+          {/if}
+        </div>
+      </div>
+    </div>
+  {/if}
+{/await}

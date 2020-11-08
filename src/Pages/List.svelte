@@ -1,23 +1,25 @@
 <script>
   import Header from "../Shared/Header.svelte";
-  import MdDeleteForever from 'svelte-icons/md/MdDeleteForever.svelte'
+  import MdDeleteForever from "svelte-icons/md/MdDeleteForever.svelte";
   import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
-  var items = [
-    { id: 1, name: "NK 2012" },
-    { id: 2, name: "NK 2013" },
-    { id: 3, name: "NK 2014" },
-    { id: 4, name: "NK 2015" },
-    { id: 5, name: "NK 2016" },
-    { id: 6, name: "NK 2017" },
-    { id: 7, name: "NK 2018" },
-    { id: 8, name: "NK 2019" },
-    { id: 9, name: "NK 2020" },
-    { id: 10, name: "NK 2021" },
-    { id: 11, name: "NK 2022" },
-    { id: 12, name: "NK 2023" },
-    { id: 13, name: "NK 2024" },
-    { id: 14, name: "NK 2025" },
-  ];
+  import { navigateTo } from "../routing";
+
+  import { addTournament, getAllTournaments } from "../data/tournament";
+
+  var items = getAllTournaments();
+
+  async function newTournament() {
+    var newTournament = await addTournament({
+      id: 0,
+      availableTables: 1,
+      name: "",
+      pointsPerMatch: 2,
+      setsPerMatch: 3,
+      pointsPerSet: 11,
+    });
+
+    navigateTo(`tournament/${newTournament.id}/info`);
+  }
 
   function deleteTournament(item) {}
 
@@ -68,27 +70,32 @@
     text-transform: uppercase;
     font-weight: bold;
   }
-
 </style>
 
 <div class="header">
   <Header title="Toernooien" />
 </div>
 <div class="container">
-  {#each items as item}
-    <div class="item">
-      <button on:click={() => playTournament(item)}>
-        <MdPlayArrow />
-      </button>
-      <a class="name" href={`#/tournament/${item.id}/info`}> {item.name} </a>
+  {#await getAllTournaments()}
+    <p>Loading...</p>
+  {:then items}
+    {#each items as item}
+      <div class="item">
+        <button on:click={() => playTournament(item)}>
+          <MdPlayArrow />
+        </button>
+        <a class="name" href={`#/tournament/${item.id}/info`}> {item.name} </a>
 
-      <button on:click={() => deleteTournament(item)}>
-        <MdDeleteForever />
-      </button>
-    </div>
-  {/each}
+        <button on:click={() => deleteTournament(item)}>
+          <MdDeleteForever />
+        </button>
+      </div>
+    {/each}
+  {/await}
 
   <div class="right">
-    <button class="new-tournament-button">Nieuw toernooi maken</button>
+    <button class="new-tournament-button" on:click={newTournament}>
+      Nieuw toernooi maken
+    </button>
   </div>
 </div>

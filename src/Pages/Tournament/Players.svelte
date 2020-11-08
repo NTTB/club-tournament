@@ -9,9 +9,10 @@
   import { PlayerData } from "../../data-players";
   import { ClubData } from "../../data-clubs";
   import { tournamentPlayers } from "../../data/tournament-player";
+  import { findTournamentById } from "../../data/tournament";
 
   export let id: string;
-
+  var tournamentPromise = findTournamentById(+id);
   let searchQuery = "";
   let searchInput: HTMLInputElement;
   $: searchTerms = [
@@ -71,35 +72,42 @@
   }
 </style>
 
-<TournamentHeader />
-<PageToggle {id} mode="players" />
-
-<div class="container">
-  <div class="field">
-    <input
-      type="text"
-      placeholder="zoek op club, spelernaam of bondsnummer"
-      bind:value={searchQuery}
-      bind:this={searchInput} />
-    {#if showSearch}
-      <div class="results">
-        {#each clubResults as club}
-          <SearchCardClub {club} />
-        {/each}
-
-        {#each playerResults as result}
-          <SearchCardPlayer player={result} />
-        {/each}
-        {#if showCustom}
-          <SearchCardCustomPlayer />
-        {/if}
-      </div>
-    {/if}
+{#await tournamentPromise}
+  <TournamentHeader />
+  <PageToggle {id} mode="players" />
+  <div class="container">
+    <p>Loading...</p>
   </div>
+{:then tournament}
+  <TournamentHeader title={tournament.name} />
+  <PageToggle {id} mode="players" />
+  <div class="container">
+    <div class="field">
+      <input
+        type="text"
+        placeholder="zoek op club, spelernaam of bondsnummer"
+        bind:value={searchQuery}
+        bind:this={searchInput} />
+      {#if showSearch}
+        <div class="results">
+          {#each clubResults as club}
+            <SearchCardClub {club} />
+          {/each}
 
-  <div class="player-list">
-    {#each $tournamentPlayers as player}
-      <PlayerCard {player} />
-    {/each}
+          {#each playerResults as result}
+            <SearchCardPlayer player={result} />
+          {/each}
+          {#if showCustom}
+            <SearchCardCustomPlayer />
+          {/if}
+        </div>
+      {/if}
+    </div>
+
+    <div class="player-list">
+      {#each $tournamentPlayers as player}
+        <PlayerCard {player} />
+      {/each}
+    </div>
   </div>
-</div>
+{/await}

@@ -12,6 +12,10 @@ export const locationStore = readable(getRoute(), (set) => {
   window.addEventListener('hashchange', () => set(getRoute()));
 });
 
+export function navigateTo(path: string) {
+  window.location.hash = '#/' + path;
+}
+
 function findRoute(route: string) {
   const foundRoutes = routes.filter(v => {
     switch (typeof v.path) {
