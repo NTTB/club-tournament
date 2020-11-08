@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Header from "../Header.svelte";
+  import ViewToggle from "../ViewToggle.svelte";
   import { fade, slide } from "svelte/transition";
   import { tournamentPlayers } from "../data/tournament-player";
   import {
@@ -254,6 +256,9 @@
     margin-bottom: 8px;
   }
 </style>
+
+<Header />
+<ViewToggle />
 
 <div class="container">
   <div class="left">

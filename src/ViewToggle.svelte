@@ -1,19 +1,23 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import { ViewMode, viewMode } from "./data/app-state";
-  const dispatch = createEventDispatcher();
+  import { locationStore } from "./routing";
 
-  function switchToTournament() {
-    viewMode.set(ViewMode.tournament);
-  }
-
-  function switchToPlayers() {
-    viewMode.set(ViewMode.players);
-  }
-
-  function switchToPoule() {
-    viewMode.set(ViewMode.poule);
-  }
+  const routes = [
+    {
+      href: "#/tournament",
+      selected: (v: string) => /^tournament\/?/.test(v),
+      text: "Toernooi",
+    },
+    {
+      href: "#/players",
+      selected: (v: string) => /^players\/?/.test(v),
+      text: "Spelers",
+    },
+    {
+      href: "#/poule",
+      selected: (v: string) => /^poule\/?/.test(v),
+      text: "Indeling",
+    },
+  ];
 </script>
 
 <style>
@@ -25,24 +29,23 @@
     margin-left: auto;
     margin-right: auto;
   }
-  .option {
+  a {
     padding: 8px 16px;
     border: 1px solid var(--nttb-blue);
     text-align: center;
     cursor: pointer;
+    text-decoration: none;
+    border-right: none;
   }
 
-  .first {
+  a:first-child {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
   }
-  .center {
-    border-left: none;
-    border-right: none;
-  }
-  .last {
+  a:last-child {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+    border-right: 1px solid var(--nttb-blue);
   }
 
   .selected {
@@ -52,22 +55,9 @@
 </style>
 
 <div class="container">
-  <div
-    class="option first"
-    class:selected={$viewMode == ViewMode.tournament}
-    on:click={switchToTournament}>
-    Toernooi
-  </div>
-  <div
-    class="option center"
-    class:selected={$viewMode == ViewMode.players}
-    on:click={switchToPlayers}>
-    Spelers
-  </div>
-  <div
-    class="option last"
-    class:selected={$viewMode == ViewMode.poule}
-    on:click={switchToPoule}>
-    Indeling
-  </div>
+  {#each routes as route}
+    <a class:selected={route.selected($locationStore)} href={route.href}>
+      {route.text}
+    </a>
+  {/each}
 </div>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Header from "../Header.svelte";
+  import ViewToggle from "../ViewToggle.svelte";
   import PlayerCard from "../Common/PlayerCard.svelte";
   import SearchCardPlayer from "../Common/SearchCardPlayer.svelte";
   import SearchCardClub from "../Common/SearchCardClub.svelte";
@@ -65,6 +67,9 @@
     overflow: auto;
   }
 </style>
+
+<Header />
+<ViewToggle />
 
 <div class="container">
   <div class="field">

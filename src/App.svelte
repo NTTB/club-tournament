@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { ViewMode, viewMode } from "./data/app-state";
-  import Header from "./Header.svelte";
-  import ViewToggle from "./ViewToggle.svelte";
+  import { locationStore } from "./routing";
+  import { getCurrentRoute } from "./routes";
 
-  import PagePoule from "./Pages/Poule.svelte";
-  import PagePlayers from "./Pages/Players.svelte";
-  import PageTournament from "./Pages/Tournament.svelte";
+  var currentPage = undefined;
+  $: {
+    currentPage = getCurrentRoute($locationStore).component;
+  }
 </script>
 
 <style>
@@ -35,15 +35,5 @@
 </style>
 
 <main>
-  <Header />
-  <ViewToggle />
-  {#if $viewMode === ViewMode.tournament}
-    <PageTournament />
-  {/if}
-  {#if $viewMode === ViewMode.players}
-    <PagePlayers />
-  {/if}
-  {#if $viewMode === ViewMode.poule}
-    <PagePoule />
-  {/if}
+  <svelte:component this={currentPage} />
 </main>
