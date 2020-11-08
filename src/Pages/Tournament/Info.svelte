@@ -1,14 +1,14 @@
 <script lang="ts">
-  import TournamentHeader from "../Shared/TournamentHeader.svelte";
-  import ViewToggle from "../Shared/ViewToggle.svelte";
-  import Hint from "../Common/Hint.svelte";
+  import TournamentHeader from "../../Shared/TournamentHeader.svelte";
+  import ViewToggle from "../../Shared/ViewToggle.svelte";
+  import Hint from "../../Common/Hint.svelte";
   import {
     tournamentName,
     availableTables,
     pointsPerMatch,
     pointsPerSet,
     setsPerMatch,
-  } from "../data/tournament";
+  } from "../../data/tournament";
 </script>
 
 <style>

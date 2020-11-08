@@ -1,20 +1,20 @@
 <script lang="ts">
-  import ViewToggle from "../Shared/ViewToggle.svelte";
-  import TournamentHeader from "../Shared/TournamentHeader.svelte";
+  import ViewToggle from "../../Shared/ViewToggle.svelte";
+  import TournamentHeader from "../../Shared/TournamentHeader.svelte";
   import { fade, slide } from "svelte/transition";
-  import { tournamentPlayers } from "../data/tournament-player";
+  import { tournamentPlayers } from "../../data/tournament-player";
   import {
     poules,
     createNewPoule,
     movePlayerToPoule,
     deletePoule,
-  } from "../data/poule";
-  import type { TournamentPlayer } from "../data/tournament-player";
-  import type { Poule } from "../data/poule";
-  import PoulePlayerCard2 from "../Common/PoulePlayerCard2.svelte";
+  } from "../../data/poule";
+  import type { TournamentPlayer } from "../../data/tournament-player";
+  import type { Poule } from "../../data/poule";
+  import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
   import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import MdDelete from "svelte-icons/md/MdDelete.svelte";
-  import Hint from "../Common/Hint.svelte";
+  import Hint from "../../Common/Hint.svelte";
 
   let showCard = false;
   let selectedPoule: Poule = undefined;

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import TournamentHeader from "../Shared/TournamentHeader.svelte";
-  import ViewToggle from "../Shared/ViewToggle.svelte";
+  import TournamentHeader from "../../Shared/TournamentHeader.svelte";
+  import ViewToggle from "../../Shared/ViewToggle.svelte";
 
-  import PlayerCard from "../Common/PlayerCard.svelte";
-  import SearchCardPlayer from "../Common/SearchCardPlayer.svelte";
-  import SearchCardClub from "../Common/SearchCardClub.svelte";
-  import SearchCardCustomPlayer from "../Common/SearchCardCustomPlayer.svelte";
-  import { PlayerData } from "../data-players";
-  import { ClubData } from "../data-clubs";
-  import { tournamentPlayers } from "../data/tournament-player";
+  import PlayerCard from "../../Common/PlayerCard.svelte";
+  import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
+  import SearchCardClub from "../../Common/SearchCardClub.svelte";
+  import SearchCardCustomPlayer from "../../Common/SearchCardCustomPlayer.svelte";
+  import { PlayerData } from "../../data-players";
+  import { ClubData } from "../../data-clubs";
+  import { tournamentPlayers } from "../../data/tournament-player";
 
   let searchQuery = "";
   let searchInput: HTMLInputElement;

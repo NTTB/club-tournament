@@ -1,7 +1,7 @@
-import PagePlayers from './Pages/Players.svelte';
-import PagePoule from './Pages/Poule.svelte';
-import PageTournament from './Pages/Tournament.svelte';
-import PageTournamentList from './Pages/TournamentList.svelte';
+import PagePlayers from './Pages/Tournament/Players.svelte';
+import PagePoule from './Pages/Tournament/Poule.svelte';
+import PageTournament from './Pages/Tournament/Info.svelte';
+import PageTournamentList from './Pages/List.svelte';
 import Page404 from './Pages/404.svelte';
 export interface Route {
   match: (v: string) => boolean,
