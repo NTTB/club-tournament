@@ -37,7 +37,6 @@
   .item button {
     height: 48px;
     width: 48px;
-    background-color: transparent;
     color: black;
     border: none;
     border: 1px solid silver;
