@@ -1,6 +1,6 @@
 <script lang="ts">
   import FaArrowLeft from "svelte-icons/fa/FaArrowLeft.svelte";
-  import { tournamentName } from "./data/tournament";
+  import { tournamentName } from "../data/tournament";
   import { derived } from "svelte/store";
 
   const title = derived(tournamentName, (v) => {

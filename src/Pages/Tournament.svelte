@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Header from "../Header.svelte";
-  import ViewToggle from "../ViewToggle.svelte";
+  import Header from "../Shared/Header.svelte";
+  import ViewToggle from "../Shared/ViewToggle.svelte";
   import Hint from "../Common/Hint.svelte";
   import {
     tournamentName,

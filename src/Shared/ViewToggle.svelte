@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { locationStore } from "./routing";
+  import { locationStore } from "../routing";
 
   const routes = [
     {
