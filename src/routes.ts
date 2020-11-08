@@ -1,6 +1,7 @@
 import PagePlayers from './Pages/Players.svelte';
 import PagePoule from './Pages/Poule.svelte';
 import PageTournament from './Pages/Tournament.svelte';
+import PageTournamentList from './Pages/TournamentList.svelte';
 import Page404 from './Pages/404.svelte';
 export interface Route {
   match: (v: string) => boolean,
@@ -11,6 +12,7 @@ export const routes: Route[] = [
   { match: (v) => /^players\/?/.test(v), component: PagePlayers },
   { match: (v) => /^tournament\/?/.test(v), component: PageTournament },
   { match: (v) => /^poule\/?/.test(v), component: PagePoule },
+  { match: (v) => "" == v, component: PageTournamentList },
   { match: _ => true, component: Page404 },
 ];
 
