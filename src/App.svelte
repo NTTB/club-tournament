@@ -1,11 +1,5 @@
 <script lang="ts">
-  import { locationStore } from "./routing";
-  import { getCurrentRoute } from "./routes";
-
-  var currentPage = undefined;
-  $: {
-    currentPage = getCurrentRoute($locationStore).component;
-  }
+  import { currentPageComponent } from "./routes";
 </script>
 
 <style>
@@ -35,5 +29,5 @@
 </style>
 
 <main>
-  <svelte:component this={currentPage} />
+  <svelte:component this={$currentPageComponent} />
 </main>

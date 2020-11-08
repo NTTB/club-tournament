@@ -1,3 +1,6 @@
+import { derived } from 'svelte/store';
+import { locationStore } from './routing';
+
 import PagePlayers from './Pages/Tournament/Players.svelte';
 import PagePoule from './Pages/Tournament/Poule.svelte';
 import PageTournament from './Pages/Tournament/Info.svelte';
@@ -30,4 +33,19 @@ export const routes: Route[] = [
 
 export function getCurrentRoute(route: string): Route {
   return routes.find(v => v.match(route));
+}
+
+export const currentPageComponent = derived(locationStore, route => {
+  const foundRoutes = findRoute(route);
+  if (foundRoutes.length == 0) return undefined;
+  return foundRoutes[0].component;
+});
+
+function findRoute(route: string) {
+  const foundRoutes = routes.filter(v => v.match(route));
+  if (foundRoutes.length === 0)
+    console.error(`No route found for ${route}`);
+  if (foundRoutes.length > 2)
+    console.warn(`Multiple routes found for ${route}`);
+  return foundRoutes;
 }
