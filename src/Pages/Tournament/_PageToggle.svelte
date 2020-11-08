@@ -1,23 +1,33 @@
 <script lang="ts">
-  import { locationStore } from "../../routing";
+  import { locationStore, pathArguments, currentRoute } from "../../routing";
+  import PageInfo from "./Info.svelte";
+  import PagePlayers from "./Players.svelte";
+  import PagePoule from "./Poule.svelte";
 
-  const routes = [
-    {
-      href: "#/tournament",
-      selected: (v: string) => /^tournament\/?/.test(v),
-      text: "Toernooi",
-    },
-    {
-      href: "#/players",
-      selected: (v: string) => /^players\/?/.test(v),
-      text: "Spelers",
-    },
-    {
-      href: "#/poule",
-      selected: (v: string) => /^poule\/?/.test(v),
-      text: "Indeling",
-    },
-  ];
+  let routes = [];
+  $: {
+    var pathArgs = $pathArguments;
+    var id = pathArgs["id"];
+    var currentPage = $currentRoute.component;
+
+    routes = [
+      {
+        href: `#/tournament/${id}/info`,
+        selected: currentPage == PageInfo,
+        text: "Toernooi",
+      },
+      {
+        href: `#/tournament/${id}/players`,
+        selected: currentPage == PagePlayers,
+        text: "Spelers",
+      },
+      {
+        href: `#/tournament/${id}/poule`,
+        selected: currentPage == PagePoule,
+        text: "Indeling",
+      },
+    ];
+  }
 </script>
 
 <style>
@@ -56,8 +66,6 @@
 
 <div class="container">
   {#each routes as route}
-    <a class:selected={route.selected($locationStore)} href={route.href}>
-      {route.text}
-    </a>
+    <a class:selected={route.selected} href={route.href}>{route.text}</a>
   {/each}
 </div>

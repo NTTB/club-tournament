@@ -28,9 +28,24 @@ function findRoute(route: string) {
   return foundRoutes;
 }
 
-export const currentPageComponent = derived(locationStore, route => {
+export const currentRoute = derived(locationStore, route => {
   const foundRoutes = findRoute(route);
   if (foundRoutes.length == 0) return undefined;
-  return foundRoutes[0].component;
+  return foundRoutes[0];
 });
 
+export const currentPageComponent = derived(currentRoute, route => route.component);
+
+export const pathArguments = derived(locationStore, (route): { [key: string]: string } => {
+  const foundRoutes = findRoute(route);
+  if (foundRoutes.length == 0) return undefined;
+  var chosenRoute = foundRoutes[0];
+  if (typeof chosenRoute.path == "string" || typeof chosenRoute.path == "function") {
+    return undefined;
+  }
+
+  // Return captured variable
+  var r = chosenRoute.path.exec(route);
+  return r?.groups;
+
+})
