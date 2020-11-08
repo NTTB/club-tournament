@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentPageComponent } from "./routes";
+  import { currentPageComponent } from "./routing";
 </script>
 
 <style>
