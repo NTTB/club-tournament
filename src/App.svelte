@@ -29,5 +29,7 @@
 </style>
 
 <main>
-  <svelte:component this={$currentPageComponent} {...$pathArguments} />
+  {#key $pathArguments}
+    <svelte:component this={$currentPageComponent} {...$pathArguments} />
+  {/key}
 </main>
