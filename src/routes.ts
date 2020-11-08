@@ -12,9 +12,9 @@ function smartPath(url: string): RegExp {
 }
 
 export const routes: Route[] = [
-  { path: smartPath("tournament/:id/info"), component: PageTournament },
-  { path: smartPath("tournament/:id/poule"), component: PagePoule },
-  { path: smartPath("tournament/:id/players"), component: PagePlayers },
+  { name: "tournament-info", path: smartPath("tournament/:id/info"), component: PageTournament },
+  { name: "tournament-poule", path: smartPath("tournament/:id/poule"), component: PagePoule },
+  { name: "tournament-players", path: smartPath("tournament/:id/players"), component: PagePlayers },
 
   // The index page and 404
   { path: "", component: PageTournamentList },

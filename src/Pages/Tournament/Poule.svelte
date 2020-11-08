@@ -16,6 +16,8 @@
   import MdDelete from "svelte-icons/md/MdDelete.svelte";
   import Hint from "../../Common/Hint.svelte";
 
+  export let id: string;
+
   let showCard = false;
   let selectedPoule: Poule = undefined;
   let selectedPlayer: TournamentPlayer = undefined;
@@ -258,7 +260,7 @@
 </style>
 
 <TournamentHeader />
-<PageToggle />
+<PageToggle {id} mode="poule" />
 
 <div class="container">
   <div class="left">

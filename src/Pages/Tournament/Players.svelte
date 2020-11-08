@@ -10,6 +10,8 @@
   import { ClubData } from "../../data-clubs";
   import { tournamentPlayers } from "../../data/tournament-player";
 
+  export let id: string;
+
   let searchQuery = "";
   let searchInput: HTMLInputElement;
   $: searchTerms = [
@@ -70,7 +72,7 @@
 </style>
 
 <TournamentHeader />
-<PageToggle />
+<PageToggle {id} mode="players" />
 
 <div class="container">
   <div class="field">

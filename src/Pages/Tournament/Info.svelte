@@ -9,6 +9,8 @@
     pointsPerSet,
     setsPerMatch,
   } from "../../data/tournament";
+
+  export let id: string;
 </script>
 
 <style>
@@ -26,7 +28,7 @@
 </style>
 
 <TournamentHeader />
-<PageToggle />
+<PageToggle {id} mode="info" />
 <div class="container">
   <div class="field">
     <label for="name">Naam</label>

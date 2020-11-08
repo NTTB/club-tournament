@@ -34,6 +34,12 @@ export const currentRoute = derived(locationStore, route => {
   return foundRoutes[0];
 });
 
+export const currentRouteName = derived(locationStore, route => {
+  const foundRoutes = findRoute(route);
+  if (foundRoutes.length == 0) return undefined;
+  return foundRoutes[0].name;
+});
+
 export const currentPageComponent = derived(currentRoute, route => route.component);
 
 export const pathArguments = derived(locationStore, (route): { [key: string]: string } => {
@@ -46,6 +52,6 @@ export const pathArguments = derived(locationStore, (route): { [key: string]: st
 
   // Return captured variable
   var r = chosenRoute.path.exec(route);
-  return r?.groups;
+  return r?.groups || {};
 
 })

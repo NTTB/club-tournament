@@ -12,4 +12,4 @@
   });
 </script>
 
-<Header title={$title} />
+<Header title={$title} backUrl="#/" />

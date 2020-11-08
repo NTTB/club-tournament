@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentPageComponent } from "./routing";
+  import { currentPageComponent, pathArguments } from "./routing";
 </script>
 
 <style>
@@ -29,5 +29,5 @@
 </style>
 
 <main>
-  <svelte:component this={$currentPageComponent} />
+  <svelte:component this={$currentPageComponent} {...$pathArguments} />
 </main>

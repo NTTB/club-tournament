@@ -1,33 +1,24 @@
 <script lang="ts">
-  import { locationStore, pathArguments, currentRoute } from "../../routing";
-  import PageInfo from "./Info.svelte";
-  import PagePlayers from "./Players.svelte";
-  import PagePoule from "./Poule.svelte";
+  export var id: string;
+  export var mode: "info" | "players" | "poule";
 
-  let routes = [];
-  $: {
-    var pathArgs = $pathArguments;
-    var id = pathArgs["id"];
-    var currentPage = $currentRoute.component;
-
-    routes = [
-      {
-        href: `#/tournament/${id}/info`,
-        selected: currentPage == PageInfo,
-        text: "Toernooi",
-      },
-      {
-        href: `#/tournament/${id}/players`,
-        selected: currentPage == PagePlayers,
-        text: "Spelers",
-      },
-      {
-        href: `#/tournament/${id}/poule`,
-        selected: currentPage == PagePoule,
-        text: "Indeling",
-      },
-    ];
-  }
+  let routes = [
+    {
+      href: `#/tournament/${id}/info`,
+      selected: mode == "info",
+      text: "Toernooi",
+    },
+    {
+      href: `#/tournament/${id}/players`,
+      selected: mode == "players",
+      text: "Spelers",
+    },
+    {
+      href: `#/tournament/${id}/poule`,
+      selected: mode == "poule",
+      text: "Indeling",
+    },
+  ];
 </script>
 
 <style>
