@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Header from "../Shared/Header.svelte";
   import ViewToggle from "../Shared/ViewToggle.svelte";
+  import TournamentHeader from "../Shared/TournamentHeader.svelte";
   import { fade, slide } from "svelte/transition";
   import { tournamentPlayers } from "../data/tournament-player";
   import {
@@ -257,7 +257,7 @@
   }
 </style>
 
-<Header />
+<TournamentHeader />
 <ViewToggle />
 
 <div class="container">

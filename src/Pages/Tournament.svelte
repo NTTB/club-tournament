@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Header from "../Shared/Header.svelte";
+  import TournamentHeader from "../Shared/TournamentHeader.svelte";
   import ViewToggle from "../Shared/ViewToggle.svelte";
   import Hint from "../Common/Hint.svelte";
   import {
@@ -25,7 +25,7 @@
   }
 </style>
 
-<Header />
+<TournamentHeader />
 <ViewToggle />
 <div class="container">
   <div class="field">

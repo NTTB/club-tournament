@@ -1,15 +1,7 @@
 <script lang="ts">
   import FaArrowLeft from "svelte-icons/fa/FaArrowLeft.svelte";
-  import { tournamentName } from "../data/tournament";
-  import { derived } from "svelte/store";
-
-  const title = derived(tournamentName, (v) => {
-    if (v.trim().length === 0) {
-      return "Nieuw toernooi";
-    } else {
-      return v;
-    }
-  });
+  export let title = "";
+  export let backUrl = "";
 </script>
 
 <style>
@@ -31,15 +23,18 @@
     width: 32px;
     padding: 8px;
   }
-  .title{
+  .title {
     overflow: hidden;
     white-space: pre;
+  }
+  a.back-button{
+    color: var(--text-white);
   }
 </style>
 
 <div class="header">
-  <div class="back-button icon">
+  <a href={backUrl} class="back-button icon">
     <FaArrowLeft />
-  </div>
-  <div class="title">{$title}</div>
+  </a>
+  <div class="title">{title}</div>
 </div>
