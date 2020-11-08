@@ -1,6 +1,6 @@
 <script lang="ts">
-  import TournamentHeader from "../../Shared/TournamentHeader.svelte";
-  import ViewToggle from "../../Shared/ViewToggle.svelte";
+  import TournamentHeader from "./_Header.svelte";
+  import PageToggle from "./_PageToggle.svelte";
 
   import PlayerCard from "../../Common/PlayerCard.svelte";
   import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
@@ -70,7 +70,7 @@
 </style>
 
 <TournamentHeader />
-<ViewToggle />
+<PageToggle />
 
 <div class="container">
   <div class="field">

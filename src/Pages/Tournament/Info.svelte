@@ -1,6 +1,6 @@
 <script lang="ts">
-  import TournamentHeader from "../../Shared/TournamentHeader.svelte";
-  import ViewToggle from "../../Shared/ViewToggle.svelte";
+  import TournamentHeader from "./_Header.svelte";
+  import PageToggle from "./_PageToggle.svelte";
   import Hint from "../../Common/Hint.svelte";
   import {
     tournamentName,
@@ -26,7 +26,7 @@
 </style>
 
 <TournamentHeader />
-<ViewToggle />
+<PageToggle />
 <div class="container">
   <div class="field">
     <label for="name">Naam</label>

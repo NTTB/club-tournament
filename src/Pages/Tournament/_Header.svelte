@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { tournamentName } from "../data/tournament";
+  import { tournamentName } from "../../data/tournament";
   import { derived } from "svelte/store";
-  import Header from "./Header.svelte";
+  import Header from "../../Shared/Header.svelte";
 
   const title = derived(tournamentName, (v) => {
     if (v.trim().length === 0) {
