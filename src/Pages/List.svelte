@@ -1,10 +1,15 @@
-<script>
+<script lang="ts">
   import Header from "../Shared/Header.svelte";
   import MdDeleteForever from "svelte-icons/md/MdDeleteForever.svelte";
   import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
   import { navigateTo } from "../routing";
 
-  import { addTournament, getAllTournaments } from "../data/tournament";
+  import {
+    addTournament,
+    getAllTournaments,
+    deleteTournament,
+  } from "../data/tournament";
+  import type { Tournament } from "../data/tournament";
 
   var items = getAllTournaments();
 
@@ -21,7 +26,13 @@
     navigateTo(`tournament/${newTournament.id}/info`);
   }
 
-  function deleteTournament(item) {}
+  function deleteTournamentClick(item: Tournament) {
+    var response = confirm(
+      `Weet je zeker dat je het toernooi "${item.name}" wilt verwijderen?`
+    );
+    if (!response) return;
+    deleteTournament(item);
+  }
 
   function playTournament(item) {}
 </script>
@@ -75,7 +86,7 @@
   <Header title="Toernooien" />
 </div>
 <div class="container">
-  {#await getAllTournaments()}
+  {#await $items}
     <p>Loading...</p>
   {:then items}
     {#each items as item}
@@ -85,7 +96,7 @@
         </button>
         <a class="name" href={`#/tournament/${item.id}/info`}> {item.name} </a>
 
-        <button on:click={() => deleteTournament(item)}>
+        <button on:click={() => deleteTournamentClick(item)}>
           <MdDeleteForever />
         </button>
       </div>

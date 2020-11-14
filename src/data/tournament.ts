@@ -1,4 +1,4 @@
-import { writable, get } from 'svelte/store';
+import { writable, get, Readable, derived } from 'svelte/store';
 
 export interface Tournament {
   id: number; // Primary key
@@ -57,7 +57,7 @@ export async function updateTournament(data: Tournament): Promise<Tournament> {
       const ix = table.items.findIndex(x => x.id == data.id);
       if (ix === -1) {
         table.items.push(data);
-      }else{
+      } else {
         table.items.splice(ix, 1, data);
       }
       resolve(data);
@@ -82,6 +82,7 @@ export async function findTournamentById(id: number): Promise<Tournament> {
   return Promise.resolve(get(tournamentStorageTable).items.find(x => x.id == id));
 }
 
-export async function getAllTournaments(): Promise<Tournament[]> {
-  return Promise.resolve(get(tournamentStorageTable).items);
+
+export function getAllTournaments(): Readable<Tournament[]> {
+  return derived(tournamentStorageTable, x => x.items);
 }
