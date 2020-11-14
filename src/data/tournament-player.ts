@@ -1,6 +1,6 @@
 import { writable, derived, Readable, Writable } from "svelte/store";
 import type { PlayerInfo } from "./player-info";
-import { poules } from './poule';
+import { removePlayerFromTournamentPoule } from './poule';
 
 export interface TournamentPlayer {
   id: number; // The id in the tournament.
@@ -50,17 +50,11 @@ export function getPlayersFromTournament(tournamentId: number): Readable<Tournam
 }
 
 export function removePlayerFromTournament(tournamentId: number, player: TournamentPlayer) {
+  removePlayerFromTournamentPoule(player, tournamentId);
+
   tournamentPlayers.update((src) => {
     const index = src.items.findIndex((x) => x.id === player.id && x.tournamentId == tournamentId);
     src.items.splice(index, 1);
-    return src;
-  });
-
-  poules.update((src) => {
-    src.every(poule => {
-      poule.players = poule.players.filter(x => x.playerTournamentId !== player.id);
-    });
-
     return src;
   });
 }

@@ -1,13 +1,19 @@
-import { writable } from "svelte/store";
+import { writable, derived } from "svelte/store";
 import type { PlayerInfo } from "./player-info";
 import type { TournamentPlayer } from "./tournament-player";
 
 export interface PoulePlayer {
-  playerTournamentId: number; // The id of the player in the tournament
+  /**
+   * The id of the player in the tournament.
+   * @see TournamentPlayer
+   */
+  playerTournamentId: number;
   info: PlayerInfo;
 }
 
 export interface Poule {
+  id: number;
+  tournamentId: number;
   name: string;
   index: number; // First, second, third and so on.
   // List of assigned players
@@ -26,16 +32,22 @@ export interface Poule {
    * If multiple values are assigned the poule is played on multiple tables.
    */
   tableIds?: number[];
-
 }
 
-export let META = { nextId: 1 };
+interface PouleStorageTable {
+  nextId: number;
+  items: Poule[];
+}
 
-export const poules = writable<Poule[]>([]);
+const poules = writable<PouleStorageTable>({ nextId: 1, items: [] });
+
 try {
-  const pouleData = (JSON.parse(localStorage.getItem("data.poules")) || []) as Poule[];
-  poules.set(pouleData || []);
-  META.nextId = pouleData.length ? (pouleData[pouleData.length - 1].index + 1) : 1;
+  const data = (JSON.parse(localStorage.getItem("data.poules")));
+  if (!Array.isArray(data)) {
+    poules.set(data as PouleStorageTable);
+  } else {
+    console.warn("Old array style data")
+  }
 } catch {
   console.info("No previous data");
 }
@@ -43,6 +55,7 @@ try {
 poules.subscribe(values => {
   localStorage.setItem("data.poules", JSON.stringify(values, undefined, 2));
 });
+
 function generatePouleName(n: number) {
   var numbers = [];
   do {
@@ -61,39 +74,65 @@ function generatePouleName(n: number) {
   return letters.join("");
 }
 
+export function removePlayerFromTournamentPoule(player: TournamentPlayer, tournamentId: number) {
+  if (player.tournamentId != tournamentId) {
+    throw new Error("tournamentPlayer is not related to this tournament");
+  }
+
+  poules.update(src => {
+    src.items
+      .filter(x => x.tournamentId === tournamentId)
+      .forEach(p => p.players = p.players.filter(x => x.playerTournamentId != player.id));
+
+    return src;
+  });
+}
+
 export function movePlayerToPoule(player: TournamentPlayer, poule: Poule) {
-  poules.update(collection => {
-    // Remove the player from all poules
-    collection.forEach(p => {
-      p.players = p.players.filter(x => x.playerTournamentId != player.id);
-    });
+  if (player.tournamentId != poule.tournamentId) {
+    throw new Error("tournamentPlayer can not be moved to a poule from another tournament");
+  }
+  poules.update(src => {
+    // Remove the player from all other poules of that tournament
+    src.items
+      .filter(x => x.tournamentId === poule.tournamentId)
+      .forEach(p => p.players = p.players.filter(x => x.playerTournamentId != player.id));
 
     if (poule) {
       poule.players.push({ playerTournamentId: player.id, info: player.info });
     }
 
-    return collection;
+    return src;
   });
 }
+
+export function getPoulesFromTournament(tournamentId: number) {
+  return derived(poules, x => x.items.filter(y => y.tournamentId == tournamentId));
+}
+
 
 export function deletePoule(poule: Poule) {
   if (!poule) return;
   poules.update(collection => {
-    collection = collection.filter(x => x.index != poule.index);
+    collection.items = collection.items.filter(x => x.id != poule.id);
     return collection;
   });
 }
 
-export function createNewPoule() {
-  var newPouleId = META.nextId;
-  META.nextId++;
-  poules.update(collection => {
+export function createNewPoule(tournamentId: number) {
+  poules.update(src => {
+    // Find new key for poule
+    var existingPoules = src.items.filter(x => x.tournamentId === tournamentId);
+    var nextIndex = existingPoules.map(x => x.index).reduce((pv, cv) => cv > pv ? cv : pv, 0) + 1;
+
     var poule: Poule = {
-      index: newPouleId,
-      name: generatePouleName(newPouleId),
+      id: src.nextId++,
+      tournamentId: tournamentId,
+      index: nextIndex,
+      name: generatePouleName(nextIndex),
       players: []
     };
-    collection.push(poule);
-    return collection;
+    src.items.push(poule);
+    return src;
   });
 }

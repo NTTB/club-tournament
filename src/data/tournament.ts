@@ -54,7 +54,12 @@ export async function updateTournament(data: Tournament): Promise<Tournament> {
 
   return new Promise<Tournament>((resolve) => {
     tournamentStorageTable.update(table => {
-      table.items = [...table.items.filter(x => x.id != data.id), data];
+      const ix = table.items.findIndex(x => x.id == data.id);
+      if (ix === -1) {
+        table.items.push(data);
+      }else{
+        table.items.splice(ix, 1, data);
+      }
       resolve(data);
       return table;
     });

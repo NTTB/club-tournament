@@ -4,15 +4,15 @@
   import { fade, slide } from "svelte/transition";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import {
-    poules,
     createNewPoule,
     movePlayerToPoule,
     deletePoule,
+    getPoulesFromTournament,
+    removePlayerFromTournamentPoule,
   } from "../../data/poule";
   import type { TournamentPlayer } from "../../data/tournament-player";
   import type { Poule } from "../../data/poule";
   import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
-  import MdMoreVert from "svelte-icons/md/MdMoreVert.svelte";
   import MdDelete from "svelte-icons/md/MdDelete.svelte";
   import Hint from "../../Common/Hint.svelte";
   import { findTournamentById } from "../../data/tournament";
@@ -20,6 +20,7 @@
   export let id: string;
   var tournamentPromise = findTournamentById(+id);
   var tournamentPlayerStore = getPlayersFromTournament(+id);
+  var poulesStore = getPoulesFromTournament(+id);
 
   let showCard = false;
   let selectedPoule: Poule = undefined;
@@ -32,7 +33,7 @@
   $: canDeletePoule = selectedPoule !== undefined;
 
   $: {
-    currentPoules = $poules;
+    currentPoules = $poulesStore;
   }
   $: {
     showCard = !!selectedPlayer;
@@ -43,7 +44,7 @@
       playerHeaderTitle = "Reserve spelers";
       // Add players that are NOT in a poule (aka the reserves)
 
-      let outsidePlayersIds = $poules
+      let outsidePlayersIds = $poulesStore
         .reduce((pv, cv) => [...pv, ...cv.players], [])
         .map((x) => x.playerTournamentId);
       currentPlayers = $tournamentPlayerStore
@@ -85,7 +86,7 @@
   }
 
   function createPoule() {
-    createNewPoule();
+    createNewPoule(+id);
   }
 
   function selectPoule(poule: Poule) {
@@ -102,7 +103,12 @@
     deletePoule(currentPoule);
   }
   function moveToPoule(poule: Poule) {
-    movePlayerToPoule(selectedPlayer, poule);
+    if (!poule) {
+      removePlayerFromTournamentPoule(selectedPlayer, +id);
+    } else {
+      movePlayerToPoule(selectedPlayer, poule);
+    }
+    
     selectedPlayer = undefined;
   }
 </script>
