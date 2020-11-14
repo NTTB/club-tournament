@@ -19,7 +19,7 @@ const tournamentPlayers = writable<TournamentPlayerStorageTable>({ nextId: 1, it
 try {
   let data = JSON.parse(localStorage.getItem("data.tournamentplayers"));
   if (!Array.isArray(data)) {
-    tournamentPlayers.set(data as TournamentPlayerStorageTable);
+    tournamentPlayers.set(data as TournamentPlayerStorageTable || { nextId: 1, items: [] });
   } else {
     console.warn("Old array style data")
   }

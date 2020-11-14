@@ -44,7 +44,7 @@ const poules = writable<PouleStorageTable>({ nextId: 1, items: [] });
 try {
   const data = (JSON.parse(localStorage.getItem("data.poules")));
   if (!Array.isArray(data)) {
-    poules.set(data as PouleStorageTable);
+    poules.set(data as PouleStorageTable || { nextId: 1, items: [] });
   } else {
     console.warn("Old array style data")
   }
