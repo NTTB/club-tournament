@@ -1,32 +1,35 @@
 <script lang="ts">
-  import MdAddCircleOutline from "svelte-icons/md/MdAddCircleOutline.svelte";
+  import { get } from "svelte/store";
+  import {
+    getPlayersFromTournament,
+    addPlayerToTournament,
+  } from "../data/tournament-player";
   import type { Club } from "../data/club";
-  import { tournamentPlayers, META } from "../data/tournament-player";
   import { PlayerData } from "../data-players";
+
+  export let tournamentId: number;
   export let club: Club = undefined;
 
   function addAllOfClub() {
-    tournamentPlayers.update((tournamentPlayers) => {
-      const clubPlayers = PlayerData.filter((x) => x.club === club.name);
+    var tournamentPlayers = get(getPlayersFromTournament(tournamentId));
+    const clubPlayers = PlayerData.filter((x) => x.club === club.name);
 
-      const missingClubPlayers = clubPlayers.filter(
-        (cp) => !tournamentPlayers.some((tp) => tp.nttbId === cp.id)
+    const missingClubPlayers = clubPlayers.filter(
+      (cp) => !tournamentPlayers.some((tp) => tp.nttbId === cp.id)
+    );
+
+    missingClubPlayers.forEach((player) => {
+      addPlayerToTournament(
+        +tournamentId,
+        {
+          class: player.class,
+          club: player.club,
+          img: player.img,
+          name: player.name,
+          rating: player.rating,
+        },
+        player.id
       );
-
-      missingClubPlayers.forEach((player) => {
-        tournamentPlayers.push({
-          id: META.nextId++,
-          info: {
-            class: player.class,
-            club: player.club,
-            img: player.img,
-            name: player.name,
-            rating: player.rating,
-          },
-          nttbId: player.id,
-        });
-      });
-      return tournamentPlayers;
     });
   }
 </script>

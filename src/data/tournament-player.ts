@@ -1,19 +1,28 @@
-import { writable } from "svelte/store";
+import { writable, derived, Readable, Writable } from "svelte/store";
 import type { PlayerInfo } from "./player-info";
 import { poules } from './poule';
 
 export interface TournamentPlayer {
   id: number; // The id in the tournament.
+  tournamentId: number; // The id of the tournament.
   nttbId?: number; // Bondsnumber
   info: PlayerInfo;
 }
 
-export let META = { nextId: 1 };
-export const tournamentPlayers = writable<TournamentPlayer[]>([]);
+interface TournamentPlayerStorageTable {
+  nextId: number;
+  items: TournamentPlayer[];
+}
+
+const tournamentPlayers = writable<TournamentPlayerStorageTable>({ nextId: 1, items: [] });
 
 try {
-  const data = JSON.parse(localStorage.getItem("data.tournamentplayers")) as TournamentPlayer[];
-  tournamentPlayers.set(data || []);
+  let data = JSON.parse(localStorage.getItem("data.tournamentplayers"));
+  if (!Array.isArray(data)) {
+    tournamentPlayers.set(data as TournamentPlayerStorageTable);
+  } else {
+    console.warn("Old array style data")
+  }
 } catch {
   console.info("No tournament players");
 }
@@ -22,10 +31,28 @@ tournamentPlayers.subscribe(values => {
   localStorage.setItem("data.tournamentplayers", JSON.stringify(values, undefined, 2));
 });
 
-export function removePlayerFromTournament(player: TournamentPlayer) {
+export function addPlayerToTournament(tournamentId: number, info: PlayerInfo, nttbId?: number) {
   tournamentPlayers.update((src) => {
-    const index = src.findIndex((x) => x.id === player.id);
-    src.splice(index, 1);
+    src.items.push({
+      id: src.nextId++,
+      tournamentId,
+      nttbId,
+      info,
+    });
+    return src;
+  });
+}
+
+export function getPlayersFromTournament(tournamentId: number): Readable<TournamentPlayer[]> {
+  return derived<Writable<TournamentPlayerStorageTable>, TournamentPlayer[]>(tournamentPlayers, (src) => {
+    return src.items.filter(x => x.tournamentId === tournamentId);
+  });
+}
+
+export function removePlayerFromTournament(tournamentId: number, player: TournamentPlayer) {
+  tournamentPlayers.update((src) => {
+    const index = src.items.findIndex((x) => x.id === player.id && x.tournamentId == tournamentId);
+    src.items.splice(index, 1);
     return src;
   });
 
@@ -35,5 +62,5 @@ export function removePlayerFromTournament(player: TournamentPlayer) {
     });
 
     return src;
-  })
+  });
 }

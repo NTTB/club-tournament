@@ -9,19 +9,19 @@ export interface Tournament {
   pointsPerSet: number;
 }
 
-interface TournamenStorageTable {
+interface TournamentStorageTable {
   nextId: number;
   items: Tournament[];
 }
 
 export let META = { nextId: 1 };
-export const tournamentStorageTable = writable<TournamenStorageTable>({
+export const tournamentStorageTable = writable<TournamentStorageTable>({
   nextId: 1,
   items: []
 });
 
 try {
-  const data = JSON.parse(localStorage.getItem("data.tournament")) as TournamenStorageTable;
+  const data = JSON.parse(localStorage.getItem("data.tournament")) as TournamentStorageTable;
   tournamentStorageTable.set(data || {
     nextId: 1,
     items: []

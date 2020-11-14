@@ -1,8 +1,10 @@
 <script lang="ts">
   import type { NttbPlayer } from "../data/nttb-player";
-  import type { TournamentPlayer } from "../data/tournament-player";
-  import { tournamentPlayers, META } from "../data/tournament-player";
+  import { addPlayerToTournament } from "../data/tournament-player";
   import MdAddCircleOutline from "svelte-icons/md/MdAddCircleOutline.svelte";
+
+  export let tournamentId: number;
+
   export let player: NttbPlayer = {
     name: "fake-name",
     club: "fake-club",
@@ -13,20 +15,17 @@
   };
 
   function addPlayer() {
-    tournamentPlayers.update((players) => {
-      players.push({
-        id: META.nextId++,
-        info: {
-          class: player.class,
-          club: player.club,
-          img: player.img,
-          name: player.name,
-          rating: player.rating,
-        },
-        nttbId: player.id,
-      });
-      return players;
-    });
+    addPlayerToTournament(
+      tournamentId,
+      {
+        class: player.class,
+        club: player.club,
+        img: player.img,
+        name: player.name,
+        rating: player.rating,
+      },
+      player.id
+    );
   }
 </script>
 

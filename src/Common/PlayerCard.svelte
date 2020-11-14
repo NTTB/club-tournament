@@ -4,9 +4,10 @@
   import MdRemoveCircleOutline from "svelte-icons/md/MdRemoveCircleOutline.svelte";
 
   export let player: TournamentPlayer;
+  export let tournamentId: number;
 
   function onRemoveClick() {
-    removePlayerFromTournament(player);
+    removePlayerFromTournament(+tournamentId, player);
   }
 </script>
 

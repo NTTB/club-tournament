@@ -2,7 +2,7 @@
   import PageToggle from "./_PageToggle.svelte";
   import TournamentHeader from "./_Header.svelte";
   import { fade, slide } from "svelte/transition";
-  import { tournamentPlayers } from "../../data/tournament-player";
+  import { getPlayersFromTournament } from "../../data/tournament-player";
   import {
     poules,
     createNewPoule,
@@ -19,6 +19,7 @@
 
   export let id: string;
   var tournamentPromise = findTournamentById(+id);
+  var tournamentPlayerStore = getPlayersFromTournament(+id);
 
   let showCard = false;
   let selectedPoule: Poule = undefined;
@@ -43,9 +44,9 @@
       // Add players that are NOT in a poule (aka the reserves)
 
       let outsidePlayersIds = $poules
-        .flatMap((x) => x.players)
+        .reduce((pv, cv) => [...pv, ...cv.players], [])
         .map((x) => x.playerTournamentId);
-      currentPlayers = $tournamentPlayers
+      currentPlayers = $tournamentPlayerStore
         .sort((a, b) => b.info.rating - a.info.rating)
         .filter((x) => !outsidePlayersIds.includes(x.id));
     } else {
@@ -69,7 +70,7 @@
       let placedPlayersIds = selectedPoule.players.map(
         (player) => player.playerTournamentId
       );
-      currentPlayers = $tournamentPlayers
+      currentPlayers = $tournamentPlayerStore
         .sort((a, b) => b.info.rating - a.info.rating)
         .filter((x) => placedPlayersIds.includes(x.id));
     }

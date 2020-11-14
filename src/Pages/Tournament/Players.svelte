@@ -8,11 +8,16 @@
   import SearchCardCustomPlayer from "../../Common/SearchCardCustomPlayer.svelte";
   import { PlayerData } from "../../data-players";
   import { ClubData } from "../../data-clubs";
-  import { tournamentPlayers } from "../../data/tournament-player";
+  import { getPlayersFromTournament } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
 
+  /**
+   * Tournament Id
+   */
   export let id: string;
+
   var tournamentPromise = findTournamentById(+id);
+  var tournamentPlayersStore = getPlayersFromTournament(+id);
   let searchQuery = "";
   let searchInput: HTMLInputElement;
   $: searchTerms = [
@@ -20,7 +25,7 @@
   ];
   $: playerResults = PlayerData.filter(
     // Don't include players, that are already on the list
-    (x) => !$tournamentPlayers.find((y) => y.nttbId === x.id)
+    (x) => !$tournamentPlayersStore.find((y) => y.nttbId === x.id)
   ).filter((x) => {
     return (
       searchTerms.every((t) => x.name.toLowerCase().includes(t)) ||
@@ -38,7 +43,7 @@
   $: showSearch = searchQuery.length > 2;
   $: showCustom = !searchIsNumeric;
 
-  tournamentPlayers.subscribe(() => {
+  tournamentPlayersStore.subscribe(() => {
     searchQuery = "";
     if (searchInput) searchInput.focus();
   });
@@ -91,11 +96,11 @@
       {#if showSearch}
         <div class="results">
           {#each clubResults as club}
-            <SearchCardClub {club} />
+            <SearchCardClub {club} tournamentId={+id} />
           {/each}
 
           {#each playerResults as result}
-            <SearchCardPlayer player={result} />
+            <SearchCardPlayer player={result} tournamentId={+id} />
           {/each}
           {#if showCustom}
             <SearchCardCustomPlayer />
@@ -105,8 +110,8 @@
     </div>
 
     <div class="player-list">
-      {#each $tournamentPlayers as player}
-        <PlayerCard {player} />
+      {#each $tournamentPlayersStore as player}
+        <PlayerCard {player} tournamentId={+id} />
       {/each}
     </div>
   </div>
