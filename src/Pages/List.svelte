@@ -2,7 +2,6 @@
   import Header from "../Shared/Header.svelte";
   import MdDeleteForever from "svelte-icons/md/MdDeleteForever.svelte";
   import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
-  import { navigateTo } from "../routing";
 
   import {
     addTournament,
@@ -23,7 +22,7 @@
       pointsPerSet: 11,
     });
 
-    navigateTo(`tournament/${newTournament.id}/info`);
+    window.location.hash =`#/tournament/${newTournament.id}/info`;
   }
 
   function deleteTournamentClick(item: Tournament) {
