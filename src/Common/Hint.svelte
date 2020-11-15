@@ -3,7 +3,7 @@
 
 <style>
   .hint {
-    color: silver;
+    color: rgb(110, 110, 110);
     font-style: italic;
     text-align: center;
     font-size: 14px;
