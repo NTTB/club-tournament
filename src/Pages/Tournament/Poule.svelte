@@ -108,7 +108,7 @@
     } else {
       movePlayerToPoule(selectedPlayer, poule);
     }
-    
+
     selectedPlayer = undefined;
   }
 </script>
@@ -159,6 +159,7 @@
     border: none;
     border-bottom: 1px solid var(--nttb-orange);
     border-radius: 0;
+    box-sizing: content-box;
   }
   .tab.active {
     background-color: var(--nttb-blue);

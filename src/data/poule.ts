@@ -14,9 +14,12 @@ export interface PoulePlayer {
 export interface Poule {
   id: number;
   tournamentId: number;
-  name: string;
   index: number; // First, second, third and so on.
-  // List of assigned players
+  name: string;
+
+  /**
+   * Assigned players in poule
+   */
   players: PoulePlayer[];
 
   /**
