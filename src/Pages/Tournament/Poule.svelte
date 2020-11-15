@@ -149,7 +149,7 @@
     flex-shrink: 0;
     font-weight: bold;
     height: 48px;
-    width: 48px;
+    width: 47px;
     min-height: 48px;
     line-height: 48px;
     text-align: center;
@@ -158,6 +158,7 @@
     margin: 0;
     border: none;
     border-bottom: 1px solid var(--nttb-orange);
+    border-radius: 0;
   }
   .tab.active {
     background-color: var(--nttb-blue);
