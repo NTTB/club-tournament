@@ -48,7 +48,7 @@
 
 <div class="header">
   {#if backUrl}
-    <a href={backUrl} class="back-button icon">
+    <a href={backUrl} class="back-button icon" title="Terug">
       <FaArrowLeft />
     </a>
   {:else if showMenuButton}
