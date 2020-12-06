@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { fade, slide } from "svelte/transition";
-
   import TournamentHeader from "./_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
   import Toaster from "../../Shared/Toaster.svelte";
+  import PlayerInfo from "../../Common/PlayerInfo.svelte";
 
   import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
   import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
@@ -17,7 +16,6 @@
   } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
   import type { TournamentPlayer } from "../../data/tournament-player";
-  import Info from "./_Info.svelte";
 
   /**
    * Tournament Id
@@ -125,10 +123,6 @@
     padding-bottom: unset;
   }
 
-  .player-info {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-  }
   h4 {
     border-bottom: 1px solid black;
     margin-bottom: 8px;
@@ -180,14 +174,7 @@
     <Toaster on:backgroundClicked={closeToaster}>
       <h3 slot="title">{selectedPlayer.info.name}</h3>
       <h4>Speler informatie</h4>
-      <div class="player-info">
-        <div class="label">Club</div>
-        <div class="value">{selectedPlayer.info.club}</div>
-        <div class="label">Rating</div>
-        <div class="value">{selectedPlayer.info.rating}</div>
-        <div class="label">Niveau</div>
-        <div class="value">{selectedPlayer.info.class}</div>
-      </div>
+      <PlayerInfo player={selectedPlayer} />
       <h4>Verwijder uit toernooi</h4>
       <button on:click={removePlayer}>Verwijder speler uit toernooi</button>
     </Toaster>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import PageToggle from "./_PageToggle.svelte";
   import Toaster from "../../Shared/Toaster.svelte";
+  import PlayerInfo from "../../Common/PlayerInfo.svelte";
   import TournamentHeader from "./_Header.svelte";
-  import { fade, slide } from "svelte/transition";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import {
     createNewPoule,
@@ -202,62 +202,6 @@
     overflow: hidden;
   }
 
-  .card.background {
-    background: rgba(0, 0, 0, 20%);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-  }
-  .card.foreground {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 70vh;
-    background-color: white;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
-
-  .card__header {
-    padding: 6px;
-    padding-top: 0;
-    border-bottom: 2px solid var(--text-dimmed-black);
-  }
-  .card__header .slider {
-    grid-area: slider;
-    margin-top: 6px;
-    margin-bottom: 2px;
-    margin-left: 96px;
-    margin-right: 96px;
-    height: 5px;
-    border-radius: 5px;
-    background-color: var(--text-dimmed-black);
-  }
-
-  .card__header .title {
-    margin: 12px 0;
-    padding-left: 16px;
-    font-weight: bold;
-    font-size: large;
-  }
-
-  .card__content {
-    padding: 12px;
-  }
-  .sub-header {
-    font-size: large;
-    border-bottom: 1px solid black;
-    font-weight: bold;
-    margin: 12px 0;
-  }
-  .player-info {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-  }
-
   .tournament-actions {
     display: flex;
     flex-wrap: wrap;
@@ -269,7 +213,7 @@
     margin-right: 8px;
     margin-bottom: 8px;
   }
-  
+
   h4 {
     border-bottom: 1px solid black;
     margin-bottom: 8px;
@@ -325,14 +269,7 @@
     <Toaster on:backgroundClicked={hidePlayerCard}>
       <h3 slot="title">{selectedPlayer.info.name}</h3>
       <h4>Speler informatie</h4>
-      <div class="player-info">
-        <div class="label">Club</div>
-        <div class="value">{selectedPlayer.info.club}</div>
-        <div class="label">Rating</div>
-        <div class="value">{selectedPlayer.info.rating}</div>
-        <div class="label">Niveau</div>
-        <div class="value">{selectedPlayer.info.class}</div>
-      </div>
+      <PlayerInfo player={selectedPlayer} />
       <h4>Verplaats naar Poule</h4>
       <div class="tournament-actions">
         {#each currentPoules as poule}
