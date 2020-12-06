@@ -1,17 +1,21 @@
 <script lang="ts">
+  import { fade, slide } from "svelte/transition";
+
   import TournamentHeader from "./_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
 
-  import PlayerCard from "../../Common/PlayerCard.svelte";
   import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
   import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
   import SearchCardClub from "../../Common/SearchCardClub.svelte";
   import SearchCardCustomPlayer from "../../Common/SearchCardCustomPlayer.svelte";
   import { PlayerData } from "../../data-players";
   import { ClubData } from "../../data-clubs";
-  import { getPlayersFromTournament } from "../../data/tournament-player";
+  import {
+    getPlayersFromTournament,
+    removePlayerFromTournament,
+  } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
-  import MdSearch from "svelte-icons/md/MdSearch.svelte";
+  import type { TournamentPlayer } from "../../data/tournament-player";
 
   /**
    * Tournament Id
@@ -49,6 +53,24 @@
     searchQuery = "";
     if (searchInput) searchInput.focus();
   });
+
+  let showCard = false;
+  let selectedPlayer: TournamentPlayer = undefined;
+  function onPlayerClick(player) {
+    console.log("Selecting a player");
+    selectedPlayer = player;
+  }
+  function hidePlayerCard() {
+    selectedPlayer = undefined;
+  }
+
+  function removePlayer(){
+    removePlayerFromTournament(+id, selectedPlayer);
+    selectedPlayer = undefined;
+  }
+  $: {
+    showCard = !!selectedPlayer;
+  }
 </script>
 
 <style>
@@ -69,7 +91,7 @@
     border-top: 1px solid var(--nttb-blue);
     border-right: 1px solid var(--nttb-blue);
   }
-  .bottom-left{
+  .bottom-left {
     grid-area: bottom-left;
     border-right: 1px solid var(--nttb-blue);
   }
@@ -89,6 +111,7 @@
 
     box-sizing: border-box;
   }
+
   .search-row {
     border-top: 1px solid var(--nttb-blue);
     border-bottom: 1px solid var(--nttb-orange);
@@ -98,6 +121,67 @@
     justify-content: center;
     padding: 8px;
     padding-bottom: unset;
+  }
+
+  .card.background {
+    background: rgba(0, 0, 0, 20%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+  }
+  .card.foreground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 70vh;
+    background-color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .card__header {
+    padding: 6px;
+    padding-top: 0;
+    border-bottom: 2px solid var(--text-dimmed-black);
+  }
+  .card__header .slider {
+    grid-area: slider;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    margin-left: 96px;
+    margin-right: 96px;
+    height: 5px;
+    border-radius: 5px;
+    background-color: var(--text-dimmed-black);
+  }
+
+  .card__header .title {
+    margin: 12px 0;
+    padding-left: 16px;
+    font-weight: bold;
+    font-size: large;
+  }
+
+  .card__content {
+    padding: 12px;
+  }
+  .sub-header {
+    font-size: large;
+    border-bottom: 1px solid black;
+    font-weight: bold;
+    margin: 12px 0;
+  }
+  .player-info {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+  }
+
+  .tournament-actions {
+    display: flex;
+    flex-wrap: wrap;
   }
 </style>
 
@@ -138,9 +222,35 @@
     <div class="bottom-left" />
     <div class="player-list">
       {#each $tournamentPlayersStore as player}
-        <PoulePlayerCard2 {player} />
-        <!-- <PlayerCard {player} tournamentId={+id} /> -->
+        <PoulePlayerCard2 {player} on:click={() => onPlayerClick(player)} />
       {/each}
     </div>
   </div>
+  {#if showCard}
+    <div
+      transition:fade={{ duration: 200 }}
+      class="card background"
+      on:click={hidePlayerCard} />
+    <div transition:slide={{ duration: 200 }} class="card foreground">
+      <div class="card__header">
+        <div class="slider" />
+        <div class="title">{selectedPlayer.info.name}</div>
+      </div>
+      <div class="card__content">
+        <div class="sub-header">Speler informatie</div>
+        <div class="player-info">
+          <div class="label">Club</div>
+          <div class="value">{selectedPlayer.info.club}</div>
+          <div class="label">Rating</div>
+          <div class="value">{selectedPlayer.info.rating}</div>
+          <div class="label">Niveau</div>
+          <div class="value">{selectedPlayer.info.class}</div>
+        </div>
+        <div class="sub-header">Verwijder uit toernooi</div>
+        <div class="tournament-actions">
+          <button on:click={removePlayer}>Verwijder speler uit toernooi</button>
+        </div>
+      </div>
+    </div>
+  {/if}
 {/await}
