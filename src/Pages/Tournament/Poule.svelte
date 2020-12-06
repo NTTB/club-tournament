@@ -317,10 +317,10 @@
 
   {#if showCard}
     <div
-      transition:fade={{ duration: 200 }}
+      transition:fade={{ duration: 100 }}
       class="card background"
       on:click={hidePlayerCard} />
-    <div transition:slide={{ duration: 200 }} class="card foreground">
+    <div transition:slide={{ duration: 100 }} class="card foreground">
       <div class="card__header">
         <div class="slider" />
         <div class="title">{selectedPlayer.info.name}</div>

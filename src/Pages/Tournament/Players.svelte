@@ -64,7 +64,7 @@
     selectedPlayer = undefined;
   }
 
-  function removePlayer(){
+  function removePlayer() {
     removePlayerFromTournament(+id, selectedPlayer);
     selectedPlayer = undefined;
   }
@@ -99,8 +99,8 @@
     z-index: 1;
     position: fixed;
     background-color: white;
-    box-shadow: 0 0 50px black;
-    width: calc(100% - 32px);
+    box-shadow: 0 0 10px black;
+    width: calc(100vw - 64px);
     max-height: calc(100vh - 186px);
     overflow: auto;
   }
@@ -228,10 +228,10 @@
   </div>
   {#if showCard}
     <div
-      transition:fade={{ duration: 200 }}
+      transition:fade={{ duration: 100 }}
       class="card background"
       on:click={hidePlayerCard} />
-    <div transition:slide={{ duration: 200 }} class="card foreground">
+    <div transition:slide={{ duration: 100 }} class="card foreground">
       <div class="card__header">
         <div class="slider" />
         <div class="title">{selectedPlayer.info.name}</div>
