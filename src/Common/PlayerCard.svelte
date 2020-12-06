@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { TournamentPlayer } from "../data/tournament-player";
   import { removePlayerFromTournament } from "../data/tournament-player";
-  import MdRemoveCircleOutline from "svelte-icons/md/MdRemoveCircleOutline.svelte";
+  import MdRemove from "svelte-icons/md/MdRemove.svelte";
 
   export let player: TournamentPlayer;
   export let tournamentId: number;
@@ -14,70 +14,72 @@
 <style>
   .card {
     display: grid;
-    grid-template-columns: 48px 1fr 48px;
-    grid-template-rows: 24px 24px;
-    grid-template-areas:
-      "pic row1 button"
-      "pic row2 button";
-    padding: 8px;
-    border: 1px solid black;
-    border-radius: 3px;
-    margin-bottom: 6px;
+    grid-template-columns: 48px 48px 1fr;
+    grid-template-areas: "button img info";
+    column-gap: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .avatar {
-    grid-area: pic;
+    grid-area: img;
+    align-self: center;
+    height: 52px;
+    width: 52px;
+    border: 3px solid var(--nttb-blue);
     border-radius: 100%;
-    height: 48px;
-    width: 48px;
-    box-shadow: black 0px 0px 3px;
+    box-sizing: border-box;
   }
 
-  .row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-left: 4px;
-    padding-right: 4px;
+  .info {
+    grid-area: info;
   }
 
-  .row-1 {
-    grid-area: row1;
+  .info .name {
+    font-weight: bold;
   }
 
-  .row-2 {
-    grid-area: row2;
-  }
-
-  .player-name,
-  .club-name {
-    flex-shrink: 1;
+  .overflow-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: pre;
-    margin-right: 4px;
-  }
-  .class-rating,
-  .bondsnumber {
-    flex-shrink: 0;
   }
 
-  .remove-button {
+  .secondary {
+    font-size: 14px;
+    color: var(--text-dimmed-black);
+  }
+
+  .rating {
+    float: right;
+    color: var(--text-dimmed-black);
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    text-align: right;
+    padding-right: 8px;
+  }
+
+  .rating .symbol {
+    font-variant: small-caps;
+    font-weight: bold;
+  }
+
+  .button {
     grid-area: button;
   }
 </style>
 
 <div class="card">
-  <img class="avatar" src={player.info.img} alt="Wouter" />
-  <div class="row row-1">
-    <div class="player-name">{player.info.name}</div>
-    <div class="class-rating">{player.info.class} - {player.info.rating}</div>
+  <img class="avatar" src={player.info.img} alt="" />
+  <div class="info">
+    <div class="rating"><span class="symbol">r</span>{player.info.rating}</div>
+    <div class="name">{player.info.name}</div>
+    <div class="secondary overflow-ellipsis ">
+      {`${player.info.club} - ${player.info.class}`}
+    </div>
+    <div class="secondary">{player.nttbId}</div>
   </div>
-  <div class="row row-2">
-    <div class="club-name">{player.info.club}</div>
-    <div class="bondsnumber">{player.nttbId}</div>
-  </div>
-  <div class="remove-button" on:click={onRemoveClick}>
-    <MdRemoveCircleOutline />
+  <div class="button" on:click={onRemoveClick}>
+    <MdRemove />
   </div>
 </div>

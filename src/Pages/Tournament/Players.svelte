@@ -10,6 +10,7 @@
   import { ClubData } from "../../data-clubs";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
+  import MdSearch from "svelte-icons/md/MdSearch.svelte";
 
   /**
    * Tournament Id
@@ -56,8 +57,6 @@
     grid-template-rows: min-content 1fr;
     height: calc(100vh - var(--pageHeaderHeight));
     max-height: calc(100vh - var(--pageHeaderHeight));
-    padding-left: 16px;
-    padding-right: 16px;
   }
 
   .results {
@@ -71,9 +70,22 @@
   }
 
   .player-list {
-    margin-right: -8px;
-    padding-right: 8px;
     overflow: auto;
+  }
+  .input {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    height: 34px;
+    max-height: 34px;
+    align-items: center;
+    border-radius: 3px;
+    border: 1px solid black;
+    
+  }
+  .input input {
+    margin: 0;
+    border: none;
+    padding-left: 4px;
   }
 </style>
 
@@ -88,11 +100,14 @@
   <PageToggle {id} mode="players" />
   <div class="container">
     <div class="field">
-      <input
-        type="text"
-        placeholder="zoek op club, spelernaam of bondsnummer"
-        bind:value={searchQuery}
-        bind:this={searchInput} />
+      <label class="input">
+        <MdSearch />
+        <input
+          type="text"
+          placeholder="zoek op club, spelernaam of bondsnummer"
+          bind:value={searchQuery}
+          bind:this={searchInput} />
+      </label>
       {#if showSearch}
         <div class="results">
           {#each clubResults as club}

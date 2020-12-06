@@ -47,7 +47,6 @@
     text-align: right;
   }
   .player-card .rating .symbol {
-    display: inline;
     font-variant: small-caps;
     font-weight: bold;
   }
@@ -57,7 +56,7 @@
   <img src={player.info.img} alt={player.info.name} />
   <div class="name">{player.info.name}</div>
   <div class="rating">
-    <div class="symbol">r</div>{player.info.rating}
+    <span class="symbol">r</span>{player.info.rating}
   </div>
   <div class="division-and-club">{player.info.club} - {player.info.class}</div>
 </div>
