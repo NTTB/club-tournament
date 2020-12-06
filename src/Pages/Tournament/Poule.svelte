@@ -1,5 +1,6 @@
 <script lang="ts">
   import PageToggle from "./_PageToggle.svelte";
+  import Toaster from "../../Shared/Toaster.svelte";
   import TournamentHeader from "./_Header.svelte";
   import { fade, slide } from "svelte/transition";
   import { getPlayersFromTournament } from "../../data/tournament-player";
@@ -268,6 +269,11 @@
     margin-right: 8px;
     margin-bottom: 8px;
   }
+  
+  h4 {
+    border-bottom: 1px solid black;
+    margin-bottom: 8px;
+  }
 </style>
 
 {#await tournamentPromise}
@@ -316,48 +322,39 @@
   </div>
 
   {#if showCard}
-    <div
-      transition:fade={{ duration: 100 }}
-      class="card background"
-      on:click={hidePlayerCard} />
-    <div transition:slide={{ duration: 100 }} class="card foreground">
-      <div class="card__header">
-        <div class="slider" />
-        <div class="title">{selectedPlayer.info.name}</div>
+    <Toaster on:backgroundClicked={hidePlayerCard}>
+      <h3 slot="title">{selectedPlayer.info.name}</h3>
+      <h4>Speler informatie</h4>
+      <div class="player-info">
+        <div class="label">Club</div>
+        <div class="value">{selectedPlayer.info.club}</div>
+        <div class="label">Rating</div>
+        <div class="value">{selectedPlayer.info.rating}</div>
+        <div class="label">Niveau</div>
+        <div class="value">{selectedPlayer.info.class}</div>
       </div>
-      <div class="card__content">
-        <div class="sub-header">Speler informatie</div>
-        <div class="player-info">
-          <div class="label">Club</div>
-          <div class="value">{selectedPlayer.info.club}</div>
-          <div class="label">Rating</div>
-          <div class="value">{selectedPlayer.info.rating}</div>
-          <div class="label">Niveau</div>
-          <div class="value">{selectedPlayer.info.class}</div>
-        </div>
-        <div class="sub-header">Verplaats naar Poule</div>
-        <div class="tournament-actions">
-          {#each currentPoules as poule}
-            <button
-              on:click={() => moveToPoule(poule)}
-              class:current={selectedPoule == poule}
-              disabled={selectedPoule == poule}>
-              {poule.name}:{poule.players.length}
-            </button>
-          {/each}
-          {#if currentPoules.length == 0}
-            <Hint>
-              Er zijn geen poules beschikbaar waar je de speler heen kan
-              verplaatsen
-            </Hint>
-          {:else}
-            <button
-              on:click={() => moveToPoule(undefined)}
-              class:current={selectedPoule == undefined}
-              disabled={selectedPoule == undefined}>RES</button>
-          {/if}
-        </div>
+      <h4>Verplaats naar Poule</h4>
+      <div class="tournament-actions">
+        {#each currentPoules as poule}
+          <button
+            on:click={() => moveToPoule(poule)}
+            class:current={selectedPoule == poule}
+            disabled={selectedPoule == poule}>
+            {poule.name}:{poule.players.length}
+          </button>
+        {/each}
+        {#if currentPoules.length == 0}
+          <Hint>
+            Er zijn geen poules beschikbaar waar je de speler heen kan
+            verplaatsen
+          </Hint>
+        {:else}
+          <button
+            on:click={() => moveToPoule(undefined)}
+            class:current={selectedPoule == undefined}
+            disabled={selectedPoule == undefined}>RES</button>
+        {/if}
       </div>
-    </div>
+    </Toaster>
   {/if}
 {/await}

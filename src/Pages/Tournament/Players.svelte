@@ -3,6 +3,7 @@
 
   import TournamentHeader from "./_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
+  import Toaster from "../../Shared/Toaster.svelte";
 
   import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
   import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
@@ -16,6 +17,7 @@
   } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
   import type { TournamentPlayer } from "../../data/tournament-player";
+  import Info from "./_Info.svelte";
 
   /**
    * Tournament Id
@@ -60,7 +62,7 @@
     console.log("Selecting a player");
     selectedPlayer = player;
   }
-  function hidePlayerCard() {
+  function closeToaster() {
     selectedPlayer = undefined;
   }
 
@@ -123,65 +125,13 @@
     padding-bottom: unset;
   }
 
-  .card.background {
-    background: rgba(0, 0, 0, 20%);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-  }
-  .card.foreground {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 70vh;
-    background-color: white;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
-
-  .card__header {
-    padding: 6px;
-    padding-top: 0;
-    border-bottom: 2px solid var(--text-dimmed-black);
-  }
-  .card__header .slider {
-    grid-area: slider;
-    margin-top: 6px;
-    margin-bottom: 2px;
-    margin-left: 96px;
-    margin-right: 96px;
-    height: 5px;
-    border-radius: 5px;
-    background-color: var(--text-dimmed-black);
-  }
-
-  .card__header .title {
-    margin: 12px 0;
-    padding-left: 16px;
-    font-weight: bold;
-    font-size: large;
-  }
-
-  .card__content {
-    padding: 12px;
-  }
-  .sub-header {
-    font-size: large;
-    border-bottom: 1px solid black;
-    font-weight: bold;
-    margin: 12px 0;
-  }
   .player-info {
     display: grid;
     grid-template-columns: 80px 1fr;
   }
-
-  .tournament-actions {
-    display: flex;
-    flex-wrap: wrap;
+  h4 {
+    border-bottom: 1px solid black;
+    margin-bottom: 8px;
   }
 </style>
 
@@ -227,30 +177,19 @@
     </div>
   </div>
   {#if showCard}
-    <div
-      transition:fade={{ duration: 100 }}
-      class="card background"
-      on:click={hidePlayerCard} />
-    <div transition:slide={{ duration: 100 }} class="card foreground">
-      <div class="card__header">
-        <div class="slider" />
-        <div class="title">{selectedPlayer.info.name}</div>
+    <Toaster on:backgroundClicked={closeToaster}>
+      <h3 slot="title">{selectedPlayer.info.name}</h3>
+      <h4>Speler informatie</h4>
+      <div class="player-info">
+        <div class="label">Club</div>
+        <div class="value">{selectedPlayer.info.club}</div>
+        <div class="label">Rating</div>
+        <div class="value">{selectedPlayer.info.rating}</div>
+        <div class="label">Niveau</div>
+        <div class="value">{selectedPlayer.info.class}</div>
       </div>
-      <div class="card__content">
-        <div class="sub-header">Speler informatie</div>
-        <div class="player-info">
-          <div class="label">Club</div>
-          <div class="value">{selectedPlayer.info.club}</div>
-          <div class="label">Rating</div>
-          <div class="value">{selectedPlayer.info.rating}</div>
-          <div class="label">Niveau</div>
-          <div class="value">{selectedPlayer.info.class}</div>
-        </div>
-        <div class="sub-header">Verwijder uit toernooi</div>
-        <div class="tournament-actions">
-          <button on:click={removePlayer}>Verwijder speler uit toernooi</button>
-        </div>
-      </div>
-    </div>
+      <h4>Verwijder uit toernooi</h4>
+      <button on:click={removePlayer}>Verwijder speler uit toernooi</button>
+    </Toaster>
   {/if}
 {/await}
