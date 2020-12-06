@@ -3,6 +3,7 @@
   import PageToggle from "./_PageToggle.svelte";
 
   import PlayerCard from "../../Common/PlayerCard.svelte";
+  import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
   import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
   import SearchCardClub from "../../Common/SearchCardClub.svelte";
   import SearchCardCustomPlayer from "../../Common/SearchCardCustomPlayer.svelte";
@@ -54,11 +55,24 @@
   .container {
     --pageHeaderHeight: 125px;
     display: grid;
-    grid-template-rows: min-content 1fr;
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 48px 1fr;
+    grid-template-areas:
+      "top-left search-row"
+      "bottom-left player-list";
     height: calc(100vh - var(--pageHeaderHeight));
     max-height: calc(100vh - var(--pageHeaderHeight));
   }
 
+  .top-left {
+    grid-area: top-left;
+    border-top: 1px solid var(--nttb-blue);
+    border-right: 1px solid var(--nttb-blue);
+  }
+  .bottom-left{
+    grid-area: bottom-left;
+    border-right: 1px solid var(--nttb-blue);
+  }
   .results {
     z-index: 1;
     position: fixed;
@@ -70,22 +84,22 @@
   }
 
   .player-list {
+    grid-area: player-list;
     overflow: auto;
+
+    box-sizing: border-box;
   }
-  .input {
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    height: 34px;
-    max-height: 34px;
-    align-items: center;
-    border-radius: 3px;
-    border: 1px solid black;
-    
+  .search-row {
+    border-top: 1px solid var(--nttb-blue);
+    border-bottom: 1px solid var(--nttb-orange);
+    grid-area: search-row;
+    background-color: var(--nttb-orange);
+    align-content: center;
+    justify-content: center;
+    padding: 8px;
+    padding-bottom: unset;
   }
-  .input input {
-    margin: 0;
-    border: none;
-    padding-left: 4px;
+  .search-row input {
   }
 </style>
 
@@ -99,15 +113,14 @@
   <TournamentHeader title={tournament.name} />
   <PageToggle {id} mode="players" />
   <div class="container">
-    <div class="field">
-      <label class="input">
-        <MdSearch />
-        <input
-          type="text"
-          placeholder="zoek op club, spelernaam of bondsnummer"
-          bind:value={searchQuery}
-          bind:this={searchInput} />
-      </label>
+    <div class="top-left" />
+    <div class="search-row">
+      <input
+        type="text"
+        placeholder="Zoek op club, spelernaam of bondsnummer"
+        bind:value={searchQuery}
+        bind:this={searchInput} />
+
       {#if showSearch}
         <div class="results">
           {#each clubResults as club}
@@ -124,9 +137,11 @@
       {/if}
     </div>
 
+    <div class="bottom-left" />
     <div class="player-list">
       {#each $tournamentPlayersStore as player}
-        <PlayerCard {player} tournamentId={+id} />
+        <PoulePlayerCard2 {player} />
+        <!-- <PlayerCard {player} tournamentId={+id} /> -->
       {/each}
     </div>
   </div>
