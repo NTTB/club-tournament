@@ -99,8 +99,6 @@
     padding: 8px;
     padding-bottom: unset;
   }
-  .search-row input {
-  }
 </style>
 
 {#await tournamentPromise}
