@@ -1,7 +1,7 @@
 <script lang="ts">
   import PageToggle from "./_PageToggle.svelte";
   import Toaster from "../../Shared/Toaster.svelte";
-  import PlayerInfo from "../../Common/PlayerInfo.svelte";
+  import PoulePlayerToasterBody from "./_PoulePlayerToaster.svelte";
   import TournamentHeader from "./_Header.svelte";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import {
@@ -201,23 +201,6 @@
   .right__bottom.noscroll {
     overflow: hidden;
   }
-
-  .tournament-actions {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .tournament-actions button {
-    width: 48px;
-    height: 48px;
-    margin: 0;
-    margin-right: 8px;
-    margin-bottom: 8px;
-  }
-
-  h4 {
-    border-bottom: 1px solid black;
-    margin-bottom: 8px;
-  }
 </style>
 
 {#await tournamentPromise}
@@ -268,30 +251,11 @@
   {#if showCard}
     <Toaster on:backgroundClicked={hidePlayerCard}>
       <h3 slot="title">{selectedPlayer.info.name}</h3>
-      <h4>Speler informatie</h4>
-      <PlayerInfo player={selectedPlayer} />
-      <h4>Verplaats naar Poule</h4>
-      <div class="tournament-actions">
-        {#each currentPoules as poule}
-          <button
-            on:click={() => moveToPoule(poule)}
-            class:current={selectedPoule == poule}
-            disabled={selectedPoule == poule}>
-            {poule.name}:{poule.players.length}
-          </button>
-        {/each}
-        {#if currentPoules.length == 0}
-          <Hint>
-            Er zijn geen poules beschikbaar waar je de speler heen kan
-            verplaatsen
-          </Hint>
-        {:else}
-          <button
-            on:click={() => moveToPoule(undefined)}
-            class:current={selectedPoule == undefined}
-            disabled={selectedPoule == undefined}>RES</button>
-        {/if}
-      </div>
+      <PoulePlayerToasterBody
+        player={selectedPlayer}
+        poules={currentPoules}
+        {selectedPoule}
+        on:moveToPoule={(ev) => moveToPoule(ev.detail)} />
     </Toaster>
   {/if}
 {/await}
