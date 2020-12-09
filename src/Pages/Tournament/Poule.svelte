@@ -1,8 +1,8 @@
 <script lang="ts">
   import PageToggle from "./_PageToggle.svelte";
+  import TournamentHeader from "./_Header.svelte";
   import Toaster from "../../Shared/Toaster.svelte";
   import PoulePlayerToasterBody from "./_PoulePlayerToaster.svelte";
-  import TournamentHeader from "./_Header.svelte";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import {
     createNewPoule,
@@ -32,6 +32,7 @@
   let currentPoules: Poule[] = [];
 
   $: canDeletePoule = selectedPoule !== undefined;
+  $: canAutoDraft = selectedPoule === undefined;
 
   $: {
     currentPoules = $poulesStore;
@@ -103,6 +104,12 @@
     selectReservePoule();
     deletePoule(currentPoule);
   }
+
+  function onAutoDraftClick() {
+    // Show wizard dialog
+    alert("not yet ready");
+  }
+
   function moveToPoule(poule: Poule) {
     if (!poule) {
       removePlayerFromTournamentPoule(selectedPlayer, +id);
@@ -175,7 +182,7 @@
 
   .right__header {
     display: grid;
-    grid-template-columns: 1fr 48px;
+    grid-template-columns: 1fr max-content;
     padding-left: 12px;
     font-size: larger;
     font-weight: bold;
@@ -184,6 +191,7 @@
     line-height: 48px;
     height: 48px;
     border: 1px solid var(--nttb-orange);
+    border-right: none;
     border-top-color: var(--nttb-blue);
   }
 
@@ -200,6 +208,18 @@
 
   .right__bottom.noscroll {
     overflow: hidden;
+  }
+
+  a.secondary {
+    display: block;
+    height: 48px;
+    min-width: 48px;
+    background-color: var(--nttb-blue);
+    color: white;
+    padding-left: 12px;
+    padding-right: 8px;
+    line-height: 48px;
+    text-decoration: none;
   }
 </style>
 
@@ -232,6 +252,13 @@
         <div class="header">{playerHeaderTitle}</div>
         {#if canDeletePoule}
           <button on:click={onPouleDeleteClick}><MdDelete /></button>
+        {/if}
+        {#if canAutoDraft}
+          <div>
+            <a
+              class="secondary"
+              href={`#/tournament/${id}/poule/auto-draft`}>Snel Indelen</a>
+          </div>
         {/if}
       </div>
       <div class="right__bottom" class:noscroll={showCard}>
