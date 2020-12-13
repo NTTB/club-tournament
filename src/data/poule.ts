@@ -78,6 +78,7 @@ function generatePouleName(n: number) {
 }
 
 export function removePlayerFromTournamentPoule(player: TournamentPlayer, tournamentId: number) {
+  MustBeNumber(tournamentId);
   if (player.tournamentId != tournamentId) {
     throw new Error("tournamentPlayer is not related to this tournament");
   }
@@ -110,6 +111,8 @@ export function movePlayerToPoule(player: TournamentPlayer, poule: Poule) {
 }
 
 export function getPoulesFromTournament(tournamentId: number) {
+  MustBeNumber(tournamentId); 
+
   return derived(poules, x => x.items.filter(y => y.tournamentId == tournamentId));
 }
 
@@ -123,6 +126,8 @@ export function deletePoule(poule: Poule) {
 }
 
 export function createNewPoule(tournamentId: number) {
+  MustBeNumber(tournamentId);
+
   poules.update(src => {
     // Find new key for poule
     var existingPoules = src.items.filter(x => x.tournamentId === tournamentId);
@@ -138,4 +143,10 @@ export function createNewPoule(tournamentId: number) {
     src.items.push(poule);
     return src;
   });
+}
+
+function MustBeNumber(tournamentId: number) {
+  if (typeof tournamentId !== "number") {
+    throw new Error("tournamentId must be a number");
+  }
 }

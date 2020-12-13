@@ -111,6 +111,7 @@
   }
 
   function moveToPoule(poule: Poule) {
+    console.log(poule)
     if (!poule) {
       removePlayerFromTournamentPoule(selectedPlayer, +id);
     } else {

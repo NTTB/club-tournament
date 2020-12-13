@@ -16,6 +16,7 @@
   import { TournamentsRoundRobinSuggestions as roundSuggestions } from "nttb-support";
 
   export let id: number;
+  id = +id;
   var tournamentPromise = findTournamentById(id);
   var tournamentPlayerStore = getPlayersFromTournament(+id);
   var players = $tournamentPlayerStore;
