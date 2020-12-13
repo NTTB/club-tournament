@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { slide } from "svelte/transition";
   import { get } from "svelte/store";
   import TournamentHeader from "./_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
@@ -120,7 +119,7 @@
             value={suggestion.key} />
           <label for={suggestion.key}> {suggestion.key} </label>
           {#if suggestion.key == selectedSuggestion}
-            <div class="show-more" transition:slide>
+            <div class="show-more">
               <SuggestionDetails key={suggestion.key} {tournament} />
             </div>
           {/if}
