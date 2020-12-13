@@ -154,7 +154,7 @@
     <div style="margin-top: 20px">
       <NttbButton
         on:click={onStartClick}
-        disabled={selectedSuggestion == undefined && draftMethod == undefined}>
+        disabled={selectedSuggestion == undefined || draftMethod == undefined}>
         Deel opnieuw in
       </NttbButton>
     </div>
