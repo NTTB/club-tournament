@@ -26,6 +26,10 @@
     margin-top: 8px;
     margin-bottom: 4px;
   }
+  input,
+  select {
+    width: 100%;
+  }
 </style>
 
 <div class="field">

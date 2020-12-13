@@ -127,6 +127,10 @@
     border-bottom: 1px solid black;
     margin-bottom: 8px;
   }
+
+  .search-input {
+    width: 100%;
+  }
 </style>
 
 {#await tournamentPromise}
@@ -142,6 +146,7 @@
     <div class="top-left" />
     <div class="search-row">
       <input
+        class="search-input"
         type="text"
         placeholder="Zoek op club, spelernaam of bondsnummer"
         bind:value={searchQuery}

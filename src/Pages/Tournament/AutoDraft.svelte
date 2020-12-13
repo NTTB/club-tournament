@@ -1,15 +1,65 @@
 <script lang="ts">
+  import { slide } from "svelte/transition";
+  import { get } from "svelte/store";
   import TournamentHeader from "./_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
   import NttbButton from "../../Common/NttbButton.svelte";
+  import SuggestionDetails from "./_AutoDraftSuggestionDetails.svelte";
 
+  import {
+    getPoulesFromTournament,
+    createNewPoule,
+    deletePoule,
+    movePlayerToPoule,
+  } from "../../data/poule";
+  import { getPlayersFromTournament } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
+  import { TournamentsRoundRobinSuggestions as roundSuggestions } from "nttb-support";
 
   export let id: number;
   var tournamentPromise = findTournamentById(id);
+  var tournamentPlayerStore = getPlayersFromTournament(+id);
+  var players = $tournamentPlayerStore;
+  var selectedSuggestion = undefined;
+
+  // Remove all suggestions that
+
+  var suggestions = roundSuggestions
+    .map((src) => {
+      return {
+        key: src.key,
+        pools: src.pools,
+        players: src.pools.reduce((pv, cv) => cv.slots + pv, 0),
+      };
+    })
+    .filter((x) => x.players == players.length);
 
   function onStartClick() {
-    alert("Starting the auto draft");
+    const localPlayer = get(tournamentPlayerStore);
+    const chosenSuggestion = suggestions.find(
+      (x) => x.key === selectedSuggestion
+    );
+    const desiredPools = chosenSuggestion.pools;
+    var poolsToDelete = get(getPoulesFromTournament(id));
+
+    // Delete existing pools
+    poolsToDelete.forEach((x) => deletePoule(x));
+
+    // Create new pools
+    desiredPools.forEach(() => createNewPoule(id));
+
+    var pools = get(getPoulesFromTournament(id));
+    var playerIndex = 0;
+    pools.forEach((pool, i) => {
+      const desiredPool = desiredPools[i];
+      pool.maxPlayerCount = desiredPool.slots;
+      for (var j = 0; j < pool.maxPlayerCount; j++) {
+        movePlayerToPoule(localPlayer[playerIndex], pool);
+        playerIndex++;
+      }
+    });
+
+    window.location.hash = `/tournament/${id}/poule`;
   }
 </script>
 
@@ -36,16 +86,32 @@
 
     <p>
       Via deze pagina kan je de spelers in het toernooi snel indelen. Bestaande
-      indelingen zullen verloren gaan.
+      indelingen zullen verloren gaan. Je kan altijd opnieuw automatisch
+      indelen.
     </p>
+    <div class="suggestions">
+      {#each suggestions as suggestion}
+        <div class="option">
+          <input
+            type="radio"
+            name="auto-draft-pick"
+            bind:group={selectedSuggestion}
+            id={suggestion.key}
+            value={suggestion.key} />
+          <label for={suggestion.key}> {suggestion.key} </label>
+          {#if suggestion.key == selectedSuggestion}
+            <div class="show-more" transition:slide>
+              <SuggestionDetails key={suggestion.key} />
+            </div>
+          {/if}
+        </div>
+      {/each}
+    </div>
 
-    <p>
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloremque
-      architecto aut unde ut libero quibusdam cupiditate, iure soluta
-      consequatur quos. Libero deserunt quis facilis, sit et asperiores ab
-      corrupti minima!
-    </p>
-
-    <NttbButton on:click={onStartClick}>Deel opnieuw in</NttbButton>
+    <NttbButton
+      on:click={onStartClick}
+      disabled={selectedSuggestion == undefined}>
+      Deel opnieuw in
+    </NttbButton>
   </div>
 {/await}

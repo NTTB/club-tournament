@@ -48,9 +48,6 @@ a:visited {
 	-ms-touch-action: manipulation;
 	touch-action: manipulation;
 }
-label {
-	display: block;
-}
 
 input,
 button,

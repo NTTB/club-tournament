@@ -1,3 +1,7 @@
+<script lang="ts">
+  export var disabled: boolean;
+</script>
+
 <style>
   button {
     background-color: var(--nttb-orange);
@@ -9,6 +13,9 @@
     text-transform: uppercase;
     font-weight: bold;
   }
+  button:disabled {
+    filter: grayscale(40%);
+  }
 </style>
 
-<button on:click><slot /></button>
+<button {disabled} on:click><slot /></button>

@@ -17,13 +17,12 @@
     margin: 0;
     padding: 0;
   }
-  :global(input),
-  :global(select) {
+
+  :global(select),
+  :global(input) {
     border: 1px solid black;
     border-radius: 3px;
     padding: 8px 10px;
-
-    width: 100%;
     font-size: 14px;
   }
 </style>
