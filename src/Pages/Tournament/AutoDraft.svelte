@@ -121,7 +121,7 @@
           <label for={suggestion.key}> {suggestion.key} </label>
           {#if suggestion.key == selectedSuggestion}
             <div class="show-more" transition:slide>
-              <SuggestionDetails key={suggestion.key} />
+              <SuggestionDetails key={suggestion.key} {tournament} />
             </div>
           {/if}
         </div>

@@ -1,7 +1,10 @@
 <script lang="ts">
   import { TournamentsRoundRobinSuggestions as suggestions } from "nttb-support";
+  import type { TournamentSuggestion } from "nttb-support/dist/tournaments/tournament";
+  import type { Tournament } from "../../data/tournament";
 
   export var key: string;
+  export var tournament: Tournament;
 
   var suggestion = suggestions
     .filter((x) => x.key == key)
@@ -15,9 +18,18 @@
         tablesFixed: sum(src.pools, (x) => x.tablesExcl),
         tablesShared: sum(src.pools, (x) => x.tablesShared),
         tablesMax: max(src.pools, (x) => x.tablesExcl + x.tablesShared),
+        requiredTables: getTotalTables(src),
         distinctPoolSizes: distinct(src.pools, (x) => x.slots),
       };
     })[0];
+
+  function getTotalTables(src: TournamentSuggestion): number {
+    // We here assume that tables that are shared are only shared between two teams.
+    return Math.ceil(
+      sum(src.pools, (x) => x.tablesExcl) +
+        (sum(src.pools, (x) => x.tablesShared) / 2)
+    );
+  }
 
   function distinct<T>(src: T[], func: (item: T) => number) {
     return src
@@ -67,6 +79,17 @@
   }
 </script>
 
+<style>
+  .notice,
+  .warning {
+    background-color: yellow;
+  }
+
+  .warning{
+    font-weight: bold;
+  }
+</style>
+
 <ul>
   <li>Vereist {suggestion.maxDuration} minuten bij best of 5 tot de 11.</li>
 
@@ -80,12 +103,6 @@
       {suggestion.tablesShared}
       gedeelde tafels.
     </li>
-  {/if}
-  {#if suggestion.minDuration != suggestion.maxDuration}
-    <li>Sommige pools hebben maar {suggestion.minDuration} minuten nodig.</li>
-  {/if}
-  {#if suggestion.tablesMax > 1}
-    <li>Sommige pools spelen op meerdere tafels.</li>
   {/if}
   {#if suggestion.distinctPoolSizes.length == 1}
     <li>
@@ -102,6 +119,36 @@
       pools met
       {readableList(suggestion.distinctPoolSizes)}
       spelers.
+    </li>
+  {/if}
+
+  {#if suggestion.minDuration != suggestion.maxDuration}
+    <li>Sommige pools hebben maar {suggestion.minDuration} minuten nodig.</li>
+  {/if}
+  {#if suggestion.tablesMax > 1}
+    <li>Sommige pools spelen op meerdere tafels.</li>
+  {/if}
+  
+  {#if tournament.availableTables < suggestion.requiredTables}
+    <li class="warning">
+      De hoeveelheid tafels beschikbaar in dit toernooi ({tournament.availableTables})
+      is minder dan deze indeling vereist ({suggestion.requiredTables}).
+    </li>
+  {/if}
+
+  {#if tournament.setsPerMatch != 5}
+    <li class="notice">
+      De verwachte tijd is gebasseerd op best of 5. In dit toernooi win je een
+      wedstrijd door middel van best of
+      {tournament.setsPerMatch}.
+    </li>
+  {/if}
+  {#if tournament.pointsPerSet != 11}
+    <li class="notice">
+      De verwachte tijd is gebasseerd op wedstrijden tot de 11 punten. In dit
+      toernooi wordt er gespeeld tot
+      {tournament.pointsPerSet}
+      punten.
     </li>
   {/if}
 </ul>
