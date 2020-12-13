@@ -78,7 +78,7 @@
     {suggestion.sharedTables}
     gedeelde tafels.
   </li>
-  {#if (suggestion.distinctPoolSizes.length = 1)}
+  {#if (suggestion.distinctPoolSizes.length == 1)}
     <li>
       Spelers worden verdeeld over
       {suggestion.pools.length}
