@@ -12,8 +12,9 @@
         players: src.pools.reduce((pv, cv) => cv.slots + pv, 0),
         minDuration: min(src.pools, (x) => x.duration),
         maxDuration: max(src.pools, (x) => x.duration),
-        fixedTables: sum(src.pools, (x) => x.tablesExcl),
-        sharedTables: sum(src.pools, (x) => x.tablesShared),
+        tablesFixed: sum(src.pools, (x) => x.tablesExcl),
+        tablesShared: sum(src.pools, (x) => x.tablesShared),
+        tablesMax: max(src.pools, (x) => x.tablesExcl + x.tablesShared),
         distinctPoolSizes: distinct(src.pools, (x) => x.slots),
       };
     })[0];
@@ -68,19 +69,23 @@
 
 <ul>
   <li>Vereist {suggestion.maxDuration} minuten bij 5 sets per game.</li>
-  {#if suggestion.minDuration != suggestion.maxDuration}
-    <li>Sommige pools hebben maar {suggestion.minDuration} minuten nodig.</li>
-  {/if}
-  {#if suggestion.sharedTables == 0}
-    <li>Vereist {suggestion.fixedTables} vaste tafels.</li>
+
+  {#if suggestion.tablesShared == 0}
+    <li>Vereist {suggestion.tablesFixed} vaste tafels.</li>
   {:else}
     <li>
       Vereist
-      {suggestion.fixedTables}
+      {suggestion.tablesFixed}
       vaste tafels en
-      {suggestion.sharedTables}
+      {suggestion.tablesShared}
       gedeelde tafels.
     </li>
+  {/if}
+  {#if suggestion.minDuration != suggestion.maxDuration}
+    <li>Sommige pools hebben maar {suggestion.minDuration} minuten nodig.</li>
+  {/if}
+  {#if suggestion.tablesMax > 1}
+    <li>Sommige pools spelen op meerdere tafels.</li>
   {/if}
   {#if suggestion.distinctPoolSizes.length == 1}
     <li>
