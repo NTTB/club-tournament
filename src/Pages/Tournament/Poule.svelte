@@ -182,7 +182,7 @@
 
   .right__header {
     display: grid;
-    grid-template-columns: 1fr max-content;
+    grid-template-columns: 1fr 48px;
     padding-left: 12px;
     font-size: larger;
     font-weight: bold;
@@ -193,6 +193,10 @@
     border: 1px solid var(--nttb-orange);
     border-right: none;
     border-top-color: var(--nttb-blue);
+  }
+
+  .right__header.right__header--reserve{
+    grid-template-columns: 1fr max-content;
   }
 
   .right__header button {
@@ -248,7 +252,7 @@
       </div>
     </div>
     <div class="right">
-      <div class="right__header">
+      <div class="right__header" class:right__header--reserve={canAutoDraft}>
         <div class="header">{playerHeaderTitle}</div>
         {#if canDeletePoule}
           <button on:click={onPouleDeleteClick}><MdDelete /></button>
