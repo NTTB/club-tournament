@@ -21,6 +21,7 @@
   var tournamentPlayerStore = getPlayersFromTournament(+id);
   var players = $tournamentPlayerStore;
   var selectedSuggestion = undefined;
+  var draftMethod: "order" | "equal" = undefined;
 
   // Remove all suggestions that
 
@@ -35,10 +36,10 @@
     .filter((x) => x.players == players.length);
 
   function onStartClick() {
-    const localPlayer = get(tournamentPlayerStore).sort((a, b) => {
+    const localPlayers = get(tournamentPlayerStore).sort((a, b) => {
       return b.info.rating - a.info.rating;
     });
-    
+
     const chosenSuggestion = suggestions.find(
       (x) => x.key === selectedSuggestion
     );
@@ -52,15 +53,29 @@
     desiredPools.forEach(() => createNewPoule(id));
 
     var pools = get(getPoulesFromTournament(id));
-    var playerIndex = 0;
+
+    // Set the size of the pools
     pools.forEach((pool, i) => {
       const desiredPool = desiredPools[i];
       pool.maxPlayerCount = desiredPool.slots;
-      for (var j = 0; j < pool.maxPlayerCount; j++) {
-        movePlayerToPoule(localPlayer[playerIndex], pool);
-        playerIndex++;
-      }
     });
+
+    if (draftMethod == "order") {
+      var playerIndex = 0;
+      pools.forEach((pool, i) => {
+        for (var j = 0; j < pool.maxPlayerCount; j++) {
+          movePlayerToPoule(localPlayers[playerIndex], pool);
+          playerIndex++;
+        }
+      });
+    }
+
+    if (draftMethod == "equal") {
+      localPlayers.forEach((player, i) => {
+        const pool = pools[i % pools.length];
+        movePlayerToPoule(player, pool);
+      });
+    }
 
     window.location.hash = `/tournament/${id}/poule`;
   }
@@ -92,6 +107,8 @@
       indelingen zullen verloren gaan. Je kan altijd opnieuw automatisch
       indelen.
     </p>
+
+    <h3>Mogelijke indelingen</h3>
     <div class="suggestions">
       {#each suggestions as suggestion}
         <div class="option">
@@ -111,10 +128,35 @@
       {/each}
     </div>
 
-    <NttbButton
-      on:click={onStartClick}
-      disabled={selectedSuggestion == undefined}>
-      Deel opnieuw in
-    </NttbButton>
+    <h3>Speler verdeling</h3>
+    <div class="draft-method">
+      <div class="option">
+        <input
+          type="radio"
+          name="draft-method"
+          id="draft-method-order"
+          bind:group={draftMethod}
+          value="order" />
+        <label for="draft-method-order">Sterke spelers bij elkaar</label>
+      </div>
+
+      <div class="option">
+        <input
+          type="radio"
+          name="draft-method"
+          id="draft-method-equal"
+          bind:group={draftMethod}
+          value="equal" />
+        <label for="draft-method-equal">Maak pools even sterk</label>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px">
+      <NttbButton
+        on:click={onStartClick}
+        disabled={selectedSuggestion == undefined && draftMethod == undefined}>
+        Deel opnieuw in
+      </NttbButton>
+    </div>
   </div>
 {/await}
