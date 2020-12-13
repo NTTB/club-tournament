@@ -65,7 +65,7 @@
 
 <div class="field">
   <label for="pointsPerMatch">Game variant</label>
-  <select id="pointsPerMatch" bind:value={tournament.pointsPerMatch}>
+  <select id="pointsPerMatch" bind:value={tournament.pointsPerSet}>
     <option value={11}>Tot de 11</option>
     <option value={21}>Tot de 21</option>
   </select>
