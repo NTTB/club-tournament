@@ -68,7 +68,7 @@
 </script>
 
 <ul>
-  <li>Vereist {suggestion.maxDuration} minuten bij 5 sets per game.</li>
+  <li>Vereist {suggestion.maxDuration} minuten bij best of 5 tot de 11.</li>
 
   {#if suggestion.tablesShared == 0}
     <li>Vereist {suggestion.tablesFixed} vaste tafels.</li>
