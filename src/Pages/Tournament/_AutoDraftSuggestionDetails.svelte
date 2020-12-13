@@ -71,14 +71,18 @@
   {#if suggestion.minDuration != suggestion.maxDuration}
     <li>Sommige pools hebben maar {suggestion.minDuration} minuten nodig.</li>
   {/if}
-  <li>
-    Vereist
-    {suggestion.fixedTables}
-    vaste tafels en
-    {suggestion.sharedTables}
-    gedeelde tafels.
-  </li>
-  {#if (suggestion.distinctPoolSizes.length == 1)}
+  {#if suggestion.sharedTables == 0}
+    <li>Vereist {suggestion.fixedTables} vaste tafels.</li>
+  {:else}
+    <li>
+      Vereist
+      {suggestion.fixedTables}
+      vaste tafels en
+      {suggestion.sharedTables}
+      gedeelde tafels.
+    </li>
+  {/if}
+  {#if suggestion.distinctPoolSizes.length == 1}
     <li>
       Spelers worden verdeeld over
       {suggestion.pools.length}
