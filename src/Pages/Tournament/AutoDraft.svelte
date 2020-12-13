@@ -35,7 +35,10 @@
     .filter((x) => x.players == players.length);
 
   function onStartClick() {
-    const localPlayer = get(tournamentPlayerStore);
+    const localPlayer = get(tournamentPlayerStore).sort((a, b) => {
+      return b.info.rating - a.info.rating;
+    });
+    
     const chosenSuggestion = suggestions.find(
       (x) => x.key === selectedSuggestion
     );
