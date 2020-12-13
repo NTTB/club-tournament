@@ -4,7 +4,7 @@
   import TournamentHeader from "./_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
   import NttbButton from "../../Common/NttbButton.svelte";
-  import SuggestionDetails from "./_AutoDraftSuggestionDetails.svelte";
+  import SuggestionDetails from "./_AutoDraftSuggestionHint.svelte";
 
   import {
     getPoulesFromTournament,
