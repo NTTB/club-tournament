@@ -1,8 +1,11 @@
 <script lang="ts">
+  import MdSettings from "svelte-icons/md/MdSettings.svelte";
+  import MdDelete from "svelte-icons/md/MdDelete.svelte";
   import PageToggle from "./_PageToggle.svelte";
   import TournamentHeader from "./_Header.svelte";
   import Toaster from "../../Shared/Toaster.svelte";
   import PoulePlayerToasterBody from "./_PoulePlayerToaster.svelte";
+  import PouleToaster from "./_PouleToaster.svelte";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import {
     createNewPoule,
@@ -10,11 +13,11 @@
     deletePoule,
     getPoulesFromTournament,
     removePlayerFromTournamentPoule,
+    updatePoule,
   } from "../../data/poule";
   import type { TournamentPlayer } from "../../data/tournament-player";
   import type { Poule } from "../../data/poule";
   import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
-  import MdDelete from "svelte-icons/md/MdDelete.svelte";
   import Hint from "../../Common/Hint.svelte";
   import { findTournamentById } from "../../data/tournament";
 
@@ -23,7 +26,8 @@
   var tournamentPlayerStore = getPlayersFromTournament(+id);
   var poulesStore = getPoulesFromTournament(+id);
 
-  let showCard = false;
+  let showPlayerCard = false;
+  let showPouleCard = false;
   let selectedPoule: Poule = undefined;
   let selectedPlayer: TournamentPlayer = undefined;
   let playerHeaderTitle = "Reserve spelers";
@@ -38,11 +42,12 @@
     currentPoules = $poulesStore;
   }
   $: {
-    showCard = !!selectedPlayer;
+    showPlayerCard = !!selectedPlayer;
   }
 
   $: {
     if (selectedPoule === undefined) {
+      showPouleCard = false;
       playerHeaderTitle = "Reserve spelers";
       // Add players that are NOT in a poule (aka the reserves)
 
@@ -53,6 +58,7 @@
         .sort((a, b) => b.info.rating - a.info.rating)
         .filter((x) => !outsidePlayersIds.includes(x.id));
     } else {
+      showPouleCard = false;
       playerHeaderTitle = `Poule ${selectedPoule.name}`;
       if (selectedPoule.maxPlayerCount !== undefined) {
         playerHeaderTitle += ` - MK${selectedPoule.maxPlayerCount}`;
@@ -87,6 +93,17 @@
     selectedPlayer = undefined;
   }
 
+  function hidePouleCard() {
+    if (selectedPoule) {
+      updatePoule(selectedPoule);
+    }
+    showPouleCard = false;
+  }
+
+  function onPouleSettingsClick() {
+    showPouleCard = true;
+  }
+
   function createPoule() {
     createNewPoule(+id);
   }
@@ -105,13 +122,8 @@
     deletePoule(currentPoule);
   }
 
-  function onAutoDraftClick() {
-    // Show wizard dialog
-    alert("not yet ready");
-  }
-
   function moveToPoule(poule: Poule) {
-    console.log(poule)
+    console.log(poule);
     if (!poule) {
       removePlayerFromTournamentPoule(selectedPlayer, +id);
     } else {
@@ -196,7 +208,7 @@
     border-top-color: var(--nttb-blue);
   }
 
-  .right__header.right__header--reserve{
+  .right__header.right__header--reserve {
     grid-template-columns: 1fr max-content;
   }
 
@@ -240,7 +252,7 @@
 
   <div class="container">
     <div class="left">
-      <div class="left__center" class:noscroll={showCard}>
+      <div class="left__center" class:noscroll={showPlayerCard}>
         {#each currentPoules as poule}
           <button
             class="tab"
@@ -256,7 +268,7 @@
       <div class="right__header" class:right__header--reserve={canAutoDraft}>
         <div class="header">{playerHeaderTitle}</div>
         {#if canDeletePoule}
-          <button on:click={onPouleDeleteClick}><MdDelete /></button>
+          <button on:click={onPouleSettingsClick}><MdSettings /></button>
         {/if}
         {#if canAutoDraft}
           <div>
@@ -266,7 +278,7 @@
           </div>
         {/if}
       </div>
-      <div class="right__bottom" class:noscroll={showCard}>
+      <div class="right__bottom" class:noscroll={showPlayerCard}>
         {#each currentPlayers as player}
           <PoulePlayerCard2 {player} on:click={() => onPlayerClick(player)} />
         {/each}
@@ -280,7 +292,7 @@
     </div>
   </div>
 
-  {#if showCard}
+  {#if showPlayerCard}
     <Toaster on:backgroundClicked={hidePlayerCard}>
       <h3 slot="title">{selectedPlayer.info.name}</h3>
       <PoulePlayerToasterBody
@@ -288,6 +300,16 @@
         poules={currentPoules}
         {selectedPoule}
         on:moveToPoule={(ev) => moveToPoule(ev.detail)} />
+    </Toaster>
+  {/if}
+
+  {#if showPouleCard}
+    <Toaster on:backgroundClicked={hidePouleCard}>
+      <h3>{selectedPoule.name}</h3>
+      <PouleToaster
+        {tournament}
+        {selectedPoule}
+        on:deletePoule={onPouleDeleteClick} />
     </Toaster>
   {/if}
 {/await}

@@ -11,6 +11,12 @@ export interface PoulePlayer {
   info: PlayerInfo;
 }
 
+interface PouleSettings {
+  pointsPerMatch: number;
+  setsPerMatch: number;
+  pointsPerSet: number;
+}
+
 export interface Poule {
   id: number;
   tournamentId: number;
@@ -35,6 +41,12 @@ export interface Poule {
    * If multiple values are assigned the poule is played on multiple tables.
    */
   tableIds?: number[];
+
+  /**
+   * Optional settings for the poule. If not set it will be determined by the 
+   * tournament.
+   */
+  settings?: PouleSettings;
 }
 
 interface PouleStorageTable {
@@ -77,6 +89,15 @@ function generatePouleName(n: number) {
   return letters.join("");
 }
 
+export function updatePoule(poule: Poule) {
+  poules.update(src => {
+    const index = src.items.findIndex(x => x.id === poule.id);
+    if (index == -1) return src;
+    src.items.splice(index, 1, poule);
+    return src;
+  });
+}
+
 export function removePlayerFromTournamentPoule(player: TournamentPlayer, tournamentId: number) {
   MustBeNumber(tournamentId);
   if (player.tournamentId != tournamentId) {
@@ -111,7 +132,7 @@ export function movePlayerToPoule(player: TournamentPlayer, poule: Poule) {
 }
 
 export function getPoulesFromTournament(tournamentId: number) {
-  MustBeNumber(tournamentId); 
+  MustBeNumber(tournamentId);
 
   return derived(poules, x => x.items.filter(y => y.tournamentId == tournamentId));
 }
