@@ -4,7 +4,7 @@
   import Toaster from "../../Shared/Toaster.svelte";
   import PlayerInfo from "../../Common/PlayerInfo.svelte";
 
-  import PoulePlayerCard2 from "../../Common/PoulePlayerCard2.svelte";
+  import PoolPlayerCard from "../../Common/PoolPlayerCard.svelte";
   import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
   import SearchCardClub from "../../Common/SearchCardClub.svelte";
   import SearchCardCustomPlayer from "../../Common/SearchCardCustomPlayer.svelte";
@@ -171,7 +171,7 @@
     <div class="bottom-left" />
     <div class="player-list">
       {#each $tournamentPlayersStore as player}
-        <PoulePlayerCard2 {player} on:click={() => onPlayerClick(player)} />
+        <PoolPlayerCard {player} on:click={() => onPlayerClick(player)} />
       {/each}
     </div>
   </div>

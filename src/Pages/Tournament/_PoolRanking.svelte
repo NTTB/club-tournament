@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Poule } from "../../data/poule";
-  export let poule: Poule;
+  import type { Pool } from "../../data/pool";
+  export let pool: Pool;
 </script>
 
 <style>
@@ -28,7 +28,7 @@
       <th>Punten</th>
     </tr>
   </thead>
-  {#each poule.players as player}
+  {#each pool.players as player}
     <tr>
       <td class="name">{player.info.name} ({player.info.club})</td>
       <td class="rating">{player.info.rating}</td>

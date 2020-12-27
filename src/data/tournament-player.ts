@@ -1,6 +1,6 @@
 import { writable, derived, Readable, Writable } from "svelte/store";
 import type { PlayerInfo } from "./player-info";
-import { removePlayerFromTournamentPoule } from './poule';
+import { removePlayerFromTournamentPool } from './pool';
 
 export interface TournamentPlayer {
   id: number; // The id in the tournament.
@@ -50,7 +50,7 @@ export function getPlayersFromTournament(tournamentId: number): Readable<Tournam
 }
 
 export function removePlayerFromTournament(tournamentId: number, player: TournamentPlayer) {
-  removePlayerFromTournamentPoule(player, tournamentId);
+  removePlayerFromTournamentPool(player, tournamentId);
 
   tournamentPlayers.update((src) => {
     const index = src.items.findIndex((x) => x.id === player.id && x.tournamentId == tournamentId);

@@ -6,11 +6,11 @@
   import SuggestionDetails from "./_AutoDraftSuggestionHint.svelte";
 
   import {
-    getPoulesFromTournament,
-    createNewPoule,
-    deletePoule,
-    movePlayerToPoule,
-  } from "../../data/poule";
+    getPoolsFromTournament,
+    createNewPool,
+    deletePool,
+    movePlayerToPool,
+  } from "../../data/pool";
   import { getPlayersFromTournament } from "../../data/tournament-player";
   import { findTournamentById } from "../../data/tournament";
   import { TournamentsRoundRobinSuggestions as roundSuggestions } from "nttb-support";
@@ -44,15 +44,15 @@
       (x) => x.key === selectedSuggestion
     );
     const desiredPools = chosenSuggestion.pools;
-    var poolsToDelete = get(getPoulesFromTournament(id));
+    var poolsToDelete = get(getPoolsFromTournament(id));
 
     // Delete existing pools
-    poolsToDelete.forEach((x) => deletePoule(x));
+    poolsToDelete.forEach((x) => deletePool(x));
 
     // Create new pools
-    desiredPools.forEach(() => createNewPoule(id));
+    desiredPools.forEach(() => createNewPool(id));
 
-    var pools = get(getPoulesFromTournament(id));
+    var pools = get(getPoolsFromTournament(id));
 
     // Set the size of the pools
     pools.forEach((pool, i) => {
@@ -64,7 +64,7 @@
       var playerIndex = 0;
       pools.forEach((pool, i) => {
         for (var j = 0; j < pool.maxPlayerCount; j++) {
-          movePlayerToPoule(localPlayers[playerIndex], pool);
+          movePlayerToPool(localPlayers[playerIndex], pool);
           playerIndex++;
         }
       });
@@ -73,11 +73,11 @@
     if (draftMethod == "equal") {
       localPlayers.forEach((player, i) => {
         const pool = pools[i % pools.length];
-        movePlayerToPoule(player, pool);
+        movePlayerToPool(player, pool);
       });
     }
 
-    window.location.hash = `/tournament/${id}/poule`;
+    window.location.hash = `/tournament/${id}/pool`;
   }
 </script>
 
@@ -91,13 +91,13 @@
 
 {#await tournamentPromise}
   <TournamentHeader />
-  <PageToggle id={id.toString()} mode="poule" />
+  <PageToggle id={id.toString()} mode="pool" />
   <div class="container">
     <p>Loading...</p>
   </div>
 {:then tournament}
   <TournamentHeader title={tournament.name} />
-  <PageToggle id={id.toString()} mode="poule" />
+  <PageToggle id={id.toString()} mode="pool" />
 
   <div class="container">
     <h2>Automatisch indelen</h2>

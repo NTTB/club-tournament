@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Poule } from "../../data/poule";
+  import type { Pool } from "../../data/pool";
   import type { TournamentPlayer } from "../../data/tournament-player";
 
   import PlayerInfo from "../../Common/PlayerInfo.svelte";
@@ -8,14 +8,14 @@
   import { createEventDispatcher } from "svelte";
 
   interface Events {
-    moveToPoule: Poule;
+    moveToPool: Pool;
   }
 
   const dispatch = createEventDispatcher<Events>();
 
   export let player: TournamentPlayer;
-  export let poules: Poule[];
-  export let selectedPoule: Poule;
+  export let pools: Pool[];
+  export let selectedPool: Pool;
 </script>
 
 <style>
@@ -41,22 +41,22 @@
 <PlayerInfo {player} />
 <h4>Verplaats naar Poule</h4>
 <div class="tournament-actions">
-  {#each poules as poule}
+  {#each pools as pool}
     <button
-      on:click={() => dispatch('moveToPoule', poule)}
-      class:current={selectedPoule == poule}
-      disabled={selectedPoule == poule}>
-      {poule.name}:{poule.players.length}
+      on:click={() => dispatch('moveToPool', pool)}
+      class:current={selectedPool == pool}
+      disabled={selectedPool == pool}>
+      {pool.name}:{pool.players.length}
     </button>
   {/each}
-  {#if poules.length == 0}
+  {#if pools.length == 0}
     <Hint>
       Er zijn geen poules beschikbaar waar je de speler heen kan verplaatsen
     </Hint>
   {:else}
     <button
-      on:click={() => dispatch('moveToPoule', undefined)}
-      class:current={selectedPoule == undefined}
-      disabled={selectedPoule == undefined}>RES</button>
+      on:click={() => dispatch('moveToPool', undefined)}
+      class:current={selectedPool == undefined}
+      disabled={selectedPool == undefined}>RES</button>
   {/if}
 </div>

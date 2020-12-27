@@ -1,13 +1,13 @@
 <script lang="ts">
   import TournamentHeader from "./_Header.svelte";
-  import PouleRanking from "./_PouleRanking.svelte";
+  import PoolRanking from "./_PoolRanking.svelte";
 
   import { findTournamentById } from "../../data/tournament";
-  import { getPoulesFromTournament } from "../../data/poule";
+  import { getPoolsFromTournament } from "../../data/pool";
 
   export let id: string;
   var tournamentPromise = findTournamentById(+id);
-  var poules = getPoulesFromTournament(+id);
+  var pools = getPoolsFromTournament(+id);
 </script>
 
 <style>
@@ -25,9 +25,9 @@
   <TournamentHeader title={tournament.name} />
 
   <div class="container">
-    {#each $poules as poule}
-      <h2>Poule {poule.name}</h2>
-      <PouleRanking {poule}></PouleRanking>
+    {#each $pools as pool}
+      <h2>Poule {pool.name}</h2>
+      <PoolRanking {pool} />
     {/each}
   </div>
 {/await}

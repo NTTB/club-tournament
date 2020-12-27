@@ -1,6 +1,6 @@
 <script lang="ts">
   export var id: string;
-  export var mode: "info" | "players" | "poule";
+  export var mode: "info" | "players" | "pool";
 
   let routes = [
     {
@@ -14,8 +14,8 @@
       text: "Spelers",
     },
     {
-      href: `#/tournament/${id}/poule`,
-      selected: mode == "poule",
+      href: `#/tournament/${id}/pool`,
+      selected: mode == "pool",
       text: "Indeling",
     },
   ];
