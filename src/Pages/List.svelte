@@ -22,7 +22,7 @@
       pointsPerSet: 11,
     });
 
-    window.location.hash =`#/tournament/${newTournament.id}/info`;
+    window.location.hash = `#/tournament/${newTournament.id}/info`;
   }
 
   function deleteTournamentClick(item: Tournament) {
@@ -33,7 +33,9 @@
     deleteTournament(item);
   }
 
-  function playTournament(item) {}
+  function playTournament(item: Tournament) {
+    window.location.hash = `#/tournament/${item.id}/play`;
+  }
 </script>
 
 <style>
