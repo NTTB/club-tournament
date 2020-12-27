@@ -10,8 +10,8 @@
     createNewPool,
     deletePool,
     movePlayerToPool,
-  } from "../../data/pool";
-  import { getPlayersFromTournament } from "../../data/tournament-player";
+  } from "../../data/pool-functions";
+  import { getPlayersFromTournament } from "../../data/tournament-player-functions";
   import { findTournamentById } from "../../data/tournament";
   import { TournamentsRoundRobinSuggestions as roundSuggestions } from "nttb-support";
 

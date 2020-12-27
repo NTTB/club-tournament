@@ -3,7 +3,7 @@
   import PoolRanking from "./_PoolRanking.svelte";
 
   import { findTournamentById } from "../../data/tournament";
-  import { getPoolsFromTournament } from "../../data/pool";
+  import { getPoolsFromTournament } from "../../data/pool-functions";
 
   export let id: string;
   var tournamentPromise = findTournamentById(+id);

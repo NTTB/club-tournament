@@ -13,7 +13,7 @@
   import {
     getPlayersFromTournament,
     removePlayerFromTournament,
-  } from "../../data/tournament-player";
+  } from "../../data/tournament-player-functions";
   import { findTournamentById } from "../../data/tournament";
   import type { TournamentPlayer } from "../../data/tournament-player";
 

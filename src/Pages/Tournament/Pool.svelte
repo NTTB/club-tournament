@@ -5,7 +5,7 @@
   import Toaster from "../../Shared/Toaster.svelte";
   import PoolPlayerToasterBody from "./_PoolPlayerToaster.svelte";
   import PoolToaster from "./_PoolToaster.svelte";
-  import { getPlayersFromTournament } from "../../data/tournament-player";
+  import { getPlayersFromTournament } from "../../data/tournament-player-functions";
   import {
     createNewPool,
     movePlayerToPool,
@@ -13,7 +13,7 @@
     getPoolsFromTournament,
     removePlayerFromTournamentPool,
     updatePool,
-  } from "../../data/pool";
+  } from "../../data/pool-functions";
   import type { TournamentPlayer } from "../../data/tournament-player";
   import type { Pool } from "../../data/pool";
   import PoolPlayerCard from "../../Common/PoolPlayerCard.svelte";

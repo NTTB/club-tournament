@@ -3,7 +3,7 @@
   import {
     getPlayersFromTournament,
     addPlayerToTournament,
-  } from "../data/tournament-player";
+  } from "../data/tournament-player-functions";
   import type { Club } from "../data/club";
   import { PlayerData } from "../data-players";
 

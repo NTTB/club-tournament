@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TournamentPlayer } from "../data/tournament-player";
-  import { removePlayerFromTournament } from "../data/tournament-player";
+  import { removePlayerFromTournament } from "../data/tournament-player-functions";
   import MdRemove from "svelte-icons/md/MdRemove.svelte";
 
   export let player: TournamentPlayer;

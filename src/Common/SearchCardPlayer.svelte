@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NttbPlayer } from "../data/nttb-player";
-  import { addPlayerToTournament } from "../data/tournament-player";
+  import { addPlayerToTournament } from "../data/tournament-player-functions";
   import MdAddCircleOutline from "svelte-icons/md/MdAddCircleOutline.svelte";
 
   export let tournamentId: number;
