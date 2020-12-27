@@ -1,5 +1,6 @@
-import { writable, derived } from "svelte/store";
+import { writable, derived, Readable } from "svelte/store";
 import type { Pool } from "./pool";
+import type { PoolStanding, PoolStandingItem } from "./pool-standing";
 import type { TournamentPlayer } from "./tournament-player";
 
 interface PoolStorageTable {
@@ -116,6 +117,49 @@ export function createNewPool(tournamentId: number) {
     };
     src.items.push(pool);
     return src;
+  });
+}
+
+export function getPoolById(poolId): Readable<Pool> {
+  return derived(pools, storage => storage.items.find(x => x.id == poolId));
+}
+
+export function getPoolStandingById(poolId: number): Readable<PoolStanding> {
+  var pool$ = getPoolById(poolId);
+
+  return derived(pool$, (p): PoolStanding => {
+    const items: PoolStandingItem[] = [];
+
+    p.players.forEach(player => {
+      items.push({
+        tournamentPlayerId: player.playerTournamentId,
+        playerInfo: player.info,
+        active: true,
+        inactiveReason: undefined,
+        gamesLost: 0,
+        gamesWon: 0,
+        matchesLost: 0,
+        matchesWon: 0,
+        pointsLost: 0,
+        pointsWon: 0,
+        position: 0,
+        points: 0,
+        rank: 0,
+        rolloverWins: 0,
+        rolloversLost: 0,
+      })
+    });
+
+    for (var i = 0; i < items.length; ++i) {
+      items[i].rank = 1;
+      items[i].position = (i + 1);
+    }
+
+    return {
+      poolId: poolId,
+      poolName: p.name,
+      items,
+    };
   });
 }
 

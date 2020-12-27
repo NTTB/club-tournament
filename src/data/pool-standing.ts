@@ -1,8 +1,31 @@
+import type { PlayerInfo } from "./player-info";
+
+export interface PoolStanding {
+  /**
+   * The id of the pool.
+   */
+  poolId: number;
+  /**
+   * Name of the pool.
+   */
+  poolName: string;
+
+  /**
+   * Standing in the pool
+   */
+  items: PoolStandingItem[];
+}
+
 export interface PoolStandingItem {
   /**
    * The id of the player.
    */
   tournamentPlayerId: number;
+
+  /**
+   * Player info
+   */
+  playerInfo: PlayerInfo;
 
   /**
    * The position in the ranking. Often decided by rank.
@@ -62,7 +85,7 @@ export interface PoolStandingItem {
   pointsWon: number;
 
   /**
-   * Total ppints lost in games (so at least 11 if no points made)
+   * Total points lost in games (so at least 11 if a straight loss)
    */
   pointsLost: number;
 }
