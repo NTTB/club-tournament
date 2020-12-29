@@ -6,6 +6,7 @@ import PagePool from './Pages/Tournament/Setup/PagePool.svelte';
 import PageTournament from './Pages/Tournament/Setup/PageInfo.svelte';
 import PageTournamentList from './Pages/Tournament/PageList.svelte';
 import PageTournamentPlayRanking from "./Pages/Tournament/Play/PageRanking.svelte";
+import PageTournamentMatches from "./Pages/Tournament/Play/PageMatches.svelte";
 import Page404 from './Pages/404.svelte';
 
 
@@ -19,6 +20,9 @@ export const routes: Route[] = [
   { name: "tournament-pool-auto-draft", path: smartPath("tournament/:id/pool/auto-draft"), component: PageAutoDraft },
   { name: "tournament-players", path: smartPath("tournament/:id/players"), component: PagePlayers },
   { name: "tournament-play", path: smartPath("tournament/:id/play"), component: PageTournamentPlayRanking },
+  { name: "tournament-play-pool", path: smartPath("tournament/:id/play/:poolId"), component: PageTournamentPlayRanking },
+  { name: "tournament-matches", path: smartPath("tournament/:id/matches"), component: PageTournamentMatches },
+  { name: "tournament-matches-pool", path: smartPath("tournament/:id/matches/:poolId"), component: PageTournamentMatches },
 
   // The index page and 404
   { path: "", component: PageTournamentList },

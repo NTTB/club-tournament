@@ -23,7 +23,7 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
-    "nttb-support": "^1.0.0",
+    "nttb-support": "^1.1.0",
     "sirv-cli": "^1.0.9",
     "svelte-icons": "^2.1.0"
   }

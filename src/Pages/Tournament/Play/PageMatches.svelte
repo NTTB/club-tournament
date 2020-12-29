@@ -1,11 +1,11 @@
 <script lang="ts">
+  import ViewToggle from "./_ViewToggle.svelte";
   import TournamentHeader from "../_Header.svelte";
-  import PoolRanking from "./_PoolRanking.svelte";
+  import PoolMatches from "./_PoolMatches.svelte";
 
   import { findTournamentById } from "../../../data/tournament";
   import { getPoolsFromTournament } from "../../../data/pool-functions";
   import { derived } from "svelte/store";
-  import ViewToggle from "./_ViewToggle.svelte";
 
   export let id: string;
   export let poolId: string;
@@ -28,6 +28,7 @@
     return pools.find((x) => x.id === +poolId);
   });
 </script>
+
 
 <style>
   .container {
@@ -67,20 +68,20 @@
 
 {#await tournamentPromise}
   <TournamentHeader />
-  <ViewToggle mode="ranking" {poolId} {id} />
+  <ViewToggle mode="matches" {poolId} {id} />
   <div class="container">
     <p>Loading...</p>
   </div>
 {:then tournament}
   <TournamentHeader title={tournament.name} />
-  <ViewToggle mode="ranking" {poolId} {id} />
+  <ViewToggle mode="matches" {poolId} {id} />
 
   <div class="container">
     <div class="left">
       {#each $poolRoutes$ as poolRoute}
         <a
           class="pool-nav"
-          href="/#/tournament/{id}/play/{poolRoute.id}">{poolRoute.name}</a>
+          href="/#/tournament/{id}/matches/{poolRoute.id}">{poolRoute.name}</a>
       {/each}
     </div>
     <div class="right">
@@ -91,12 +92,12 @@
           - MK{$activePool$.players.length}
         </div>
         <div class="right__content">
-          <PoolRanking pool={$activePool$} />
+          <PoolMatches pool={$activePool$} />
         </div>
       {:else}
         {#each $pools$ as pool}
           <h2>Poule {pool.name}</h2>
-          <PoolRanking {pool} />
+          <PoolMatches {pool} />
         {/each}
       {/if}
     </div>
