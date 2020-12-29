@@ -1,7 +1,7 @@
 <script lang="ts">
   import { TournamentsRoundRobinSuggestions as suggestions } from "nttb-support";
   import type { TournamentSuggestion } from "nttb-support/dist/tournaments/tournament";
-  import type { Tournament } from "../../data/tournament";
+  import type { Tournament } from "../../../data/tournament";
 
   export var key: string;
   export var tournament: Tournament;

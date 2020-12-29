@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from "svelte";
 
-  import { updateTournament } from "../../data/tournament";
-  import type { Tournament } from "../../data/tournament";
+  import { updateTournament } from "../../../data/tournament";
+  import type { Tournament } from "../../../data/tournament";
 
   interface Events {
     titleChanged: { title: string };

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Pool } from "../../data/pool";
-  import type { TournamentPlayer } from "../../data/tournament-player";
+  import type { Pool } from "../../../data/pool";
+  import type { TournamentPlayer } from "../../../data/tournament-player";
 
-  import PlayerInfo from "../../Common/PlayerInfo.svelte";
-  import Hint from "../../Common/Hint.svelte";
+  import PlayerInfo from "../../../Common/PlayerInfo.svelte";
+  import Hint from "../../../Common/Hint.svelte";
 
   import { createEventDispatcher } from "svelte";
 

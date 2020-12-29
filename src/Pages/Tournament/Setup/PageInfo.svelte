@@ -1,10 +1,10 @@
 <script lang="ts">
-  import TournamentHeader from "./_Header.svelte";
+  import TournamentHeader from "../_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
   import TournamentInfo from "./_Info.svelte";
-  import Hint from "../../Common/Hint.svelte";
+  import Hint from "../../../Common/Hint.svelte";
 
-  import { findTournamentById } from "../../data/tournament";
+  import { findTournamentById } from "../../../data/tournament";
 
   export let id: string;
   var tournamentPromise = findTournamentById(+id);

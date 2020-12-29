@@ -1,18 +1,18 @@
 <script lang="ts">
   import { get } from "svelte/store";
-  import TournamentHeader from "./_Header.svelte";
+  import TournamentHeader from "../_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
-  import NttbButton from "../../Common/NttbButton.svelte";
-  import SuggestionDetails from "./_AutoDraftSuggestionHint.svelte";
+  import NttbButton from "../../../Common/NttbButton.svelte";
+  import SuggestionDetails from "./_DraftInfo.svelte";
 
   import {
     getPoolsFromTournament,
     createNewPool,
     deletePool,
     movePlayerToPool,
-  } from "../../data/pool-functions";
-  import { getPlayersFromTournament } from "../../data/tournament-player-functions";
-  import { findTournamentById } from "../../data/tournament";
+  } from "../../../data/pool-functions";
+  import { getPlayersFromTournament } from "../../../data/tournament-player-functions";
+  import { findTournamentById } from "../../../data/tournament";
   import { TournamentsRoundRobinSuggestions as roundSuggestions } from "nttb-support";
 
   export let id: number;

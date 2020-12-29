@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { Pool } from "../../data/pool";
-  import type { Tournament } from "../../data/tournament";
+  import type { Pool } from "../../../data/pool";
+  import type { Tournament } from "../../../data/tournament";
 
   interface Events {
     deletePool: void;

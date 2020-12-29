@@ -1,11 +1,11 @@
 <script lang="ts">
   import MdSettings from "svelte-icons/md/MdSettings.svelte";
   import PageToggle from "./_PageToggle.svelte";
-  import TournamentHeader from "./_Header.svelte";
-  import Toaster from "../../Shared/Toaster.svelte";
+  import TournamentHeader from "../_Header.svelte";
+  import Toaster from "../../../Shared/Toaster.svelte";
   import PoolPlayerToasterBody from "./_PoolPlayerToaster.svelte";
   import PoolToaster from "./_PoolToaster.svelte";
-  import { getPlayersFromTournament } from "../../data/tournament-player-functions";
+  import { getPlayersFromTournament } from "../../../data/tournament-player-functions";
   import {
     createNewPool,
     movePlayerToPool,
@@ -13,12 +13,12 @@
     getPoolsFromTournament,
     removePlayerFromTournamentPool,
     updatePool,
-  } from "../../data/pool-functions";
-  import type { TournamentPlayer } from "../../data/tournament-player";
-  import type { Pool } from "../../data/pool";
-  import PoolPlayerCard from "../../Common/PoolPlayerCard.svelte";
-  import Hint from "../../Common/Hint.svelte";
-  import { findTournamentById } from "../../data/tournament";
+  } from "../../../data/pool-functions";
+  import type { TournamentPlayer } from "../../../data/tournament-player";
+  import type { Pool } from "../../../data/pool";
+  import PoolPlayerCard from "../../../Common/PoolPlayerCard.svelte";
+  import Hint from "../../../Common/Hint.svelte";
+  import { findTournamentById } from "../../../data/tournament";
 
   export let id: string;
   var tournamentPromise = findTournamentById(+id);

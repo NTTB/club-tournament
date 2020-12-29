@@ -1,21 +1,21 @@
 <script lang="ts">
-  import TournamentHeader from "./_Header.svelte";
+  import TournamentHeader from "../_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
-  import Toaster from "../../Shared/Toaster.svelte";
-  import PlayerInfo from "../../Common/PlayerInfo.svelte";
+  import Toaster from "../../../Shared/Toaster.svelte";
+  import PlayerInfo from "../../../Common/PlayerInfo.svelte";
 
-  import PoolPlayerCard from "../../Common/PoolPlayerCard.svelte";
-  import SearchCardPlayer from "../../Common/SearchCardPlayer.svelte";
-  import SearchCardClub from "../../Common/SearchCardClub.svelte";
-  import SearchCardCustomPlayer from "../../Common/SearchCardCustomPlayer.svelte";
-  import { PlayerData } from "../../data-players";
-  import { ClubData } from "../../data-clubs";
+  import PoolPlayerCard from "../../../Common/PoolPlayerCard.svelte";
+  import SearchCardPlayer from "../../../Common/SearchCardPlayer.svelte";
+  import SearchCardClub from "../../../Common/SearchCardClub.svelte";
+  import SearchCardCustomPlayer from "../../../Common/SearchCardCustomPlayer.svelte";
+  import { PlayerData } from "../../../data-players";
+  import { ClubData } from "../../../data-clubs";
   import {
     getPlayersFromTournament,
     removePlayerFromTournament,
-  } from "../../data/tournament-player-functions";
-  import { findTournamentById } from "../../data/tournament";
-  import type { TournamentPlayer } from "../../data/tournament-player";
+  } from "../../../data/tournament-player-functions";
+  import { findTournamentById } from "../../../data/tournament";
+  import type { TournamentPlayer } from "../../../data/tournament-player";
 
   /**
    * Tournament Id

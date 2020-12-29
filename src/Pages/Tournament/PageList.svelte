@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Header from "../Shared/Header.svelte";
+  import Header from "../../Shared/Header.svelte";
   import MdDeleteForever from "svelte-icons/md/MdDeleteForever.svelte";
   import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
 
@@ -7,8 +7,8 @@
     addTournament,
     getAllTournaments,
     deleteTournament,
-  } from "../data/tournament";
-  import type { Tournament } from "../data/tournament";
+  } from "../../data/tournament";
+  import type { Tournament } from "../../data/tournament";
 
   var items = getAllTournaments();
 

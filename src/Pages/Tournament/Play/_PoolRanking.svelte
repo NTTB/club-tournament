@@ -1,8 +1,8 @@
 <script lang="ts">
   import { get } from "svelte/store";
 
-  import type { Pool } from "../../data/pool";
-  import { getPoolStandingById } from "../../data/pool-functions";
+  import type { Pool } from "../../../data/pool";
+  import { getPoolStandingById } from "../../../data/pool-functions";
   export let pool: Pool;
 
   var poolStanding = get(getPoolStandingById(pool.id));

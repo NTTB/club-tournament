@@ -1,11 +1,11 @@
 import type { Route } from './route.interface';
 
-import PagePlayers from './Pages/Tournament/Players.svelte';
-import PageAutoDraft from './Pages/Tournament/AutoDraft.svelte';
-import PagePool from './Pages/Tournament/Pool.svelte';
-import PageTournament from './Pages/Tournament/Info.svelte';
-import PageTournamentList from './Pages/List.svelte';
-import PageTournamentPlay from "./Pages/Tournament/PageTournamentPlay.svelte";
+import PagePlayers from './Pages/Tournament/Setup/PagePlayers.svelte';
+import PageAutoDraft from './Pages/Tournament/Setup/PageDraft.svelte';
+import PagePool from './Pages/Tournament/Setup/PagePool.svelte';
+import PageTournament from './Pages/Tournament/Setup/PageInfo.svelte';
+import PageTournamentList from './Pages/Tournament/PageList.svelte';
+import PageTournamentPlayRanking from "./Pages/Tournament/Play/PageRanking.svelte";
 import Page404 from './Pages/404.svelte';
 
 
@@ -18,7 +18,7 @@ export const routes: Route[] = [
   { name: "tournament-pool", path: smartPath("tournament/:id/pool"), component: PagePool },
   { name: "tournament-pool-auto-draft", path: smartPath("tournament/:id/pool/auto-draft"), component: PageAutoDraft },
   { name: "tournament-players", path: smartPath("tournament/:id/players"), component: PagePlayers },
-  { name: "tournament-play", path: smartPath("tournament/:id/play"), component: PageTournamentPlay },
+  { name: "tournament-play", path: smartPath("tournament/:id/play"), component: PageTournamentPlayRanking },
 
   // The index page and 404
   { path: "", component: PageTournamentList },
