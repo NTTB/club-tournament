@@ -36,6 +36,10 @@
   }
 
   var match = new Match(bestOf);
+
+  function selfSelect(ev: FocusEvent) {
+    (ev.target as HTMLInputElement).select();
+  }
 </script>
 
 <style>
@@ -108,7 +112,8 @@
             type="text"
             bind:value={game.homeScore}
             pattern="[0-9]*"
-            maxlength="3" />
+            maxlength="3"
+            on:focus={selfSelect} />
         </div>
         <div class="score score--away">
           <input
@@ -116,7 +121,8 @@
             type="text"
             bind:value={game.awayScore}
             pattern="[0-9]*"
-            maxlength="3" />
+            maxlength="3"
+            on:focus={selfSelect} />
         </div>
       </div>
     {/each}
