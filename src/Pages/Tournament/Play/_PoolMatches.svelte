@@ -12,6 +12,9 @@
     RoundRobinPool_11_Players,
     RoundRobinPool_12_Players,
   } from "nttb-support";
+
+  import PoolMatch from "./_PoolMatch.svelte";
+
   export let pool: Pool;
 
   function getPoolConfig(playerCount: number) {
@@ -46,11 +49,13 @@
 
 {#each poolConfig.matches as round, index}
   <h1>Round {index + 1}</h1>
-  {#each round as match}
-    <div>
-      {pool.players[match.home - 1].info.name}
-      -
-      {pool.players[match.away - 1].info.name}
-    </div>
+  {#each round as match, matchIndex}
+    {#if matchIndex != 0}
+      <hr />
+    {/if}
+    <PoolMatch
+      {matchIndex}
+      homePlayer={pool.players[match.home - 1]}
+      awayPlayer={pool.players[match.away - 1]} />
   {/each}
 {/each}
