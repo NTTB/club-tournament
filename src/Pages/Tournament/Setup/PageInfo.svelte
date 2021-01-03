@@ -11,7 +11,6 @@
   var overrideTitle: string = undefined;
 
   function onTitleChanged(ev: CustomEvent<{ title: string }>) {
-    console.log("Setting the title", ev.detail);
     overrideTitle = ev.detail.title;
   }
 </script>

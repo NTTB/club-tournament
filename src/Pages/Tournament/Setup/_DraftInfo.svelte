@@ -136,18 +136,18 @@
     </li>
   {/if}
 
-  {#if tournament.setsPerMatch != 5}
+  {#if tournament.defaultPoolSettings.setsPerMatch != 5}
     <li class="notice">
       De verwachte tijd is gebasseerd op best of 5. In dit toernooi win je een
       wedstrijd door middel van best of
-      {tournament.setsPerMatch}.
+      {tournament.defaultPoolSettings.setsPerMatch}.
     </li>
   {/if}
-  {#if tournament.pointsPerSet != 11}
+  {#if tournament.defaultPoolSettings.pointsPerSet != 11}
     <li class="notice">
       De verwachte tijd is gebasseerd op wedstrijden tot de 11 punten. In dit
       toernooi wordt er gespeeld tot
-      {tournament.pointsPerSet}
+      {tournament.defaultPoolSettings.pointsPerSet}
       punten.
     </li>
   {/if}

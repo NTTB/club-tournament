@@ -1,41 +1,22 @@
 <script lang="ts">
   import type { PoolPlayer } from "../../../data/pool-player";
+  import type { MatchSet } from "../../../data/match-set";
 
+  export let set: MatchSet;
   export let homePlayer: PoolPlayer;
   export let awayPlayer: PoolPlayer;
   export let matchIndex: number;
-  export let bestOf = 5;
 
-  class Game {
-    homeScore = 0;
-    awayScore = 0;
+  function hasWon(a: number, b: number) {
+    a = +a;
+    b = +b;
 
-    get isHomeWinner() {
-      return this.isWinningScore(this.homeScore, this.awayScore);
-    }
+    if (a < b) return false;
+    if (a < 11) return false;
+    if (a - b < 2) return false;
 
-    get isAwayWinner() {
-      return this.isWinningScore(this.awayScore, this.homeScore);
-    }
-
-    private isWinningScore(ownScore: number, otherScore: number) {
-      const hasReachedMinimalScore = ownScore >= 11;
-      const hasMinimalDifferenceOf2 = ownScore - otherScore >= 2;
-      return hasReachedMinimalScore && hasMinimalDifferenceOf2;
-    }
+    return true;
   }
-
-  class Match {
-    games: Game[] = [];
-
-    constructor(public readonly bestOf: number) {
-      for (var i = 0; i < bestOf; ++i) {
-        this.games.push(new Game());
-      }
-    }
-  }
-
-  var match = new Match(bestOf);
 
   function selfSelect(ev: FocusEvent) {
     (ev.target as HTMLInputElement).select();
@@ -104,7 +85,7 @@
   </div>
 
   <div class="games">
-    {#each match.games as game}
+    {#each set.games as game}
       <div class="game">
         <div class="score score--home">
           <input
@@ -129,10 +110,10 @@
   </div>
   <div class="sets">
     <div class="set set--home">
-      {match.games.filter((x) => x.isHomeWinner).length}
+      {set.games.filter((x) => hasWon(x.homeScore, x.awayScore)).length}
     </div>
     <div class="set set--away">
-      {match.games.filter((x) => x.isAwayWinner).length}
+      {set.games.filter((x) => hasWon(x.awayScore, x.homeScore)).length}
     </div>
   </div>
 </div>

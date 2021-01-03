@@ -21,7 +21,7 @@
 <style>
   .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     max-width: 600px;
     margin: 16px;
     margin-left: auto;

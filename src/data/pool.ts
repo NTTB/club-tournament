@@ -1,5 +1,10 @@
+import type { MatchSet } from "./match-set";
 import type { PoolPlayer } from "./pool-player";
 import type { PoolSettings } from "./pool-settings";
+
+export interface PoolRound {
+  matches: MatchSet[];
+}
 
 export interface Pool {
   id: number;
@@ -8,7 +13,7 @@ export interface Pool {
   name: string;
 
   /**
-   * Assigned players in pool
+   * Assigned players in pool.
    */
   players: PoolPlayer[];
 
@@ -31,4 +36,9 @@ export interface Pool {
    * tournament.
    */
   settings?: PoolSettings;
+
+  /**
+   * The sets of rounds.
+   */
+  rounds?: PoolRound[];
 }

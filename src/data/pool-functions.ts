@@ -1,7 +1,50 @@
 import { writable, derived, Readable } from "svelte/store";
-import type { Pool } from "./pool";
+import type { MatchSet } from "./match-set";
+import type { Pool, PoolRound } from "./pool";
 import type { PoolStanding, PoolStandingItem } from "./pool-standing";
 import type { TournamentPlayer } from "./tournament-player";
+import { GameResult } from "./game-result";
+
+import {
+  RoundRobinPool_3_Players,
+  RoundRobinPool_4_Players,
+  RoundRobinPool_5_Players,
+  RoundRobinPool_6_Players,
+  RoundRobinPool_7_Players,
+  RoundRobinPool_8_Players,
+  RoundRobinPool_9_Players,
+  RoundRobinPool_10_Players,
+  RoundRobinPool_11_Players,
+  RoundRobinPool_12_Players,
+} from "nttb-support";
+import type { PoolSettings } from "./pool-settings";
+
+function getPoolConfig(playerCount: number) {
+  switch (playerCount) {
+    case 3:
+      return RoundRobinPool_3_Players;
+    case 4:
+      return RoundRobinPool_4_Players;
+    case 5:
+      return RoundRobinPool_5_Players;
+    case 6:
+      return RoundRobinPool_6_Players;
+    case 7:
+      return RoundRobinPool_7_Players;
+    case 8:
+      return RoundRobinPool_8_Players;
+    case 9:
+      return RoundRobinPool_9_Players;
+    case 10:
+      return RoundRobinPool_10_Players;
+    case 11:
+      return RoundRobinPool_11_Players;
+    case 12:
+      return RoundRobinPool_12_Players;
+    default:
+      throw new Error(`No known RoundRobinPool for ${playerCount} players`);
+  }
+}
 
 interface PoolStorageTable {
   nextId: number;
@@ -122,6 +165,46 @@ export function createNewPool(tournamentId: number) {
 
 export function getPoolById(poolId): Readable<Pool> {
   return derived(pools, storage => storage.items.find(x => x.id == poolId));
+}
+
+function generateRounds(slotSize: number, setPerMatch: number): PoolRound[] {
+  const poolConfig = getPoolConfig(slotSize);
+  return poolConfig.matches.map((roundSrc): PoolRound => {
+
+    var matches: MatchSet[] = roundSrc.map((matchSrc): MatchSet => {
+      const match: MatchSet = {
+        homePlayersIds: [matchSrc.home],
+        awayPlayersIds: [matchSrc.away],
+        games: []
+      };
+
+      for (var i = 0; i < setPerMatch; ++i) {
+        match.games.push({
+          homeScore: 0,
+          awayScore: 0,
+          result: GameResult.Undecided,
+        });
+      }
+
+      return match;
+    });
+
+    return {
+      matches
+    };
+  });
+}
+
+export function startPoolById(poolId: number, defaultPoolSettings: PoolSettings) {
+  pools.update(poolTable => {
+    var pool = poolTable.items.find(x => x.id === poolId);
+    if (!pool) return poolTable;
+
+    if (pool.rounds) throw new Error("The already has ");
+
+    pool.rounds = generateRounds(pool.players.length, (pool.settings ?? defaultPoolSettings).setsPerMatch);
+    return poolTable;
+  });
 }
 
 export function getPoolStandingById(poolId: number): Readable<PoolStanding> {

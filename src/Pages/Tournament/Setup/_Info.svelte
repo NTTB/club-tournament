@@ -49,7 +49,9 @@
 
 <div class="field">
   <label for="matchPointMethod">Aantal punten per wedstrijd</label>
-  <select id="matchPointMethod" bind:value={tournament.pointsPerMatch}>
+  <select
+    id="matchPointMethod"
+    bind:value={tournament.defaultPoolSettings.pointsPerMatch}>
     <option value={1}>1 punt per wedstrijd</option>
     <option value={2}>2 punten per gewonnen wedstrijd, 1 per overgave</option>
   </select>
@@ -57,7 +59,9 @@
 
 <div class="field">
   <label for="gamesPerMatch">Aantal games per wedstrijd</label>
-  <select id="gamesPerMatch" bind:value={tournament.setsPerMatch}>
+  <select
+    id="gamesPerMatch"
+    bind:value={tournament.defaultPoolSettings.setsPerMatch}>
     <option value={3}>Best of 3</option>
     <option value={5}>Best of 5</option>
     <option value={7}>Best of 7</option>
@@ -66,7 +70,9 @@
 
 <div class="field">
   <label for="pointsPerMatch">Game variant</label>
-  <select id="pointsPerMatch" bind:value={tournament.pointsPerSet}>
+  <select
+    id="pointsPerMatch"
+    bind:value={tournament.defaultPoolSettings.pointsPerSet}>
     <option value={11}>Tot de 11</option>
     <option value={21}>Tot de 21</option>
   </select>

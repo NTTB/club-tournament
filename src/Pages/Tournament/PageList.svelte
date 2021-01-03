@@ -7,6 +7,7 @@
     addTournament,
     getAllTournaments,
     deleteTournament,
+    startTournament,
   } from "../../data/tournament";
   import type { Tournament } from "../../data/tournament";
 
@@ -17,9 +18,12 @@
       id: 0,
       availableTables: 1,
       name: "",
-      pointsPerMatch: 2,
-      setsPerMatch: 3,
-      pointsPerSet: 11,
+      started: false,
+      defaultPoolSettings: {
+        pointsPerMatch: 2,
+        setsPerMatch: 3,
+        pointsPerSet: 11,
+      },
     });
 
     window.location.hash = `#/tournament/${newTournament.id}/info`;
@@ -33,7 +37,21 @@
     deleteTournament(item);
   }
 
-  function playTournament(item: Tournament) {
+  async function playTournament(item: Tournament) {
+    if (!item.started) {
+      var response = confirm(
+        [
+          `Weet je zeker dat je het toernooi wil starten?`,
+          `Eenmaal gestart kunnen er geen aanpassingen meer gemaakt worden`,
+        ].join("\n")
+      );
+
+      if (!response) return;
+      if (item.started == false) {
+        await startTournament(item.id);
+      }
+    }
+
     window.location.hash = `#/tournament/${item.id}/play`;
   }
 </script>
@@ -95,7 +113,11 @@
         <button on:click={() => playTournament(item)}>
           <MdPlayArrow />
         </button>
-        <a class="name" href={`#/tournament/${item.id}/info`}> {item.name} </a>
+        <a
+          class="name"
+          href={`#/tournament/${item.id}/${item.started ? 'play' : 'info'}`}>
+          {item.name}
+        </a>
 
         <button on:click={() => deleteTournamentClick(item)}>
           <MdDeleteForever />

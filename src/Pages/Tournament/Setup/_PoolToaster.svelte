@@ -21,9 +21,9 @@
       selectedPool.settings = undefined;
     } else {
       selectedPool.settings = {
-        pointsPerMatch: tournament.pointsPerMatch,
-        pointsPerSet: tournament.pointsPerSet,
-        setsPerMatch: tournament.setsPerMatch,
+        pointsPerMatch: tournament.defaultPoolSettings.pointsPerMatch,
+        pointsPerSet: tournament.defaultPoolSettings.pointsPerSet,
+        setsPerMatch: tournament.defaultPoolSettings.setsPerMatch,
       };
     }
   }
