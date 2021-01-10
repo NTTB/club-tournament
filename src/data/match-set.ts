@@ -1,3 +1,4 @@
+import type { MatchSetEvent } from "./match-event";
 import type { MatchGame } from "./match-game";
 
 /**
@@ -7,4 +8,5 @@ export interface MatchSet {
   homePlayersIds: number[];
   awayPlayersIds: number[];
   games: MatchGame[];
+  events: MatchSetEvent[];
 }

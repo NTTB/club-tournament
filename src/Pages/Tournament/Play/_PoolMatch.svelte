@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PoolMatchState from "./_PoolMatchState.svelte";
   import type { PoolPlayer } from "../../../data/pool-player";
   import type { MatchSet } from "../../../data/match-set";
 
@@ -26,7 +27,7 @@
 <style>
   .match {
     display: flex;
-    grid-template-columns: 48px 1fr min-content 4ch;
+    grid-template-columns: 48px 1fr min-content min-content 4ch;
     flex-wrap: wrap;
   }
   .match-index {
@@ -35,6 +36,7 @@
     align-self: center;
   }
 
+  .set-state,
   .player,
   .set {
     align-self: center;
@@ -48,6 +50,7 @@
     width: 48px;
   }
 
+  .set-states,
   .players,
   .sets {
     display: grid;
@@ -57,6 +60,7 @@
     gap: 8px;
   }
 
+  .set-state,
   .score,
   .set {
     margin-bottom: 8px;
@@ -69,9 +73,15 @@
     padding: 4px;
   }
 
+  .set-states {
+    margin-left: 8px;
+  }
+
   .sets {
     width: 3ch;
   }
+
+  .set-state,
   .set {
     text-align: center;
   }
@@ -107,6 +117,14 @@
         </div>
       </div>
     {/each}
+  </div>
+  <div class="set-states">
+    <div class="set-state set-state--home">
+      <PoolMatchState {set} side={'home'} />
+    </div>
+    <div class="set-state set-state--away">
+      <PoolMatchState {set} side={'away'} />
+    </div>
   </div>
   <div class="sets">
     <div class="set set--home">
