@@ -58,7 +58,7 @@
       <th colspan="2" style="text-align: left">Speler</th>
       <!-- <th>Rating</th> -->
       <th>P</th>
-      <th style="text-align: center">Matches</th>
+      <th style="text-align: center">Sets</th>
       <th>Games</th>
       <!-- <th>Punten</th> -->
     </tr>
