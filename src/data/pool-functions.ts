@@ -201,7 +201,7 @@ export function startPoolById(poolId: number, defaultPoolSettings: PoolSettings)
     var pool = poolTable.items.find(x => x.id === poolId);
     if (!pool) return poolTable;
 
-    if (pool.rounds) throw new Error("The already has ");
+    if (pool.rounds) throw new Error("The pool already has rounds and can not be started");
 
     pool.rounds = generateRounds(pool.players.length, (pool.settings ?? defaultPoolSettings).setsPerMatch);
     return poolTable;
