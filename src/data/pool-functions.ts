@@ -175,7 +175,8 @@ function generateRounds(slotSize: number, setPerMatch: number): PoolRound[] {
       const match: MatchSet = {
         homePlayersIds: [matchSrc.home],
         awayPlayersIds: [matchSrc.away],
-        games: []
+        games: [],
+        events: []
       };
 
       for (var i = 0; i < setPerMatch; ++i) {
