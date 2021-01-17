@@ -4,16 +4,25 @@
 
   import { findTournamentById } from "../../../data/tournament";
   import { getPoolsFromTournament } from "../../../data/pool-functions";
-  import { derived } from "svelte/store";
+  import { derived, get } from "svelte/store";
   import ViewToggle from "./_ViewToggle.svelte";
 
   export let id: string;
   export let poolId: string;
 
-  const hasPoolId = poolId !== undefined;
-
   var tournamentPromise = findTournamentById(+id);
   var pools$ = getPoolsFromTournament(+id);
+
+  if (poolId === undefined) {
+    const pools = get(pools$);
+    if (pools?.length) {
+      const firstPool = pools.find(() => true);
+      poolId = firstPool.id.toString();
+      window.location.hash = `#/tournament/${id}/ranking/${poolId}`;
+    }
+  }
+
+  const hasPoolId = poolId !== undefined;
 
   const poolRoutes$ = derived(pools$, (pools) => {
     return pools.map((x) => {
@@ -28,6 +37,44 @@
     return pools.find((x) => x.id === +poolId);
   });
 </script>
+
+{#await tournamentPromise}
+  <TournamentHeader />
+  <ViewToggle mode="ranking" {poolId} {id} />
+  <div class="container">
+    <p>Loading...</p>
+  </div>
+{:then tournament}
+  <TournamentHeader title={tournament.name} />
+  <ViewToggle mode="ranking" {poolId} {id} />
+
+  <div class="container">
+    <div class="left">
+      {#each $poolRoutes$ as poolRoute}
+        <a class="pool-nav" href="/#/tournament/{id}/ranking/{poolRoute.id}"
+          >{poolRoute.name}</a
+        >
+      {/each}
+    </div>
+    <div class="right">
+      {#if hasPoolId}
+        <div class="right__header">
+          Poule
+          {$activePool$.name}
+          - MK{$activePool$.players.length}
+        </div>
+        <div class="right__content">
+          <PoolRanking pool={$activePool$} />
+        </div>
+      {:else}
+        {#each $pools$ as pool}
+          <h2>Poule {pool.name}</h2>
+          <PoolRanking {pool} />
+        {/each}
+      {/if}
+    </div>
+  </div>
+{/await}
 
 <style>
   .container {
@@ -64,41 +111,3 @@
     padding: 8px;
   }
 </style>
-
-{#await tournamentPromise}
-  <TournamentHeader />
-  <ViewToggle mode="ranking" {poolId} {id} />
-  <div class="container">
-    <p>Loading...</p>
-  </div>
-{:then tournament}
-  <TournamentHeader title={tournament.name} />
-  <ViewToggle mode="ranking" {poolId} {id} />
-
-  <div class="container">
-    <div class="left">
-      {#each $poolRoutes$ as poolRoute}
-        <a
-          class="pool-nav"
-          href="/#/tournament/{id}/play/{poolRoute.id}">{poolRoute.name}</a>
-      {/each}
-    </div>
-    <div class="right">
-      {#if hasPoolId}
-        <div class="right__header">
-          Poule
-          {$activePool$.name}
-          - MK{$activePool$.players.length}
-        </div>
-        <div class="right__content">
-          <PoolRanking pool={$activePool$} />
-        </div>
-      {:else}
-        {#each $pools$ as pool}
-          <h2>Poule {pool.name}</h2>
-          <PoolRanking {pool} />
-        {/each}
-      {/if}
-    </div>
-  </div>
-{/await}

@@ -19,8 +19,8 @@ export const routes: Route[] = [
   { name: "tournament-pool", path: smartPath("tournament/:id/pool"), component: PagePool },
   { name: "tournament-pool-auto-draft", path: smartPath("tournament/:id/pool/auto-draft"), component: PageAutoDraft },
   { name: "tournament-players", path: smartPath("tournament/:id/players"), component: PagePlayers },
-  { name: "tournament-play", path: smartPath("tournament/:id/play"), component: PageTournamentPlayRanking },
-  { name: "tournament-play-pool", path: smartPath("tournament/:id/play/:poolId"), component: PageTournamentPlayRanking },
+  { name: "tournament-ranking", path: smartPath("tournament/:id/ranking"), component: PageTournamentPlayRanking },
+  { name: "tournament-ranking-pool", path: smartPath("tournament/:id/ranking/:poolId"), component: PageTournamentPlayRanking },
   { name: "tournament-matches", path: smartPath("tournament/:id/matches"), component: PageTournamentMatches },
   { name: "tournament-matches-pool", path: smartPath("tournament/:id/matches/:poolId"), component: PageTournamentMatches },
 

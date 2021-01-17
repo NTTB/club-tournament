@@ -2,6 +2,7 @@
   import Header from "../../Shared/Header.svelte";
   import MdDeleteForever from "svelte-icons/md/MdDeleteForever.svelte";
   import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
+  import MdSettings from "svelte-icons/md/MdSettings.svelte";
 
   import {
     addTournament,
@@ -37,6 +38,10 @@
     deleteTournament(item);
   }
 
+  async function editTournament(item: Tournament) {
+    window.location.hash = `#/tournament/${item.id}/info`;
+  }
+
   async function playTournament(item: Tournament) {
     if (!item.started) {
       var response = confirm(
@@ -52,9 +57,47 @@
       }
     }
 
-    window.location.hash = `#/tournament/${item.id}/play`;
+    window.location.hash = `#/tournament/${item.id}/ranking`;
   }
 </script>
+
+<div class="header">
+  <Header title="Toernooien" />
+</div>
+<div class="container">
+  {#await $items}
+    <p>Loading...</p>
+  {:then items}
+    {#each items as item}
+      <div class="item">
+        {#if item.started}
+          <button on:click={() => editTournament(item)}>
+            <MdSettings />
+          </button>
+        {:else}
+          <button on:click={() => playTournament(item)}>
+            <MdPlayArrow />
+          </button>
+        {/if}
+        <a
+          class="name"
+          href={`#/tournament/${item.id}/${item.started ? "ranking" : "info"}`}>
+          {item.name}
+        </a>
+
+        <button on:click={() => deleteTournamentClick(item)}>
+          <MdDeleteForever />
+        </button>
+      </div>
+    {/each}
+  {/await}
+
+  <div class="right">
+    <button class="new-tournament-button" on:click={newTournament}>
+      Nieuw toernooi maken
+    </button>
+  </div>
+</div>
 
 <style>
   .container {
@@ -100,35 +143,3 @@
     font-weight: bold;
   }
 </style>
-
-<div class="header">
-  <Header title="Toernooien" />
-</div>
-<div class="container">
-  {#await $items}
-    <p>Loading...</p>
-  {:then items}
-    {#each items as item}
-      <div class="item">
-        <button on:click={() => playTournament(item)}>
-          <MdPlayArrow />
-        </button>
-        <a
-          class="name"
-          href={`#/tournament/${item.id}/${item.started ? 'play' : 'info'}`}>
-          {item.name}
-        </a>
-
-        <button on:click={() => deleteTournamentClick(item)}>
-          <MdDeleteForever />
-        </button>
-      </div>
-    {/each}
-  {/await}
-
-  <div class="right">
-    <button class="new-tournament-button" on:click={newTournament}>
-      Nieuw toernooi maken
-    </button>
-  </div>
-</div>

@@ -6,7 +6,7 @@
 
   let routes = [
     {
-      href: `#/tournament/${id}/play` + (poolId ? `/${poolId}` : ""),
+      href: `#/tournament/${id}/ranking` + (poolId ? `/${poolId}` : ""),
       selected: mode == "ranking",
       text: "Ranglijsten",
     },
