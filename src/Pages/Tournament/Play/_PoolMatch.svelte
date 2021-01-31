@@ -85,7 +85,7 @@
 </script>
 
 <div class="match">
-  <div class="match-index">{matchIndex}</div>
+  <div class="match-index">{set.orderId}</div>
   <div class="players">
     <div class="player">A: {homePlayer.info.name}</div>
     <div class="player">X: {awayPlayer.info.name}</div>

@@ -169,14 +169,15 @@ export function getPoolById(poolId): Readable<Pool> {
 
 function generateRounds(slotSize: number, setPerMatch: number): PoolRound[] {
   const poolConfig = getPoolConfig(slotSize);
+  var matchId = 0;
   return poolConfig.matches.map((roundSrc): PoolRound => {
-
     var matches: MatchSet[] = roundSrc.map((matchSrc): MatchSet => {
       const match: MatchSet = {
         homePlayersIds: [matchSrc.home],
         awayPlayersIds: [matchSrc.away],
         games: [],
-        events: []
+        events: [],
+        orderId: 0,
       };
 
       for (var i = 0; i < setPerMatch; ++i) {
@@ -186,6 +187,7 @@ function generateRounds(slotSize: number, setPerMatch: number): PoolRound[] {
           result: GameResult.Undecided,
         });
       }
+      match.orderId = ++matchId;
 
       return match;
     });
