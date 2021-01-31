@@ -27,22 +27,43 @@
   let hasWon = false;
   let hasGivenUp = false;
 
-  let setEvents = set?.events || [];
-  let sideEvents = setEvents
-    .filter((x) => x.type == "match-set-complete")
-    .map((x) => x as MatchSetCompleteEvent)
-    .filter((x) => x.side == side);
+  $: {
+    let setEvents = set?.events || [];
+    let sideEvents = setEvents
+      .filter((x) => x.type == "match-set-complete")
+      .map((x) => x as MatchSetCompleteEvent)
+      .filter((x) => x.side == side);
 
-  hasWon = sideEvents.some((x) => x.reason == "won");
-  let hasGivenUpBeforePlay = sideEvents.some(
-    (x) => x.reason == "resign-before-play"
-  );
-  let hasGivenUpAfterPlay = sideEvents.some(
-    (x) => x.reason == "resign-during-play"
-  );
+    hasWon = sideEvents.some((x) => x.reason == "won");
+    let hasGivenUpBeforePlay = sideEvents.some(
+      (x) => x.reason == "resign-before-play"
+    );
+    let hasGivenUpAfterPlay = sideEvents.some(
+      (x) => x.reason == "resign-during-play"
+    );
 
-  hasGivenUp = hasGivenUpAfterPlay || hasGivenUpBeforePlay;
+    hasGivenUp = hasGivenUpAfterPlay || hasGivenUpBeforePlay;
+  }
 </script>
+
+<div class="container">
+  <div
+    class="button score-button"
+    class:active={hasWon}
+    on:click={onWinClick}
+    role="button"
+  >
+    <FaTrophy />
+  </div>
+  <div
+    class="button giveup-button"
+    class:active={hasGivenUp}
+    on:click={onGiveUpClick}
+    role="button"
+  >
+    <FaCross />
+  </div>
+</div>
 
 <style>
   .container {
@@ -73,20 +94,3 @@
     color: red;
   }
 </style>
-
-<div class="container">
-  <div
-    class="button score-button"
-    class:active={hasWon}
-    on:click={onWinClick}
-    role="button">
-    <FaTrophy />
-  </div>
-  <div
-    class="button giveup-button"
-    class:active={hasGivenUp}
-    on:click={onGiveUpClick}
-    role="button">
-    <FaCross />
-  </div>
-</div>
