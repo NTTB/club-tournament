@@ -3,12 +3,16 @@
 
   import type { Pool } from "../../../data/pool";
   import { updatePool } from "../../../data/pool-functions";
+  import type { Tournament } from "../../../data/tournament";
 
   import PoolMatch from "./_PoolMatch.svelte";
 
   export let pool: Pool;
+  export let tournament: Tournament;
 
   var rounds = pool.rounds;
+  var pointsPerSet = (pool.settings ?? tournament.defaultPoolSettings)
+    .pointsPerSet;
 
   function updateSet(ev: CustomEvent<MatchSet>) {
     updatePool(pool);
@@ -23,7 +27,7 @@
     {/if}
     <PoolMatch
       {set}
-      {matchIndex}
+      {pointsPerSet}
       homePlayer={pool.players[set.homePlayersIds[0] - 1]}
       awayPlayer={pool.players[set.awayPlayersIds[0] - 1]}
       on:update={updateSet}

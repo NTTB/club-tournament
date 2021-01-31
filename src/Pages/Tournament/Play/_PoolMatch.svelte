@@ -7,7 +7,8 @@
   export let set: MatchSet;
   export let homePlayer: PoolPlayer;
   export let awayPlayer: PoolPlayer;
-  export let matchIndex: number;
+
+  export let pointsPerSet: number;
 
   interface Events {
     update: MatchSet;
@@ -30,7 +31,32 @@
     (ev.target as HTMLInputElement).select();
   }
 
-  function sendUpdate() {
+  function onScoreUpdate() {
+    set.events = [];
+    // Check if we can call the match.
+    var homeGamesWon = set.games
+      .filter((g) => g.homeScore >= pointsPerSet)
+      .filter((g) => g.homeScore - g.awayScore >= 2);
+    var awayGamesWon = set.games
+      .filter((g) => g.awayScore >= pointsPerSet)
+      .filter((g) => g.awayScore - g.homeScore >= 2);
+
+    var gamesToWin = Math.ceil(set.games.length / 2);
+
+    if (homeGamesWon.length >= gamesToWin) {
+      set.events.push({
+        reason: "won",
+        side: "home",
+        type: "match-set-complete",
+      });
+    } else if (awayGamesWon.length >= gamesToWin) {
+      set.events.push({
+        reason: "won",
+        side: "away",
+        type: "match-set-complete",
+      });
+    }
+
     dispatcher("update", set);
   }
 
@@ -65,9 +91,7 @@
       });
     }
 
-    set.events = [...set.events];
-
-    sendUpdate();
+    dispatcher("update", set);
   }
 
   function setHomeToWin() {
@@ -102,7 +126,7 @@
             pattern="[0-9]*"
             maxlength="3"
             on:focus={selfSelect}
-            on:change={sendUpdate}
+            on:change={onScoreUpdate}
           />
         </div>
         <div class="score score--away">
@@ -113,7 +137,7 @@
             pattern="[0-9]*"
             maxlength="3"
             on:focus={selfSelect}
-            on:change={sendUpdate}
+            on:change={onScoreUpdate}
           />
         </div>
       </div>
