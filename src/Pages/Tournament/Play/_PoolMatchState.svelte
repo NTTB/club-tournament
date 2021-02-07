@@ -4,7 +4,9 @@
   import { createEventDispatcher } from "svelte";
 
   import type { MatchSet } from "../../../data/match-set";
-  import type { MatchSetCompleteEvent } from "../../../data/match-event";
+
+  export let set: MatchSet;
+  export let side: "home" | "away";
 
   interface Events {
     win: void;
@@ -20,29 +22,16 @@
   function onGiveUpClick() {
     dispatcher("giveUp");
   }
-
-  export let set: MatchSet;
-  export let side: "home" | "away";
-
   let hasWon = false;
   let hasGivenUp = false;
 
+  function getTournamentPlayerId(side: "home" | "away"): number {
+    return side == "home" ? set.homeTournamentId : set.awayTournamentId;
+  }
+
   $: {
-    let setEvents = set?.events || [];
-    let sideEvents = setEvents
-      .filter((x) => x.type == "match-set-complete")
-      .map((x) => x as MatchSetCompleteEvent)
-      .filter((x) => x.side == side);
-
-    hasWon = sideEvents.some((x) => x.reason == "won");
-    let hasGivenUpBeforePlay = sideEvents.some(
-      (x) => x.reason == "resign-before-play"
-    );
-    let hasGivenUpAfterPlay = sideEvents.some(
-      (x) => x.reason == "resign-during-play"
-    );
-
-    hasGivenUp = hasGivenUpAfterPlay || hasGivenUpBeforePlay;
+    hasWon = set.winnerTournamentPlayerId == getTournamentPlayerId(side);
+    hasGivenUp = set.resignTournamentPlayerId == getTournamentPlayerId(side);
   }
 </script>
 

@@ -51,7 +51,7 @@
   <label for="matchPointMethod">Aantal punten per wedstrijd</label>
   <select
     id="matchPointMethod"
-    bind:value={tournament.defaultPoolSettings.pointsPerMatch}>
+    bind:value={tournament.defaultPoolSettings.scorePerWin}>
     <option value={1}>1 punt per wedstrijd</option>
     <option value={2}>2 punten per gewonnen wedstrijd, 1 per overgave</option>
   </select>

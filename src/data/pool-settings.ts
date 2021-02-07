@@ -1,5 +1,5 @@
 export interface PoolSettings {
-  pointsPerMatch: number;
+  scorePerWin: number;
   setsPerMatch: number;
   pointsPerSet: number;
 }
