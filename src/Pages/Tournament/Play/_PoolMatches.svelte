@@ -11,8 +11,6 @@
   export let tournament: Tournament;
 
   var rounds = pool.rounds;
-  var pointsPerSet = (pool.settings ?? tournament.defaultPoolSettings)
-    .pointsPerSet;
 
   function updateSet(ev: CustomEvent<MatchSet>) {
     updatePool(pool);
@@ -25,12 +23,6 @@
     {#if matchIndex != 0}
       <hr />
     {/if}
-    <PoolMatch
-      {set}
-      {pointsPerSet}
-      homePlayer={pool.players[set.homePlayersIds[0] - 1]}
-      awayPlayer={pool.players[set.awayPlayersIds[0] - 1]}
-      on:update={updateSet}
-    />
+    <PoolMatch {tournament} {pool} {set} on:update={updateSet} />
   {/each}
 {/each}

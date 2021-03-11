@@ -21,7 +21,7 @@
       selectedPool.settings = undefined;
     } else {
       selectedPool.settings = {
-        pointsPerMatch: tournament.defaultPoolSettings.pointsPerMatch,
+        scorePerWin: tournament.defaultPoolSettings.scorePerWin,
         pointsPerSet: tournament.defaultPoolSettings.pointsPerSet,
         setsPerMatch: tournament.defaultPoolSettings.setsPerMatch,
       };
@@ -47,7 +47,7 @@
     <label for="matchPointMethod">Aantal punten per wedstrijd</label>
     <select
       id="matchPointMethod"
-      bind:value={selectedPool.settings.pointsPerMatch}>
+      bind:value={selectedPool.settings.scorePerWin}>
       <option value={1}>1 punt per wedstrijd</option>
       <option value={2}>2 punten per gewonnen wedstrijd, 1 per overgave</option>
     </select>

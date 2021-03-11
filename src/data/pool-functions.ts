@@ -1,9 +1,7 @@
 import { writable, derived, Readable } from "svelte/store";
 import type { MatchSet } from "./match-set";
 import type { Pool, PoolRound } from "./pool";
-import type { PoolStanding, PoolStandingItem } from "./pool-standing";
 import type { TournamentPlayer } from "./tournament-player";
-import { GameResult } from "./game-result";
 
 import {
   RoundRobinPool_3_Players,
@@ -18,6 +16,7 @@ import {
   RoundRobinPool_12_Players,
 } from "nttb-support";
 import type { PoolSettings } from "./pool-settings";
+import type { PoolPlayer } from "./pool-player";
 
 function getPoolConfig(playerCount: number) {
   switch (playerCount) {
@@ -167,16 +166,16 @@ export function getPoolById(poolId): Readable<Pool> {
   return derived(pools, storage => storage.items.find(x => x.id == poolId));
 }
 
-function generateRounds(slotSize: number, setPerMatch: number): PoolRound[] {
+function generateRounds(players: PoolPlayer[], setPerMatch: number): PoolRound[] {
+  const slotSize = players.length;
   const poolConfig = getPoolConfig(slotSize);
   var matchId = 0;
   return poolConfig.matches.map((roundSrc): PoolRound => {
     var matches: MatchSet[] = roundSrc.map((matchSrc): MatchSet => {
       const match: MatchSet = {
-        homePlayersIds: [matchSrc.home],
-        awayPlayersIds: [matchSrc.away],
+        homeTournamentId: players[matchSrc.home - 1].playerTournamentId,
+        awayTournamentId: players[matchSrc.away - 1].playerTournamentId,
         games: [],
-        events: [],
         orderId: 0,
       };
 
@@ -184,7 +183,6 @@ function generateRounds(slotSize: number, setPerMatch: number): PoolRound[] {
         match.games.push({
           homeScore: 0,
           awayScore: 0,
-          result: GameResult.Undecided,
         });
       }
       match.orderId = ++matchId;
@@ -205,47 +203,8 @@ export function startPoolById(poolId: number, defaultPoolSettings: PoolSettings)
 
     if (pool.rounds) throw new Error("The pool already has rounds and can not be started");
 
-    pool.rounds = generateRounds(pool.players.length, (pool.settings ?? defaultPoolSettings).setsPerMatch);
+    pool.rounds = generateRounds(pool.players, (pool.settings ?? defaultPoolSettings).setsPerMatch);
     return poolTable;
-  });
-}
-
-export function getPoolStandingById(poolId: number): Readable<PoolStanding> {
-  var pool$ = getPoolById(poolId);
-
-  return derived(pool$, (p): PoolStanding => {
-    const items: PoolStandingItem[] = [];
-
-    p.players.forEach(player => {
-      items.push({
-        tournamentPlayerId: player.playerTournamentId,
-        playerInfo: player.info,
-        active: true,
-        inactiveReason: undefined,
-        gamesLost: 0,
-        gamesWon: 0,
-        matchesLost: 0,
-        matchesWon: 0,
-        pointsLost: 0,
-        pointsWon: 0,
-        position: 0,
-        points: 0,
-        rank: 0,
-        rolloverWins: 0,
-        rolloversLost: 0,
-      })
-    });
-
-    for (var i = 0; i < items.length; ++i) {
-      items[i].rank = 1;
-      items[i].position = (i + 1);
-    }
-
-    return {
-      poolId: poolId,
-      poolName: p.name,
-      items,
-    };
   });
 }
 

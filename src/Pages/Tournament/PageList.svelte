@@ -21,7 +21,7 @@
       name: "",
       started: false,
       defaultPoolSettings: {
-        pointsPerMatch: 2,
+        scorePerWin: 2,
         setsPerMatch: 3,
         pointsPerSet: 11,
       },

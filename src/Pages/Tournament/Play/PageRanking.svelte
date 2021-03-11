@@ -64,13 +64,8 @@
           - MK{$activePool$.players.length}
         </div>
         <div class="right__content">
-          <PoolRanking pool={$activePool$} />
+          <PoolRanking pool={$activePool$} {tournament} />
         </div>
-      {:else}
-        {#each $pools$ as pool}
-          <h2>Poule {pool.name}</h2>
-          <PoolRanking {pool} />
-        {/each}
       {/if}
     </div>
   </div>

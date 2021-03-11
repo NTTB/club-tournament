@@ -1,4 +1,3 @@
-import type { MatchSetEvent } from "./match-event";
 import type { MatchGame } from "./match-game";
 
 /**
@@ -6,8 +5,10 @@ import type { MatchGame } from "./match-game";
  */
 export interface MatchSet {
   orderId: number;
-  homePlayersIds: number[];
-  awayPlayersIds: number[];
+  homeTournamentId: number;
+  awayTournamentId: number;
   games: MatchGame[];
-  events: MatchSetEvent[];
+  winnerTournamentPlayerId?: number;
+  resignTournamentPlayerId?: number;
+  resignDuringPlay?: boolean;
 }
