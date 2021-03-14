@@ -7,10 +7,14 @@
 
   import PoolMatch from "./_PoolMatch.svelte";
 
-  export let pool: Pool;
   export let tournament: Tournament;
+  export let pool: Pool;
 
-  var rounds = pool.rounds;
+  var rounds: MatchSet[][] = [];
+  pool.sets.forEach((s) => {
+    rounds[s.roundId] = rounds[s.roundId] || [];
+    rounds[s.roundId].push(s);
+  });
 
   function updateSet(ev: CustomEvent<MatchSet>) {
     updatePool(pool);
@@ -19,7 +23,7 @@
 
 {#each rounds as round, index}
   <h1>Round {index + 1}</h1>
-  {#each round.matches as set, matchIndex}
+  {#each round as set, matchIndex}
     {#if matchIndex != 0}
       <hr />
     {/if}

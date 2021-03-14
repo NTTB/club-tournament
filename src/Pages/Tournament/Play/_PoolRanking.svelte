@@ -1,213 +1,229 @@
 <script lang="ts">
-  import type { MatchSet } from "../../../data/match-set";
-  import type { PlayerInfo } from "../../../data/player-info";
+  import Ratio from "./_PoolRankingRatio.svelte";
+  import {
+    TTMatch,
+    generateMatchRank,
+    TTPlayerRank,
+  } from "@nttb/tt-match-ranking";
+  import type { TTMatchSet } from "@nttb/tt-match-ranking";
+  import {
+    getGameWinner,
+    getSetWinner,
+  } from "@nttb/tt-match-ranking/dist/helpers";
+
   import type { Pool } from "../../../data/pool";
+  import type { PoolPlayer } from "../../../data/pool-player";
   import type { Tournament } from "../../../data/tournament";
   export let pool: Pool;
   export let tournament: Tournament;
 
-  interface PlayerRank {
-    player: {
-      playerTournamentId: number;
-      playerInfo: PlayerInfo;
-      giveUpCount: number;
-      notPlayedCount: number;
-      strikePlayer: boolean;
-    };
-    score: number;
-    setsWon: number;
-    setsLost: number;
-    gamesWon: number;
-    gamesLost: number;
-    gamePointsWon: number;
-    gamePointsLost: number;
-  }
-
-  const settings = pool.settings || tournament.defaultPoolSettings;
-
-  // 1. Foreach player in the pool create a ranking
-  // 2. Remove players that have given up before playing half the matches
-  // 3. Foreach ranking calculate score
-  var requiredCompleteCount = Math.ceil((pool.players.length - 1) / 2);
-  var matches: MatchSet[] = pool.rounds.reduce(
-    (pv, cv) => [...pv, ...cv.matches],
-    []
-  );
-
-  const giveUpInfo = pool.players.map((x) => {
-    const id = x.playerTournamentId;
-    const givenUp = matches.filter((y) => y.resignTournamentPlayerId == id);
-    const notPlayedCount = givenUp.filter((y) => y.resignDuringPlay == false);
-
-    return {
-      playerTournamentId: x.playerTournamentId,
-      playerInfo: x.info,
-      giveUpCount: givenUp.length,
-      notPlayedCount: notPlayedCount.length,
-      strikePlayer: notPlayedCount.length >= requiredCompleteCount,
-    };
+  var match = new TTMatch<PoolPlayer>();
+  pool.players.forEach((player) => {
+    match.addPlayer(player);
   });
 
-  const excludePlayerIds = giveUpInfo
-    .filter((x) => x.strikePlayer)
-    .map((x) => x.playerTournamentId);
-
-  const remainingSets = matches.filter((match) => {
-    const ignoreHomeplayer = excludePlayerIds.some(
-      (y) => y == match.homeTournamentId
-    );
-    const ignoreAwayPlayer = excludePlayerIds.some(
-      (y) => y == match.awayTournamentId
-    );
-
-    const ignoreMatch = ignoreAwayPlayer || ignoreHomeplayer;
-
-    return !ignoreMatch;
-  });
-
-  const remainingPlayers = giveUpInfo.filter((x) => !x.strikePlayer);
-
-  const unsortedRanking = remainingPlayers.map((p) => {
-    const playerId = p.playerTournamentId;
-    const homeSets = remainingSets.filter(
-      (x) => x.homeTournamentId == playerId
-    );
-    const awaySets = remainingSets.filter(
-      (x) => x.awayTournamentId == playerId
-    );
-    const allSets = [...homeSets, ...awaySets];
-
-    let gamePointsWon = 0;
-    let gamePointsLost = 0;
-    let gamesWon = 0;
-    let gamesLost = 0;
-    homeSets.forEach((set) => {
-      set.games.forEach((game) => {
-        gamePointsWon += game.homeScore;
-        gamePointsLost += game.awayScore;
-        if (game.homeScore > game.awayScore) {
-          gamesWon++;
+  pool.sets.forEach((set) => {
+    var home = match
+      .getPlayers()
+      .find((x) => x.player.playerTournamentId == set.homeTournamentId).id;
+    var away = match
+      .getPlayers()
+      .find((x) => x.player.playerTournamentId == set.awayTournamentId).id;
+    if (set.resignTournamentPlayerId) {
+      if (!set.resignDuringPlay) {
+        // Walkover
+        if (set.winnerTournamentPlayerId === set.homeTournamentId) {
+          match.addSet(home, away, { games: [], walkover: "home" });
         } else {
-          gamesLost++;
+          match.addSet(home, away, { games: [], walkover: "away" });
         }
-      });
-    });
-
-    awaySets.forEach((set) => {
-      set.games.forEach((game) => {
-        gamePointsWon += game.awayScore;
-        gamePointsLost += game.homeScore;
-        if (game.awayScore > game.homeScore) {
-          gamesWon++;
-        } else {
-          gamesLost++;
-        }
-      });
-    });
-
-    // [X] Win/Lost Sets
-    const setsWon = allSets.filter(
-      (x) => x.winnerTournamentPlayerId === playerId
-    ).length;
-    const setsLost = allSets.filter(
-      (x) => x.winnerTournamentPlayerId !== playerId
-    ).length;
-    const setsLostWithoutGivingup = allSets.filter(
-      (x) =>
-        x.winnerTournamentPlayerId != playerId &&
-        x.resignTournamentPlayerId != playerId
-    ).length;
-
-    // [ ] Win/Lose
-    // Two modes:
-    // 1. Winner gets 2 points, loser 1, forfit 0.
-    // 2. Winner gets 1 point, loser 0
-
-    let score = 0;
-    if (settings.scorePerWin == 2) {
-      // Won? Two points.
-      // Lose? 1 points
-      // Give up during/before match? 0 points
-      score += setsWon * 2;
-      score += setsLostWithoutGivingup * 1;
-    } else if (settings.scorePerWin == 1) {
-      // Won? 1 point
-      // Lose/giveup? 0 point
-      score += setsWon * 1;
+        return;
+      }
     }
 
-    return {
-      player: p,
-      score, //S
-      setsWon, // SW
-      setsLost, //SL
-      gamesWon, //GW
-      gamesLost, // GL
-      gamePointsWon, // PW
-      gamePointsLost, // PL
+    match.addSet(home, away, { games: set.games });
+  });
+
+  const setRules = {
+    bestOf:
+      pool.settings?.setsPerMatch ||
+      tournament.defaultPoolSettings.setsPerMatch,
+    gameRules: {
+      scoreMinimum:
+        pool.settings?.pointsPerSet ||
+        tournament.defaultPoolSettings.pointsPerSet,
+      scoreDistance: 2,
+    },
+  };
+
+  const victoryPoints =
+    pool.settings?.scorePerWin || tournament.defaultPoolSettings.scorePerWin;
+
+  var ranking = generateMatchRank(
+    match,
+    { victoryPoints: victoryPoints, defeatPoints: victoryPoints - 1 },
+    setRules
+  );
+
+  var totals: {
+    set: { won: number; lost: number };
+    games: { won: number; lost: number };
+    score: { won: number; lost: number };
+  }[] = [];
+
+  ranking.ranked.forEach((rank) => {
+    const sets = ranking.rankedSets.filter(
+      (x) => x.awayPlayerId == rank.id || x.homePlayerId == rank.id
+    );
+    totals[rank.id] = {
+      set: getSetsWonLost(rank, sets),
+      games: getGamesWonLost(rank, sets),
+      score: getScoreWonLost(rank, sets),
     };
   });
 
-  const ranking: PlayerRank[][] = 
+  function getSetsWonLost(
+    src: TTPlayerRank<PoolPlayer>,
+    sets: TTMatchSet[]
+  ): { won: number; lost: number } {
+    var won = 0;
+    var lost = 0;
 
-  // [X] 1. Group the ranking by score.
-  unsortedRanking.sort((a, b) => a.score - b.score);
-  // [ ] Stap 2: Door het aantal behaalde setpunten in de onderlinge wedstrijden van de gelijk geëindigde deelnemers;
-  // [ ] Stap 3: Door het quotiënt van gewonnen en verloren games van de onderlinge wedstrijden van de gelijk geëindigde deelnemers;
-  // [ ] Stap 4: Door het quotiënt van gewonnen en verloren punten van de onderlinge wedstrijden van de gelijk geëindigde deelnemers;
-  // [ ] Stap 5: Door het quotiënt van gewonnen en verloren games van alle door de gelijk geëindigde deelnemers gespeelde wedstrijden van de meerkamp;
-  // [ ] Stap 6: Door het quotiënt van gewonnen en verloren punten van alle door de gelijk geëindigde deelnemers gespeelde wedstrijden van de meerkamp;
-  // [X] Stap 7: indien dan nog geen beslissing is verkregen, dan beslist het lot.
+    sets.forEach((set) => {
+      if (set.set.walkover) return; // Skip walkovers
+      switch (getSetWinner(set.set, setRules)) {
+        case "home":
+          {
+            if (set.homePlayerId == src.id) won += 1;
+            if (set.awayPlayerId == src.id) lost += 1;
+          }
+          break;
+        case "away":
+          {
+            if (set.homePlayerId == src.id) lost += 1;
+            if (set.awayPlayerId == src.id) won += 1;
+          }
+          break;
+      }
+    });
+
+    return { won, lost };
+  }
+
+  function getGamesWonLost(
+    src: TTPlayerRank<PoolPlayer>,
+    sets: TTMatchSet[]
+  ): { won: number; lost: number } {
+    var won = 0;
+    var lost = 0;
+
+    sets.forEach((set) => {
+      if (set.set.walkover) return; // Skip walkovers
+      set.set.games.forEach((game) => {
+        var winner = getGameWinner(game, setRules.gameRules);
+        if (
+          (winner == "home" && set.homePlayerId == src.id) ||
+          (winner == "away" && set.awayPlayerId == src.id)
+        ) {
+          won += 1;
+        }
+
+        if (
+          (winner == "home" && set.awayPlayerId == src.id) ||
+          (winner == "away" && set.homePlayerId == src.id)
+        ) {
+          lost += 1;
+        }
+      });
+    });
+
+    return { won, lost };
+  }
+
+  function getScoreWonLost(
+    src: TTPlayerRank<PoolPlayer>,
+    sets: TTMatchSet[]
+  ): { won: number; lost: number } {
+    var won = 0;
+    var lost = 0;
+
+    sets.forEach((set) => {
+      set.set.games.forEach((game) => {
+        won += set.homePlayerId == src.id ? game.homeScore : game.awayScore;
+        lost += set.awayPlayerId == src.id ? game.homeScore : game.awayScore;
+      });
+    });
+
+    return { won, lost };
+  }
 </script>
 
 <table>
-  <tr>
-    <th colspan="2">Speler</th>
-    <th>S</th>
-    <th>SW</th>
-    <th>SL</th>
-    <th>GW</th>
-    <th>GL</th>
-    <th>PW</th>
-    <th>PL</th>
-  </tr>
-  {#each unsortedRanking as rank, index}
+  <thead>
     <tr>
-      <td>{index + 1}</td>
-      <td>{rank.player.playerInfo.name}</td>
-      <td>{rank.score}</td>
-      <td>{rank.setsWon}</td>
-      <td>{rank.setsLost}</td>
-      <td>{rank.gamesWon}</td>
-      <td>{rank.gamesLost}</td>
-      <td>{rank.gamePointsWon}</td>
-      <td>{rank.gamePointsLost}</td>
+      <th colspan="2" style="text-align: left">Speler</th>
+      <th class="col-points">P</th>
+      <th style="text-align: center">Sets</th>
+      <th>Games</th>
+      <th>Score</th>
     </tr>
-  {/each}
+  </thead>
+  <tbody>
+    {#each ranking.ranked as ranked, index}
+      <tr>
+        <td class="center">{index + 1}.</td>
+        <td>{ranked.player.info.name}</td>
+        <td class="right">{ranked.points}</td>
+        <td
+          ><Ratio
+            win={totals[ranked.id].set.won}
+            lose={totals[ranked.id].set.lost}
+          /></td
+        >
+        <td
+          ><Ratio
+            win={totals[ranked.id].games.won}
+            lose={totals[ranked.id].games.lost}
+          /></td
+        >
+        <td
+          ><Ratio
+            win={totals[ranked.id].score.won}
+            lose={totals[ranked.id].score.lost}
+          /></td
+        >
+      </tr>
+    {/each}
+  </tbody>
 </table>
 
-<hr />
+<style>
+  table {
+    border-collapse: collapse;
+    width: 600px;
+    max-width: 100%;
+  }
+  th,
+  td {
+    font-variant-numeric: tabular-nums;
+    min-width: 20px;
+    border-bottom: 1px solid #f5f5f5;
+    padding: 4px;
+  }
+  th {
+    text-align: center;
+    color: #70757a;
+    font-weight: normal;
+    font-size: small;
+  }
 
-<div>Showing pool {pool.name} of Tournament {tournament.name}</div>
-<p>Deze spelers (en hun wedstrijden) hebben geef effect op de ranglijst</p>
-<ul>
-  {#each giveUpInfo.filter((x) => x.strikePlayer) as giveUp}
-    <li>
-      {giveUp.playerInfo.name} heeft {giveUp.notPlayedCount} niet gespeeld van de
-      minimaal {requiredCompleteCount}
-    </li>
-  {/each}
-</ul>
-
-<p>Deze spelers hebben effect op de ranglijst</p>
-<ul>
-  {#each giveUpInfo.filter((x) => !x.strikePlayer) as giveUp}
-    <li>
-      {giveUp.playerInfo.name} ({giveUp.giveUpCount} niet gespeeld waarvan {giveUp.notPlayedCount}
-      opgegeven)
-    </li>
-  {/each}
-</ul>
-<!-- <pre>
-{JSON.stringify(remainingSets, undefined, 2)}
-</pre> -->
+  .center {
+    text-align: center;
+  }
+  .right {
+    text-align: right;
+  }
+  .col-points {
+    width: 20px;
+  }
+</style>

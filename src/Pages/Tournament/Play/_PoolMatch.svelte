@@ -5,7 +5,6 @@
   import type { MatchSet } from "../../../data/match-set";
   import type { Tournament } from "../../../data/tournament";
   import type { Pool } from "../../../data/pool";
-  import { xlink_attr } from "svelte/internal";
 
   export let set: MatchSet;
   export let tournament: Tournament;

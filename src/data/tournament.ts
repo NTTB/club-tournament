@@ -97,9 +97,9 @@ export async function findTournamentById(id: number): Promise<Tournament> {
 export async function startTournament(tournamentId: number) {
   var tournament = await findTournamentById(tournamentId);
   var pools = get(getPoolsFromTournament(tournamentId));
-  var somePoolsHaveStarted = pools.some(x => !!x.rounds);
+  var somePoolsHaveStarted = pools.some(x => !!x.sets);
   if (somePoolsHaveStarted) {
-    throw new Error("Some pools already have rounds");
+    throw new Error("Some pools already has sets");
   }
 
   // Start all the pools and then update it

@@ -37,8 +37,5 @@ export interface Pool {
    */
   settings?: PoolSettings;
 
-  /**
-   * The sets of rounds.
-   */
-  rounds?: PoolRound[];
+  sets: MatchSet[];
 }

@@ -155,7 +155,8 @@ export function createNewPool(tournamentId: number) {
       tournamentId: tournamentId,
       index: nextIndex,
       name: generatePoolName(nextIndex),
-      players: []
+      players: [],
+      sets: undefined
     };
     src.items.push(pool);
     return src;
@@ -166,34 +167,35 @@ export function getPoolById(poolId): Readable<Pool> {
   return derived(pools, storage => storage.items.find(x => x.id == poolId));
 }
 
-function generateRounds(players: PoolPlayer[], setPerMatch: number): PoolRound[] {
+function generateSets(players: PoolPlayer[], setPerMatch: number): MatchSet[] {
   const slotSize = players.length;
   const poolConfig = getPoolConfig(slotSize);
   var matchId = 0;
-  return poolConfig.matches.map((roundSrc): PoolRound => {
-    var matches: MatchSet[] = roundSrc.map((matchSrc): MatchSet => {
-      const match: MatchSet = {
-        homeTournamentId: players[matchSrc.home - 1].playerTournamentId,
-        awayTournamentId: players[matchSrc.away - 1].playerTournamentId,
+  var result = [];
+  poolConfig.matches.forEach((roundSrc, roundIndex) => {
+    roundSrc.forEach((setSrc) => {
+      const set: MatchSet = {
+        homeTournamentId: players[setSrc.home - 1].playerTournamentId,
+        awayTournamentId: players[setSrc.away - 1].playerTournamentId,
+        roundId: roundIndex,
         games: [],
         orderId: 0,
       };
 
       for (var i = 0; i < setPerMatch; ++i) {
-        match.games.push({
+        set.games.push({
           homeScore: 0,
           awayScore: 0,
         });
       }
-      match.orderId = ++matchId;
+      set.orderId = ++matchId;
 
-      return match;
+      result.push(set);
+
     });
-
-    return {
-      matches
-    };
   });
+
+  return result;
 }
 
 export function startPoolById(poolId: number, defaultPoolSettings: PoolSettings) {
@@ -201,9 +203,9 @@ export function startPoolById(poolId: number, defaultPoolSettings: PoolSettings)
     var pool = poolTable.items.find(x => x.id === poolId);
     if (!pool) return poolTable;
 
-    if (pool.rounds) throw new Error("The pool already has rounds and can not be started");
+    if (pool.sets) throw new Error("The pool already has sets and can not be started");
 
-    pool.rounds = generateRounds(pool.players, (pool.settings ?? defaultPoolSettings).setsPerMatch);
+    pool.sets = generateSets(pool.players, (pool.settings ?? defaultPoolSettings).setsPerMatch);
     return poolTable;
   });
 }

@@ -5,6 +5,7 @@ import type { MatchGame } from "./match-game";
  */
 export interface MatchSet {
   orderId: number;
+  roundId: number; // Use to seperate sets in
   homeTournamentId: number;
   awayTournamentId: number;
   games: MatchGame[];
