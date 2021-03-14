@@ -56,7 +56,7 @@
 
   let showCard = false;
   let selectedPlayer: TournamentPlayer = undefined;
-  function onPlayerClick(player) {
+  function onPlayerClick(player: TournamentPlayer) {
     console.log("Selecting a player");
     selectedPlayer = player;
   }

@@ -1,5 +1,6 @@
+import type { TTMatchRules, TTSetRules } from "@nttb/tt-match-ranking";
+
 export interface PoolSettings {
-  scorePerWin: number;
-  setsPerMatch: number;
-  pointsPerSet: number;
+  matchRules: TTMatchRules;
+  setRules: TTSetRules;
 }

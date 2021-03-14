@@ -21,9 +21,14 @@
       name: "",
       started: false,
       defaultPoolSettings: {
-        scorePerWin: 2,
-        setsPerMatch: 3,
-        pointsPerSet: 11,
+        matchRules: {
+          victoryPoints: 1,
+          defeatPoints: 0,
+        },
+        setRules: {
+          bestOf: 5,
+          gameRules: { scoreDistance: 2, scoreMinimum: 11 },
+        },
       },
     });
 
@@ -81,7 +86,8 @@
         {/if}
         <a
           class="name"
-          href={`#/tournament/${item.id}/${item.started ? "ranking" : "info"}`}>
+          href={`#/tournament/${item.id}/${item.started ? "ranking" : "info"}`}
+        >
           {item.name}
         </a>
 

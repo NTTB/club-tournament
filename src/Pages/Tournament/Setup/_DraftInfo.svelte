@@ -27,7 +27,7 @@
     // We here assume that tables that are shared are only shared between two teams.
     return Math.ceil(
       sum(src.pools, (x) => x.tablesExcl) +
-        (sum(src.pools, (x) => x.tablesShared) / 2)
+        sum(src.pools, (x) => x.tablesShared) / 2
     );
   }
 
@@ -79,17 +79,6 @@
   }
 </script>
 
-<style>
-  .notice,
-  .warning {
-    background-color: yellow;
-  }
-
-  .warning{
-    font-weight: bold;
-  }
-</style>
-
 <ul>
   <li>Vereist {suggestion.maxDuration} minuten bij best of 5 tot de 11.</li>
 
@@ -128,7 +117,7 @@
   {#if suggestion.tablesMax > 1}
     <li>Sommige pools spelen op meerdere tafels.</li>
   {/if}
-  
+
   {#if tournament.availableTables < suggestion.requiredTables}
     <li class="warning">
       De hoeveelheid tafels beschikbaar in dit toernooi ({tournament.availableTables})
@@ -136,19 +125,30 @@
     </li>
   {/if}
 
-  {#if tournament.defaultPoolSettings.setsPerMatch != 5}
+  {#if tournament.defaultPoolSettings.setRules.bestOf != 5}
     <li class="notice">
       De verwachte tijd is gebasseerd op best of 5. In dit toernooi win je een
       wedstrijd door middel van best of
-      {tournament.defaultPoolSettings.setsPerMatch}.
+      {tournament.defaultPoolSettings.setRules.bestOf}.
     </li>
   {/if}
-  {#if tournament.defaultPoolSettings.pointsPerSet != 11}
+  {#if tournament.defaultPoolSettings.setRules.gameRules.scoreMinimum != 11}
     <li class="notice">
       De verwachte tijd is gebasseerd op wedstrijden tot de 11 punten. In dit
       toernooi wordt er gespeeld tot
-      {tournament.defaultPoolSettings.pointsPerSet}
+      {tournament.defaultPoolSettings.setRules.gameRules.scoreMinimum}
       punten.
     </li>
   {/if}
 </ul>
+
+<style>
+  .notice,
+  .warning {
+    background-color: yellow;
+  }
+
+  .warning {
+    font-weight: bold;
+  }
+</style>

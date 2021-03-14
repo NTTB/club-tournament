@@ -10,8 +10,8 @@
   export let tournament: Tournament;
   export let pool: Pool;
 
-  const pointsPerSet = (pool.settings ?? tournament.defaultPoolSettings)
-    .pointsPerSet;
+  const settings = pool.settings || tournament.defaultPoolSettings;
+  const setRules = settings.setRules;
 
   const homePlayer: PoolPlayer = pool.players.find(
     (x) => x.playerTournamentId === set.homeTournamentId
@@ -43,56 +43,29 @@
   }
 
   function clearSetResult() {
-    set.winnerTournamentPlayerId = undefined;
-    set.resignTournamentPlayerId = undefined;
-    set.resignDuringPlay = undefined;
+    set.walkover = undefined;
   }
 
   function onScoreUpdate() {
     clearSetResult();
-
-    // Check if we can call the match.
-    var homeGamesWon = set.games
-      .filter((g) => g.homeScore >= pointsPerSet)
-      .filter((g) => g.homeScore - g.awayScore >= 2);
-    var awayGamesWon = set.games
-      .filter((g) => g.awayScore >= pointsPerSet)
-      .filter((g) => g.awayScore - g.homeScore >= 2);
-
-    var gamesToWin = Math.ceil(set.games.length / 2);
-
-    if (homeGamesWon.length >= gamesToWin) {
-      setWinner("home");
-    } else if (awayGamesWon.length >= gamesToWin) {
-      setWinner("away");
-    }
     dispatcher("update", set);
-  }
-
-  function otherSide(side: "home" | "away"): "home" | "away" {
-    if (side == "home") return "away";
-    return "home";
-  }
-
-  function getTournamentPlayerId(side: "home" | "away"): number {
-    return side == "home" ? set.homeTournamentId : set.awayTournamentId;
-  }
-
-  function setWinner(winner: "home" | "away") {
-    set.winnerTournamentPlayerId = getTournamentPlayerId(winner);
-    set.resignTournamentPlayerId = undefined;
   }
 
   function isGameComplete() {
     const settings = pool.settings || tournament.defaultPoolSettings;
-    const reqPoints = settings.pointsPerSet;
-    const reqGames = Math.ceil(settings.setsPerMatch / 2);
+    const scoreMinimum = settings.setRules.gameRules.scoreMinimum;
+    const scoreDistance = settings.setRules.gameRules.scoreDistance;
+    const reqGames = Math.ceil(settings.setRules.bestOf / 2);
 
     const wonHome = set.games.filter(
-      (x) => x.homeScore - x.awayScore >= 2 && x.homeScore >= reqPoints
+      (x) =>
+        x.homeScore - x.awayScore >= scoreDistance &&
+        x.homeScore >= scoreMinimum
     );
     const wonAway = set.games.filter(
-      (x) => x.awayScore - x.homeScore >= 2 && x.awayScore >= reqPoints
+      (x) =>
+        x.awayScore - x.homeScore >= scoreDistance &&
+        x.awayScore >= scoreMinimum
     );
 
     if (wonHome.length >= reqGames) return true;
@@ -101,61 +74,74 @@
   }
 
   function setResign(side: "home" | "away") {
+    const other: "home" | "away" = side === "home" ? "away" : "home";
     if (isGameComplete()) {
       alert("Unable to resign");
       return;
     }
 
-    set.winnerTournamentPlayerId = getTournamentPlayerId(otherSide(side));
-    set.resignTournamentPlayerId = getTournamentPlayerId(side);
-
     // Score is known
-    const pointsInSet = set.games.reduce(
+    const totalPoints = set.games.reduce(
       (pv, cv) => pv + cv.homeScore + cv.awayScore,
       0
     );
 
-    if (pointsInSet > 0) {
-      set.resignDuringPlay = true;
-    } else {
-      set.resignDuringPlay = !confirm(
+    let gameWasStarted = totalPoints > 0;
+
+    if (!gameWasStarted) {
+      // Game might have started even though there was no score.
+      gameWasStarted = !confirm(
         "Heeft de speler opgegeven voor dat de wedstrijd gestart is?"
       );
     }
 
-    if (set.resignDuringPlay) {
-      const settings = pool.settings || tournament.defaultPoolSettings;
-      const reqPoints = settings.pointsPerSet;
-      const reqGames = Math.ceil(settings.setsPerMatch / 2);
-      // Update so that have minimal amount of score so that resigned .
-      set.games.forEach((game) => {
-        const hasMinDiffInScore =
-          Math.abs(game.awayScore - game.homeScore) >= 2;
-        const mostPoints = Math.max(game.awayScore, game.homeScore);
-        const hasMinScore = mostPoints >= reqPoints;
-        console.log({ mostPoints, reqPoints, hasMinScore, hasMinDiffInScore });
-
-        if (hasMinScore && hasMinDiffInScore) return;
-
-        if (side == "home") {
-          const gamesWon = set.games.filter(
-            (x) => x.awayScore - x.homeScore >= 2 && x.awayScore >= reqPoints
-          );
-          if (gamesWon.length >= reqGames) return;
-
-          game.awayScore = Math.max(game.homeScore + 2, reqPoints);
-        } else {
-          const gamesWon = set.games.filter(
-            (x) => x.homeScore - x.awayScore >= 2 && x.homeScore >= reqPoints
-          );
-          if (gamesWon.length >= reqGames) return;
-
-          game.homeScore = Math.max(game.awayScore + 2, reqPoints);
-        }
-      });
+    if (!gameWasStarted) {
+      // Register the game as walkover, since the set was never played.
+      set.walkover = other;
+    } else {
+      // Set is considered played, update the score so that the other player wins.
+      forceWinner(side);
     }
 
     dispatcher("update", set);
+  }
+
+  function forceWinner(side: "home" | "away") {
+    const settings = pool.settings || tournament.defaultPoolSettings;
+    const scoreMinimum = settings.setRules.gameRules.scoreMinimum;
+    const scoreDistance = settings.setRules.gameRules.scoreDistance;
+    const reqGames = Math.ceil(settings.setRules.bestOf / 2);
+    // Update so that have minimal amount of score so that resigned .
+    set.games.forEach((game) => {
+      const hasMinDiffInScore = Math.abs(game.awayScore - game.homeScore) >= 2;
+      const mostPoints = Math.max(game.awayScore, game.homeScore);
+      const hasMinScore = mostPoints >= scoreMinimum;
+
+      if (hasMinScore && hasMinDiffInScore) return;
+
+      if (side == "home") {
+        const gamesWon = set.games.filter(
+          (x) =>
+            x.awayScore - x.homeScore >= scoreDistance &&
+            x.awayScore >= scoreMinimum
+        );
+        if (gamesWon.length >= reqGames) return;
+
+        game.awayScore = Math.max(game.homeScore + scoreDistance, scoreMinimum);
+      } else {
+        const gamesWon = set.games.filter(
+          (x) =>
+            x.homeScore - x.awayScore >= scoreDistance &&
+            x.homeScore >= scoreMinimum
+        );
+        if (gamesWon.length >= reqGames) return;
+
+        game.homeScore = Math.max(game.awayScore + scoreDistance, scoreMinimum);
+      }
+    });
+
+    // Create a new array to trigger view updates
+    set.games = [...set.games];
   }
 </script>
 
@@ -196,10 +182,20 @@
   </div>
   <div class="set-states">
     <div class="set-state set-state--home">
-      <PoolMatchState {set} side={"home"} on:giveUp={() => setResign("home")} />
+      <PoolMatchState
+        {set}
+        {setRules}
+        side={"home"}
+        on:giveUp={() => setResign("home")}
+      />
     </div>
     <div class="set-state set-state--away">
-      <PoolMatchState {set} side={"away"} on:giveUp={() => setResign("away")} />
+      <PoolMatchState
+        {set}
+        {setRules}
+        side={"away"}
+        on:giveUp={() => setResign("away")}
+      />
     </div>
   </div>
   <div class="sets">

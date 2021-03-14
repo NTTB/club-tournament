@@ -205,7 +205,7 @@ export function startPoolById(poolId: number, defaultPoolSettings: PoolSettings)
 
     if (pool.sets) throw new Error("The pool already has sets and can not be started");
 
-    pool.sets = generateSets(pool.players, (pool.settings ?? defaultPoolSettings).setsPerMatch);
+    pool.sets = generateSets(pool.players, (pool.settings ?? defaultPoolSettings).setRules.bestOf);
     return poolTable;
   });
 }

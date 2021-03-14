@@ -62,7 +62,7 @@
 
     if (draftMethod == "order") {
       var playerIndex = 0;
-      pools.forEach((pool, i) => {
+      pools.forEach((pool) => {
         for (var j = 0; j < pool.maxPlayerCount; j++) {
           movePlayerToPool(localPlayers[playerIndex], pool);
           playerIndex++;
@@ -80,14 +80,6 @@
     window.location.hash = `/tournament/${id}/pool`;
   }
 </script>
-
-<style>
-  .container {
-    --pageHeaderHeight: 125px;
-    height: calc(100vh - var(--pageHeaderHeight));
-    padding: 8px 16px;
-  }
-</style>
 
 {#await tournamentPromise}
   <TournamentHeader />
@@ -117,7 +109,8 @@
             name="auto-draft-pick"
             bind:group={selectedSuggestion}
             id={suggestion.key}
-            value={suggestion.key} />
+            value={suggestion.key}
+          />
           <label for={suggestion.key}> {suggestion.key} </label>
           {#if suggestion.key == selectedSuggestion}
             <div class="show-more">
@@ -136,7 +129,8 @@
           name="draft-method"
           id="draft-method-order"
           bind:group={draftMethod}
-          value="order" />
+          value="order"
+        />
         <label for="draft-method-order">Sterke spelers bij elkaar</label>
       </div>
 
@@ -146,7 +140,8 @@
           name="draft-method"
           id="draft-method-equal"
           bind:group={draftMethod}
-          value="equal" />
+          value="equal"
+        />
         <label for="draft-method-equal">Maak pools even sterk</label>
       </div>
     </div>
@@ -154,9 +149,18 @@
     <div style="margin-top: 20px">
       <NttbButton
         on:click={onStartClick}
-        disabled={selectedSuggestion == undefined || draftMethod == undefined}>
+        disabled={selectedSuggestion == undefined || draftMethod == undefined}
+      >
         Deel opnieuw in
       </NttbButton>
     </div>
   </div>
 {/await}
+
+<style>
+  .container {
+    --pageHeaderHeight: 125px;
+    height: calc(100vh - var(--pageHeaderHeight));
+    padding: 8px 16px;
+  }
+</style>

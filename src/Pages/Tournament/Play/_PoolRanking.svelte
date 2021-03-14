@@ -29,41 +29,20 @@
     var away = match
       .getPlayers()
       .find((x) => x.player.playerTournamentId == set.awayTournamentId).id;
-    if (set.resignTournamentPlayerId) {
-      if (!set.resignDuringPlay) {
-        // Walkover
-        if (set.winnerTournamentPlayerId === set.homeTournamentId) {
-          match.addSet(home, away, { games: [], walkover: "home" });
-        } else {
-          match.addSet(home, away, { games: [], walkover: "away" });
-        }
-        return;
-      }
+
+    if (set.walkover) {
+      match.addSet(home, away, { games: [], walkover: set.walkover });
+      return;
     }
 
     match.addSet(home, away, { games: set.games });
   });
 
-  const setRules = {
-    bestOf:
-      pool.settings?.setsPerMatch ||
-      tournament.defaultPoolSettings.setsPerMatch,
-    gameRules: {
-      scoreMinimum:
-        pool.settings?.pointsPerSet ||
-        tournament.defaultPoolSettings.pointsPerSet,
-      scoreDistance: 2,
-    },
-  };
+  const settings = pool.settings || tournament.defaultPoolSettings;
+  const setRules = settings.setRules;
+  const matchRules = settings.matchRules;
 
-  const victoryPoints =
-    pool.settings?.scorePerWin || tournament.defaultPoolSettings.scorePerWin;
-
-  var ranking = generateMatchRank(
-    match,
-    { victoryPoints: victoryPoints, defeatPoints: victoryPoints - 1 },
-    setRules
-  );
+  var ranking = generateMatchRank(match, matchRules, setRules);
 
   var totals: {
     set: { won: number; lost: number };

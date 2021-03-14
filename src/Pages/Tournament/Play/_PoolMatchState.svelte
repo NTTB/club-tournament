@@ -1,12 +1,16 @@
 <script lang="ts">
+  import type { TTSet, TTSetRules } from "@nttb/tt-match-ranking";
+  import type { MatchSet } from "../../../data/match-set";
+
   import FaTrophy from "svelte-icons/fa/FaTrophy.svelte";
   import FaCross from "svelte-icons/fa/FaTimes.svelte";
   import { createEventDispatcher } from "svelte";
 
-  import type { MatchSet } from "../../../data/match-set";
+  import { getSetWinner } from "@nttb/tt-match-ranking/dist/helpers";
 
   export let set: MatchSet;
   export let side: "home" | "away";
+  export let setRules: TTSetRules;
 
   interface Events {
     win: void;
@@ -25,13 +29,14 @@
   let hasWon = false;
   let hasGivenUp = false;
 
-  function getTournamentPlayerId(side: "home" | "away"): number {
-    return side == "home" ? set.homeTournamentId : set.awayTournamentId;
-  }
-
   $: {
-    hasWon = set.winnerTournamentPlayerId == getTournamentPlayerId(side);
-    hasGivenUp = set.resignTournamentPlayerId == getTournamentPlayerId(side);
+    const ttSet: TTSet = {
+      walkover: set.walkover,
+      games: set.games,
+    };
+
+    hasWon = getSetWinner(ttSet, setRules) === side || set.walkover === side;
+    hasGivenUp = set.walkover && set.walkover !== side;
   }
 </script>
 

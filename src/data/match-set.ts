@@ -9,7 +9,5 @@ export interface MatchSet {
   homeTournamentId: number;
   awayTournamentId: number;
   games: MatchGame[];
-  winnerTournamentPlayerId?: number;
-  resignTournamentPlayerId?: number;
-  resignDuringPlay?: boolean;
+  walkover?: "home" | "away";
 }
