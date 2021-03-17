@@ -1,8 +1,17 @@
 <script lang="ts">
   import type { TournamentPlayer } from "../data/tournament-player";
-
+  import FaUserCircle from "svelte-icons/fa/FaUserCircle.svelte";
   export let player: TournamentPlayer;
 </script>
+
+<div class="player-card" on:click>
+  <div class="avatar"><FaUserCircle /></div>
+  <div class="name">{player.info.name}</div>
+  <div class="rating">
+    <span class="symbol">r</span>{player.info.rating}
+  </div>
+  <div class="division-and-club">{player.info.club} - {player.info.class}</div>
+</div>
 
 <style>
   .player-card {
@@ -21,12 +30,13 @@
     background-color: #f1f1f1;
   }
 
-  .player-card img {
+  .player-card .avatar {
+    height: 48px;
+    width: 48px;
+    box-shadow: black 0px 0px 3px;
+
     align-self: center;
     grid-area: img;
-    height: 52px;
-    width: 52px;
-    border: 3px solid var(--nttb-blue);
     border-radius: 100%;
     box-sizing: border-box;
   }
@@ -51,12 +61,3 @@
     font-weight: bold;
   }
 </style>
-
-<div class="player-card" on:click>
-  <img src={player.info.img} alt={player.info.name} />
-  <div class="name">{player.info.name}</div>
-  <div class="rating">
-    <span class="symbol">r</span>{player.info.rating}
-  </div>
-  <div class="division-and-club">{player.info.club} - {player.info.class}</div>
-</div>

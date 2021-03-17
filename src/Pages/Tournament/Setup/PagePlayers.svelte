@@ -1,21 +1,23 @@
 <script lang="ts">
+  import PlayerSearchBar from "./PlayerSearchBar.svelte";
+  import { writable, derived } from "svelte/store";
   import TournamentHeader from "../_Header.svelte";
   import PageToggle from "./_PageToggle.svelte";
   import Toaster from "../../../Shared/Toaster.svelte";
   import PlayerInfo from "../../../Common/PlayerInfo.svelte";
+  import CustomPlayerForm from "../../../Player/CustomPlayerForm.svelte";
 
   import PoolPlayerCard from "../../../Common/PoolPlayerCard.svelte";
-  import SearchCardPlayer from "../../../Common/SearchCardPlayer.svelte";
-  import SearchCardClub from "../../../Common/SearchCardClub.svelte";
-  import SearchCardCustomPlayer from "../../../Common/SearchCardCustomPlayer.svelte";
-  import { PlayerData } from "../../../data-players";
-  import { ClubData } from "../../../data-clubs";
   import {
     getPlayersFromTournament,
     removePlayerFromTournament,
+    addPlayerToTournament,
   } from "../../../data/tournament-player-functions";
+  import { customPlayerService } from "../../../data/custom-player/custom-player.service";
   import { findTournamentById } from "../../../data/tournament";
   import type { TournamentPlayer } from "../../../data/tournament-player";
+  import PlayerSearch from "./PlayerSearch.svelte";
+  import type { CustomPlayer } from "../../../data/custom-player/custom-player";
 
   /**
    * Tournament Id
@@ -23,115 +25,123 @@
   export let id: string;
 
   var tournamentPromise = findTournamentById(+id);
-  var tournamentPlayersStore = getPlayersFromTournament(+id);
+  var players$ = getPlayersFromTournament(+id);
+
+  // Search
   let searchQuery = "";
-  let searchInput: HTMLInputElement;
-  $: searchTerms = [
-    ...new Set(searchQuery.split(/\W+/).map((x) => x.trim().toLowerCase())),
-  ];
-  $: playerResults = PlayerData.filter(
-    // Don't include players, that are already on the list
-    (x) => !$tournamentPlayersStore.find((y) => y.nttbId === x.id)
-  ).filter((x) => {
-    return (
-      searchTerms.every((t) => x.name.toLowerCase().includes(t)) ||
-      searchTerms.every((t) => x.club.toLowerCase().includes(t)) ||
-      x.id.toString(10) == searchQuery.trim()
-    );
-  });
 
-  $: searchIsNumeric = searchQuery.trim().match(/\d+/);
+  // Filtering
+  let filterTerms$ = writable<string[]>([]);
 
-  $: clubResults = ClubData.filter((x) =>
-    x.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Create
+  let customPlayer: CustomPlayer;
+
+  let toasterMode: "add" | "edit" | "show" = undefined;
+
+  let visiblePlayers$ = derived(
+    [players$, filterTerms$],
+    ([players, filterTerms]) => {
+      if (filterTerms.length === 0) return players;
+      return filterPlayers(players, filterTerms);
+    }
   );
 
-  $: showSearch = searchQuery.length > 2;
-  $: showCustom = !searchIsNumeric;
+  let playerSearchBar: PlayerSearchBar;
 
-  tournamentPlayersStore.subscribe(() => {
-    searchQuery = "";
-    if (searchInput) searchInput.focus();
+  players$.subscribe(() => {
+    playerSearchBar?.clearFilter();
   });
 
-  let showCard = false;
   let selectedPlayer: TournamentPlayer = undefined;
-  function onPlayerClick(player: TournamentPlayer) {
-    console.log("Selecting a player");
-    selectedPlayer = player;
+
+  function filterPlayers(
+    players: TournamentPlayer[],
+    filterTerms: string[]
+  ): TournamentPlayer[] {
+    return players.filter((player) =>
+      filterTerms.every((term) => {
+        return playerHasTerm(player, term);
+      })
+    );
   }
-  function closeToaster() {
-    selectedPlayer = undefined;
+
+  function playerHasTerm(player: TournamentPlayer, term: string): boolean {
+    if (player.info.name.toLowerCase().includes(term)) return true;
+    if (player.info.club.toLowerCase().includes(term)) return true;
+    if (player.nttbId && player.nttbId.toString(10).includes(term)) return true;
+    return false;
+  }
+
+  function onPlayerClick(player: TournamentPlayer) {
+    selectedPlayer = player;
+    toasterMode = "show";
+  }
+
+  function hideToaster() {
+    toasterMode = undefined;
   }
 
   function removePlayer() {
     removePlayerFromTournament(+id, selectedPlayer);
     selectedPlayer = undefined;
+    toasterMode = undefined;
   }
-  $: {
-    showCard = !!selectedPlayer;
+
+  interface PlayerSearchBarEvent {
+    mode: "add" | "filter";
+    query: string;
+  }
+
+  function onSearchBarUpdate(ev: PlayerSearchBarEvent) {
+    if (ev.mode === "filter") {
+      const searchTerms = Array.from(
+        new Set(ev.query.split(/ /).map((x) => x.trim().toLowerCase()))
+      ).filter((x) => x.length);
+      filterTerms$.set(searchTerms);
+    } else {
+      filterTerms$.set([]);
+    }
+
+    if (ev.mode === "add") {
+      searchQuery = ev.query;
+    } else {
+      searchQuery = "";
+    }
+  }
+
+  function onAddCustomPlayer(player: CustomPlayer) {
+    addPlayerToTournament(+id, player);
+  }
+
+  function onEditCustomPlayer(player: CustomPlayer) {
+    // Show the card in create mode
+    console.log("hi");
+    customPlayer = player;
+    toasterMode = "add";
+    playerSearchBar.clearFilter();
+  }
+
+  function onCreateCustomPlayer() {
+    // Show the card in create mode
+    customPlayer = {
+      type: "custom",
+      id: undefined,
+      img: undefined,
+      name: "",
+      club: "",
+      rating: 0,
+      class: "",
+    };
+    toasterMode = "add";
+    playerSearchBar.clearFilter();
+  }
+
+  async function onSaveCreatePlayer(createdPlayer: CustomPlayer) {
+    toasterMode = undefined;
+    var createdPlayer = await customPlayerService.create(createdPlayer);
+    addPlayerToTournament(+id, createdPlayer);
   }
 </script>
-
-<style>
-  .container {
-    --pageHeaderHeight: 125px;
-    display: grid;
-    grid-template-rows: 50px 1fr;
-    grid-template-columns: 48px 1fr;
-    grid-template-areas:
-      "top-left search-row"
-      "bottom-left player-list";
-    height: calc(100vh - var(--pageHeaderHeight));
-    max-height: calc(100vh - var(--pageHeaderHeight));
-  }
-
-  .top-left {
-    grid-area: top-left;
-    border-top: 1px solid var(--nttb-blue);
-    border-right: 1px solid var(--nttb-blue);
-  }
-  .bottom-left {
-    grid-area: bottom-left;
-    border-right: 1px solid var(--nttb-blue);
-  }
-  .results {
-    z-index: 1;
-    position: fixed;
-    background-color: white;
-    box-shadow: 0 0 10px black;
-    width: calc(100vw - 64px);
-    max-height: calc(100vh - 186px);
-    overflow: auto;
-  }
-
-  .player-list {
-    grid-area: player-list;
-    overflow: auto;
-
-    box-sizing: border-box;
-  }
-
-  .search-row {
-    border-top: 1px solid var(--nttb-blue);
-    border-bottom: 1px solid var(--nttb-orange);
-    grid-area: search-row;
-    background-color: var(--nttb-orange);
-    align-content: center;
-    justify-content: center;
-    padding: 8px;
-    padding-bottom: unset;
-  }
-
-  h4 {
-    border-bottom: 1px solid black;
-    margin-bottom: 8px;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-</style>
 
 {#await tournamentPromise}
   <TournamentHeader />
@@ -143,45 +153,80 @@
   <TournamentHeader title={tournament.name} />
   <PageToggle {id} mode="players" />
   <div class="container">
-    <div class="top-left" />
-    <div class="search-row">
-      <input
-        class="search-input"
-        type="text"
-        placeholder="Zoek op club, spelernaam of bondsnummer"
-        bind:value={searchQuery}
-        bind:this={searchInput} />
-
-      {#if showSearch}
-        <div class="results">
-          {#each clubResults as club}
-            <SearchCardClub {club} tournamentId={+id} />
-          {/each}
-
-          {#each playerResults as result}
-            <SearchCardPlayer player={result} tournamentId={+id} />
-          {/each}
-          {#if showCustom}
-            <SearchCardCustomPlayer />
-          {/if}
-        </div>
-      {/if}
+    <div class="header">
+      <PlayerSearchBar
+        on:update={(ev) => onSearchBarUpdate(ev.detail)}
+        bind:this={playerSearchBar}
+      />
     </div>
 
-    <div class="bottom-left" />
     <div class="player-list">
-      {#each $tournamentPlayersStore as player}
+      <PlayerSearch
+        {id}
+        {searchQuery}
+        on:addCustomPlayer={(ev) => onAddCustomPlayer(ev.detail)}
+        on:editCustomPlayer={(ev) => onEditCustomPlayer(ev.detail)}
+        on:createCustomPlayer={() => onCreateCustomPlayer()}
+      />
+
+      {#each $visiblePlayers$ as player}
         <PoolPlayerCard {player} on:click={() => onPlayerClick(player)} />
       {/each}
     </div>
   </div>
-  {#if showCard}
-    <Toaster on:backgroundClicked={closeToaster}>
+  {#if toasterMode === "show"}
+    <Toaster on:backgroundClicked={hideToaster}>
       <h3 slot="title">{selectedPlayer.info.name}</h3>
       <h4>Speler informatie</h4>
       <PlayerInfo player={selectedPlayer} />
       <h4>Verwijder uit toernooi</h4>
       <button on:click={removePlayer}>Verwijder speler uit toernooi</button>
     </Toaster>
+  {:else if toasterMode === "add"}
+    <Toaster on:backgroundClicked={hideToaster}>
+      <CustomPlayerForm
+        on:save={(ev) => onSaveCreatePlayer(ev.detail)}
+        player={customPlayer}
+      />
+    </Toaster>
   {/if}
 {/await}
+
+<style>
+  .container {
+    --pageHeaderHeight: 125px;
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "player-list";
+    height: calc(100vh - var(--pageHeaderHeight));
+    max-height: calc(100vh - var(--pageHeaderHeight));
+    width: 100%;
+  }
+
+  .header {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-area: header;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-top: 1px solid var(--nttb-blue);
+    border-bottom: 1px solid var(--nttb-orange);
+    background-color: var(--nttb-orange);
+    place-content: center;
+  }
+
+  .player-list {
+    grid-area: player-list;
+    overflow: auto;
+
+    box-sizing: border-box;
+  }
+
+  h4 {
+    border-bottom: 1px solid black;
+    margin-bottom: 8px;
+  }
+</style>

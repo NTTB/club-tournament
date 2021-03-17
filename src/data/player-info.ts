@@ -1,7 +1,3 @@
-export interface PlayerInfo {
-    name: string;
-    club: string;
-    rating: number;
-    class: string;
-    img: string;
-}
+import type { CustomPlayer } from "./custom-player/custom-player";
+
+export type PlayerInfo = CustomPlayer;

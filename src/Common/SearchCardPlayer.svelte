@@ -1,33 +1,35 @@
 <script lang="ts">
-  import type { NttbPlayer } from "../data/nttb-player";
-  import { addPlayerToTournament } from "../data/tournament-player-functions";
   import MdAddCircleOutline from "svelte-icons/md/MdAddCircleOutline.svelte";
+  import FaUserCircle from "svelte-icons/fa/FaUserCircle.svelte";
+  import type { CustomPlayer } from "../data/custom-player/custom-player";
+  import { createEventDispatcher } from "svelte";
 
-  export let tournamentId: number;
+  export let player: CustomPlayer;
 
-  export let player: NttbPlayer = {
-    name: "fake-name",
-    club: "fake-club",
-    rating: -1,
-    class: "fake-class",
-    id: 123456789,
-    img: "/assets/wouter.png",
-  };
-
-  function addPlayer() {
-    addPlayerToTournament(
-      tournamentId,
-      {
-        class: player.class,
-        club: player.club,
-        img: player.img,
-        name: player.name,
-        rating: player.rating,
-      },
-      player.id
-    );
+  interface Events {
+    add: CustomPlayer;
+    edit: CustomPlayer;
   }
+
+  const dispatcher = createEventDispatcher<Events>();
 </script>
+
+<div class="card">
+  <div class="avatar"><FaUserCircle /></div>
+  <div class="row row-1">
+    <div class="player-name">{player.name}</div>
+    <div class="class-rating">{player.class} - {player.rating}</div>
+  </div>
+  <div class="row row-2">
+    <div class="club-name">{player.club}</div>
+    <div class="bondsnumber">
+      <button on:click={() => dispatcher("edit", player)}>Edit</button>
+    </div>
+  </div>
+  <div class="button" on:click={() => dispatcher("add", player)}>
+    <MdAddCircleOutline />
+  </div>
+</div>
 
 <style>
   .card {
@@ -82,18 +84,3 @@
     grid-area: button;
   }
 </style>
-
-<div class="card" on:click={addPlayer}>
-  <img class="avatar" src={player.img} alt="Wouter" />
-  <div class="row row-1">
-    <div class="player-name">{player.name}</div>
-    <div class="class-rating">{player.class} - {player.rating}</div>
-  </div>
-  <div class="row row-2">
-    <div class="club-name">{player.club}</div>
-    <div class="bondsnumber">{player.id}</div>
-  </div>
-  <div class="button">
-    <MdAddCircleOutline />
-  </div>
-</div>
