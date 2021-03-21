@@ -10,7 +10,9 @@
   <div class="rating">
     <span class="symbol">r</span>{player.info.rating}
   </div>
-  <div class="division-and-club">{player.info.club} - {player.info.class}</div>
+  <div class="division-and-club">
+    {player.info.club || "N/A"} - {player.info.class || "???"}
+  </div>
 </div>
 
 <style>

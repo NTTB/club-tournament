@@ -17,15 +17,16 @@
 
   let filterQuery: string = "";
   let filterInput: HTMLElement;
-  let mode: "add" | "filter" = "add";
+  export let allowedMode: ("add" | "filter")[] = ["add", "filter"];
+  export let mode: "add" | "filter" = "add";
   let inputPlaceholder = "";
 
   $: {
     if (mode === "add") {
       inputPlaceholder =
-        "Zoek nieuwe spelers op club, spelernaam of bondsnummer";
+        "Zoek nieuwe spelers op naam of club";
     } else {
-      inputPlaceholder = "Filter spelers op club, spelernaam of bondsnummer";
+      inputPlaceholder = "Filter spelers naam of club";
     }
   }
 
@@ -40,22 +41,32 @@
     mode = newMode;
   }
 
+  export function getQueryText() {
+    return filterQuery;
+  }
+
   export function clearFilter() {
     filterQuery = "";
   }
 </script>
 
 <div class="container">
-  <button
-    class="filter-button"
-    class:active={mode == "filter"}
-    on:click={() => setMode("filter")}><IoIosFunnel /></button
-  >
-  <button
-    class="add-button"
-    class:active={mode == "add"}
-    on:click={() => setMode("add")}><IoMdPersonAdd /></button
-  >
+  <div class="buttons">
+    {#if allowedMode.includes("filter")}
+      <button
+        class="filter-button"
+        class:active={mode == "filter"}
+        on:click={() => setMode("filter")}><IoIosFunnel /></button
+      >
+    {/if}
+    {#if allowedMode.includes("add")}
+      <button
+        class="add-button"
+        class:active={mode == "add"}
+        on:click={() => setMode("add")}><IoMdPersonAdd /></button
+      >
+    {/if}
+  </div>
   <input
     type="text"
     placeholder={inputPlaceholder}
@@ -67,9 +78,12 @@
 <style>
   .container {
     display: grid;
-    grid-template-columns: 34px 34px 1fr;
+    grid-template-columns: max-content 1fr;
     align-content: center;
     justify-content: center;
+  }
+  .buttons {
+    display: flex;
   }
   button {
     background-color: white;
@@ -82,6 +96,7 @@
   }
 
   button {
+    width: 34px;
     border: 1px solid var(--nttb-blue);
     box-sizing: border-box;
     place-content: right;

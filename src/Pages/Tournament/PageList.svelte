@@ -11,6 +11,12 @@
     startTournament,
   } from "../../data/tournament";
   import type { Tournament } from "../../data/tournament";
+  import type { HeaderAction } from "../../Shared/HeaderAction";
+
+  var menuActions: HeaderAction[] = [
+    { title: "Toernooien", url: "#/" },
+    { title: "Spelers", url: "#/players" },
+  ];
 
   var items = getAllTournaments();
 
@@ -67,7 +73,7 @@
 </script>
 
 <div class="header">
-  <Header title="Toernooien" />
+  <Header title="Toernooien" {menuActions} />
 </div>
 <div class="container">
   {#await $items}

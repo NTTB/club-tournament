@@ -78,6 +78,7 @@
   }
 
   function hideToaster() {
+    console.log("hideToaster");
     toasterMode = undefined;
   }
 
@@ -115,9 +116,8 @@
 
   function onEditCustomPlayer(player: CustomPlayer) {
     // Show the card in create mode
-    console.log("hi");
     customPlayer = player;
-    toasterMode = "add";
+    toasterMode = "edit";
     playerSearchBar.clearFilter();
   }
 
@@ -127,9 +127,9 @@
       type: "custom",
       id: undefined,
       img: undefined,
-      name: "",
+      name: playerSearchBar.getQueryText(),
       club: "",
-      rating: 0,
+      rating: undefined,
       class: "",
     };
     toasterMode = "add";
@@ -137,9 +137,16 @@
   }
 
   async function onSaveCreatePlayer(createdPlayer: CustomPlayer) {
+    console.log("onSaveCreatePlayer");
     toasterMode = undefined;
     var createdPlayer = await customPlayerService.create(createdPlayer);
     addPlayerToTournament(+id, createdPlayer);
+  }
+
+  async function onUpdatePlayer(updatedPlayer: CustomPlayer) {
+    console.log("onUpdatePlayer");
+    toasterMode = undefined;
+    customPlayerService.update(updatedPlayer);
   }
 </script>
 
@@ -186,6 +193,13 @@
     <Toaster on:backgroundClicked={hideToaster}>
       <CustomPlayerForm
         on:save={(ev) => onSaveCreatePlayer(ev.detail)}
+        player={customPlayer}
+      />
+    </Toaster>
+  {:else if toasterMode === "edit"}
+    <Toaster on:backgroundClicked={hideToaster}>
+      <CustomPlayerForm
+        on:save={(ev) => onUpdatePlayer(ev.detail)}
         player={customPlayer}
       />
     </Toaster>

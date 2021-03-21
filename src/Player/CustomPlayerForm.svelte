@@ -19,23 +19,30 @@
     class: "",
   };
 
+  let disabled = false;
+  $: {
+    disabled = false;
+    disabled = disabled || player.name.trim().length === 0;
+    disabled = disabled || typeof player.rating !== "number";
+  }
+
   function saveClick() {
     dispatcher("save", player);
   }
 </script>
 
-<div class="form">
+<form class="form" on:submit={saveClick}>
   <div class="row">
     <label for="name">Naam</label>
     <input id="name" type="text" bind:value={player.name} />
   </div>
   <div class="row">
-    <label for="club">Club</label>
-    <input id="club" type="text" bind:value={player.club} />
-  </div>
-  <div class="row">
     <label for="rating">Rating</label>
     <input id="rating" type="number" bind:value={player.rating} />
+  </div>
+  <div class="row">
+    <label for="club">Club</label>
+    <input id="club" type="text" bind:value={player.club} />
   </div>
   <div class="row">
     <label for="class">Niveau</label>
@@ -44,9 +51,9 @@
 
   <div class="row">
     <div><!--spanner--></div>
-    <button on:click={saveClick}>Opslaan</button>
+    <button type="submit" {disabled}>Opslaan</button>
   </div>
-</div>
+</form>
 
 <style>
   .row {
