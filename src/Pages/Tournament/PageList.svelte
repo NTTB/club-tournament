@@ -80,13 +80,19 @@
     <p>Loading...</p>
   {:then items}
     {#each items as item}
-      <div class="item">
+      <div class="item" data-tournament={item.name}>
         {#if item.started}
-          <button on:click={() => editTournament(item)}>
+          <button
+            on:click={() => editTournament(item)}
+            data-test="edit-tournament-button"
+          >
             <MdSettings />
           </button>
         {:else}
-          <button on:click={() => playTournament(item)}>
+          <button
+            on:click={() => playTournament(item)}
+            data-test="start-tournament-button"
+          >
             <MdPlayArrow />
           </button>
         {/if}
@@ -105,7 +111,11 @@
   {/await}
 
   <div class="right">
-    <button class="new-tournament-button" on:click={newTournament}>
+    <button
+      class="new-tournament-button"
+      on:click={newTournament}
+      data-test="new-tournament-button"
+    >
       Nieuw toernooi maken
     </button>
   </div>

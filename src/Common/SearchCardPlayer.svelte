@@ -14,7 +14,7 @@
   const dispatcher = createEventDispatcher<Events>();
 </script>
 
-<div class="card">
+<div class="card" data-test="search-card-player" data-player={player.name}>
   <div class="avatar"><FaUserCircle /></div>
   <div class="row row-1">
     <div class="player-name">{player.name}</div>
@@ -26,7 +26,11 @@
       <button on:click={() => dispatcher("edit", player)}>Edit</button>
     </div>
   </div>
-  <div class="button" on:click={() => dispatcher("add", player)}>
+  <div
+    data-test="add-button"
+    class="button"
+    on:click={() => dispatcher("add", player)}
+  >
     <MdAddCircleOutline />
   </div>
 </div>

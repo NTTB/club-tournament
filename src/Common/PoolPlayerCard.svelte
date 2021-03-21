@@ -4,7 +4,12 @@
   export let player: TournamentPlayer;
 </script>
 
-<div class="player-card" on:click>
+<div
+  data-test="pool-player-card"
+  data-player={player.info.name}
+  class="player-card"
+  on:click
+>
   <div class="avatar"><FaUserCircle /></div>
   <div class="name">{player.info.name}</div>
   <div class="rating">

@@ -39,7 +39,9 @@
 </script>
 
 <Header title="Spelers" backUrl="#/">
-  <a href="#/players/create" class="header-link"><TiPlus /></a>
+  <a href="#/players/create" class="header-link" data-test="new-player-button"
+    ><TiPlus /></a
+  >
 </Header>
 
 <div class="filter-bar">

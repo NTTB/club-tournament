@@ -45,12 +45,13 @@
 
 <Header title="Nieuwe speler" backUrl="#/players" />
 
-<form class="form" on:submit={onSubmit}>
+<form class="form" on:submit|preventDefault={onSubmit}>
   <div class="row">
     <label for="name">Naam</label>
     <input
       id="name"
       type="text"
+      data-test="name-input"
       bind:value={player.name}
       placeholder="Naam van de speler"
       bind:this={nameInput}
@@ -61,6 +62,7 @@
     <input
       id="rating"
       type="number"
+      data-test="rating-input"
       bind:value={player.rating}
       placeholder="De rating van de speler die gebruikt wordt bij het indelen"
     />
@@ -83,7 +85,7 @@
   <div class="row">
     <div><!--spanner--></div>
     <div class="button-split">
-      <button type="submit" disabled={submitDisabled}>Opslaan</button>
+      <button data-test="save-button" type="submit" disabled={submitDisabled}>Opslaan</button>
       <button type="button" disabled={submitDisabled} on:click={createAndReset}
         >Opslaan en nog 1 maken</button
       >

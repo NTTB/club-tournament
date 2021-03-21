@@ -21,6 +21,14 @@
   ];
 </script>
 
+<div class="container">
+  {#each routes as route}
+    <a data-test="page-toggle" class:selected={route.selected} href={route.href}
+      >{route.text}</a
+    >
+  {/each}
+</div>
+
 <style>
   .container {
     display: grid;
@@ -54,9 +62,3 @@
     background-color: var(--nttb-blue);
   }
 </style>
-
-<div class="container">
-  {#each routes as route}
-    <a class:selected={route.selected} href={route.href}>{route.text}</a>
-  {/each}
-</div>

@@ -133,6 +133,84 @@
   }
 </script>
 
+{#await tournamentPromise}
+  <TournamentHeader />
+  <PageToggle {id} mode="pool" />
+  <div class="container">
+    <p>Loading...</p>
+  </div>
+{:then tournament}
+  <TournamentHeader title={tournament.name} />
+  <PageToggle {id} mode="pool" />
+
+  <div class="container">
+    <div class="left">
+      <div class="left__center" class:noscroll={showPlayerCard}>
+        {#each currentPools as pool}
+          <button class="tab" on:click={() => selectPool(pool)}
+            >{`${pool.name}:${pool.players.length}`}</button
+          >
+        {/each}
+      </div>
+      <div class="left__bottom">
+        <button class="tab new" data-test="new-pool-button" on:click={createPool}>+</button>
+        <button class="tab active" on:click={selectReservePool}>RES</button>
+      </div>
+    </div>
+    <div class="right">
+      <div class="right__header" class:right__header--reserve={canAutoDraft}>
+        <div class="header">{playerHeaderTitle}</div>
+        {#if canDeletePool}
+          <button on:click={onPoolSettingsClick}><MdSettings /></button>
+        {/if}
+        {#if canAutoDraft}
+          <div>
+            <a class="secondary" href={`#/tournament/${id}/pool/auto-draft`}
+              >Snel Indelen</a
+            >
+          </div>
+        {/if}
+      </div>
+      <div class="right__bottom" class:noscroll={showPlayerCard}>
+        {#each currentPlayers as player}
+          <PoolPlayerCard {player} on:click={() => onPlayerClick(player)} />
+        {/each}
+
+        {#if currentPlayers.length == 0}
+          <Hint>
+            {selectedPool == undefined
+              ? `Er zijn geen reserve spelers`
+              : `Er zijn geen spelers in Poule ${selectedPool.name}`}
+          </Hint>
+        {/if}
+      </div>
+    </div>
+  </div>
+
+  {#if showPlayerCard}
+    <Toaster on:backgroundClicked={hidePlayerCard}>
+      <h3 slot="title">{selectedPlayer.info.name}</h3>
+      <PoolPlayerToasterBody
+        player={selectedPlayer}
+        pools={currentPools}
+        {selectedPool}
+        on:moveToPool={(ev) => moveToPool(ev.detail)}
+      />
+    </Toaster>
+  {/if}
+
+  {#if showPoolCard}
+    <Toaster on:backgroundClicked={hidePoolCard}>
+      <h3>{selectedPool.name}</h3>
+      <PoolToaster
+        {tournament}
+        {selectedPool}
+        on:deletePool={onPoolDeleteClick}
+      />
+    </Toaster>
+  {/if}
+{/await}
+
 <style>
   .container {
     --pageHeaderHeight: 125px;
@@ -238,77 +316,3 @@
     text-decoration: none;
   }
 </style>
-
-{#await tournamentPromise}
-  <TournamentHeader />
-  <PageToggle {id} mode="pool" />
-  <div class="container">
-    <p>Loading...</p>
-  </div>
-{:then tournament}
-  <TournamentHeader title={tournament.name} />
-  <PageToggle {id} mode="pool" />
-
-  <div class="container">
-    <div class="left">
-      <div class="left__center" class:noscroll={showPlayerCard}>
-        {#each currentPools as pool}
-          <button
-            class="tab"
-            on:click={() => selectPool(pool)}>{`${pool.name}:${pool.players.length}`}</button>
-        {/each}
-      </div>
-      <div class="left__bottom">
-        <button class="tab new" on:click={createPool}>+</button>
-        <button class="tab active" on:click={selectReservePool}>RES</button>
-      </div>
-    </div>
-    <div class="right">
-      <div class="right__header" class:right__header--reserve={canAutoDraft}>
-        <div class="header">{playerHeaderTitle}</div>
-        {#if canDeletePool}
-          <button on:click={onPoolSettingsClick}><MdSettings /></button>
-        {/if}
-        {#if canAutoDraft}
-          <div>
-            <a
-              class="secondary"
-              href={`#/tournament/${id}/pool/auto-draft`}>Snel Indelen</a>
-          </div>
-        {/if}
-      </div>
-      <div class="right__bottom" class:noscroll={showPlayerCard}>
-        {#each currentPlayers as player}
-          <PoolPlayerCard {player} on:click={() => onPlayerClick(player)} />
-        {/each}
-
-        {#if currentPlayers.length == 0}
-          <Hint>
-            {selectedPool == undefined ? `Er zijn geen reserve spelers` : `Er zijn geen spelers in Poule ${selectedPool.name}`}
-          </Hint>
-        {/if}
-      </div>
-    </div>
-  </div>
-
-  {#if showPlayerCard}
-    <Toaster on:backgroundClicked={hidePlayerCard}>
-      <h3 slot="title">{selectedPlayer.info.name}</h3>
-      <PoolPlayerToasterBody
-        player={selectedPlayer}
-        pools={currentPools}
-        {selectedPool}
-        on:moveToPool={(ev) => moveToPool(ev.detail)} />
-    </Toaster>
-  {/if}
-
-  {#if showPoolCard}
-    <Toaster on:backgroundClicked={hidePoolCard}>
-      <h3>{selectedPool.name}</h3>
-      <PoolToaster
-        {tournament}
-        {selectedPool}
-        on:deletePool={onPoolDeleteClick} />
-    </Toaster>
-  {/if}
-{/await}

@@ -26,6 +26,7 @@
     id="name"
     type="text"
     placeholder="Toernooi naam"
+    data-test="tournament-name-input"
     bind:value={tournament.name}
     on:change={() => dispatch("titleChanged", { title: tournament.name })}
     on:keyup={() => dispatch("titleChanged", { title: tournament.name })}
