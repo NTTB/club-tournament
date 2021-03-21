@@ -48,6 +48,8 @@
     set: { won: number; lost: number };
     games: { won: number; lost: number };
     score: { won: number; lost: number };
+    walkovers: number;
+    walkaways: number;
   }[] = [];
 
   ranking.ranked.forEach((rank) => {
@@ -58,8 +60,41 @@
       set: getSetsWonLost(rank, sets),
       games: getGamesWonLost(rank, sets),
       score: getScoreWonLost(rank, sets),
+      walkovers: getWalkovers(rank, sets),
+      walkaways: getWalkaways(rank, sets),
     };
   });
+
+  function getWalkovers(
+    src: TTPlayerRank<PoolPlayer>,
+    sets: TTMatchSet[]
+  ): number {
+    let result = 0;
+
+    result += sets.filter(
+      (x) => x.homePlayerId === src.id && x.set.walkover === "home"
+    ).length;
+    result += sets.filter(
+      (x) => x.awayPlayerId === src.id && x.set.walkover === "away"
+    ).length;
+
+    return result;
+  }
+
+  function getWalkaways(
+    src: TTPlayerRank<PoolPlayer>,
+    sets: TTMatchSet[]
+  ): number {
+    let result = 0;
+
+    result += sets.filter(
+      (x) => x.awayPlayerId === src.id && x.set.walkover === "home"
+    ).length;
+    result += sets.filter(
+      (x) => x.homePlayerId === src.id && x.set.walkover === "away"
+    ).length;
+    return result;
+  }
 
   function getSetsWonLost(
     src: TTPlayerRank<PoolPlayer>,
@@ -143,6 +178,7 @@
       <th colspan="2" style="text-align: left">Speler</th>
       <th class="col-points">P</th>
       <th style="text-align: center">Sets</th>
+      <th style="text-align: center">WO/WA</th>
       <th>Games</th>
       <th>Score</th>
     </tr>
@@ -157,6 +193,12 @@
           ><Ratio
             win={totals[ranked.id].set.won}
             lose={totals[ranked.id].set.lost}
+          /></td
+        >
+        <td
+          ><Ratio
+            win={totals[ranked.id].walkovers}
+            lose={totals[ranked.id].walkaways}
           /></td
         >
         <td
