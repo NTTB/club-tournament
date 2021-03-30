@@ -53,6 +53,7 @@
   var ranking = generateMatchRank(match, matchRules, setRules);
   var skipList: number[] = [];
   var dirtySameRank = false;
+  var showSameRankColumns = false;
   for (var i = 0; i < ranking.ranked.length; ++i) {
     var rank = ranking.ranked[i];
     if (skipList.includes(rank.id)) continue;
@@ -60,6 +61,7 @@
     var sameBatch = [rank.id, ...others];
     skipList.push(...sameBatch);
     if (others.length) {
+      showSameRankColumns = true;
       // If any of the sameBatch has a sameRank of 0 (which is no equal rank).
       // Then we will update the pool
       var samePlayerBatch = ranking.ranked.filter((x) =>
@@ -261,8 +263,9 @@
       <th style="text-align: center">WO/WA</th>
       <th>Games</th>
       <th>Score</th>
-      <th />
-      <th />
+      {#if showSameRankColumns}
+        <th colspan="2" />
+      {/if}
     </tr>
   </thead>
   <tbody>
@@ -300,14 +303,16 @@
             lose={totals[ranked.id].score.lost}
           /></td
         >
-        <td data-test="shares-rank">{sharing[ranked.id].others.join(",")}</td>
-        <td
-          ><RankSelector
-            rank={ranked}
-            {ranking}
-            on:changeRank={(ev) => changeRank(ev.detail)}
-          /></td
-        >
+        {#if showSameRankColumns}
+          <td
+            ><RankSelector
+              rank={ranked}
+              {ranking}
+              on:changeRank={(ev) => changeRank(ev.detail)}
+            /></td
+          >
+          <td data-test="shares-rank">{sharing[ranked.id].others.join(",")}</td>
+        {/if}
       </tr>
     {/each}
   </tbody>
