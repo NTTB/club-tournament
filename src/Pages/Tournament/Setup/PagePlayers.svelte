@@ -78,7 +78,6 @@
   }
 
   function hideToaster() {
-    console.log("hideToaster");
     toasterMode = undefined;
   }
 
@@ -137,14 +136,12 @@
   }
 
   async function onSaveCreatePlayer(createdPlayer: CustomPlayer) {
-    console.log("onSaveCreatePlayer");
     toasterMode = undefined;
     var createdPlayer = await customPlayerService.create(createdPlayer);
     addPlayerToTournament(+id, createdPlayer);
   }
 
   async function onUpdatePlayer(updatedPlayer: CustomPlayer) {
-    console.log("onUpdatePlayer");
     toasterMode = undefined;
     customPlayerService.update(updatedPlayer);
   }

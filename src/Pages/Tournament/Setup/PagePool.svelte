@@ -122,7 +122,6 @@
   }
 
   function moveToPool(pool: Pool) {
-    console.log(pool);
     if (!pool) {
       removePlayerFromTournamentPool(selectedPlayer, +id);
     } else {
