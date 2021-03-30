@@ -145,7 +145,11 @@
   }
 </script>
 
-<div class="match">
+<div
+  class="match"
+  data-home={homePlayer.info.name}
+  data-away={awayPlayer.info.name}
+>
   <div class="match-index">{set.orderId}</div>
   <div class="players">
     <div class="player">A: {homePlayer.info.name}</div>

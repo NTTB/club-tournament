@@ -120,7 +120,11 @@ export function movePlayerToPool(player: TournamentPlayer, pool: Pool) {
       .forEach(p => p.players = p.players.filter(x => x.playerTournamentId != player.id));
 
     if (pool) {
-      pool.players.push({ playerTournamentId: player.id, info: player.info });
+      pool.players.push({
+        playerTournamentId: player.id,
+        info: player.info,
+        sameRankOrder: 0
+      });
     }
 
     return src;

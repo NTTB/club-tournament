@@ -1,24 +1,32 @@
 <script lang="ts">
   import Ratio from "./_PoolRankingRatio.svelte";
+  import RankSelector from "./_RankSelector.svelte";
+
+  import type { TTMatchSet } from "@nttb/tt-match-ranking";
+  import type { Pool } from "../../../data/pool";
+  import type { PoolPlayer } from "../../../data/pool-player";
+  import type { Tournament } from "../../../data/tournament";
+
   import {
     TTMatch,
     generateMatchRank,
     TTPlayerRank,
   } from "@nttb/tt-match-ranking";
-  import type { TTMatchSet } from "@nttb/tt-match-ranking";
   import {
     getGameWinner,
     getSetWinner,
   } from "@nttb/tt-match-ranking/dist/helpers";
 
-  import type { Pool } from "../../../data/pool";
-  import type { PoolPlayer } from "../../../data/pool-player";
-  import type { Tournament } from "../../../data/tournament";
+  import { updatePool } from "../../../data/pool-functions";
+
   export let pool: Pool;
   export let tournament: Tournament;
 
   var match = new TTMatch<PoolPlayer>();
-  pool.players.forEach((player) => {
+  const poolPlayerSorted = [...pool.players].sort(
+    (a, b) => a.sameRankOrder - b.sameRankOrder
+  );
+  poolPlayerSorted.forEach((player) => {
     match.addPlayer(player);
   });
 
@@ -43,6 +51,40 @@
   const matchRules = settings.matchRules;
 
   var ranking = generateMatchRank(match, matchRules, setRules);
+  var skipList: number[] = [];
+  var dirtySameRank = false;
+  for (var i = 0; i < ranking.ranked.length; ++i) {
+    var rank = ranking.ranked[i];
+    if (skipList.includes(rank.id)) continue;
+    const others = rank.sharedWith || [];
+    var sameBatch = [rank.id, ...others];
+    skipList.push(...sameBatch);
+    if (others.length) {
+      // If any of the sameBatch has a sameRank of 0 (which is no equal rank).
+      // Then we will update the pool
+      var samePlayerBatch = ranking.ranked.filter((x) =>
+        sameBatch.includes(x.id)
+      );
+      var generateSameRankOrder = samePlayerBatch.some(
+        (x) => x.player.sameRankOrder == 0
+      );
+      if (generateSameRankOrder) {
+        samePlayerBatch.forEach((r, i) => {
+          r.player.sameRankOrder = i + 1;
+        });
+        dirtySameRank = true;
+      }
+    } else {
+      // Expect same rank to be zero
+      if (rank.player.sameRankOrder == 0) continue;
+      rank.player.sameRankOrder = 0;
+      dirtySameRank = true;
+    }
+  }
+
+  if (dirtySameRank) {
+    updatePool(pool);
+  }
 
   var totals: {
     set: { won: number; lost: number };
@@ -51,6 +93,13 @@
     walkovers: number;
     walkaways: number;
   }[] = [];
+
+  var sharing: { others: string[] }[] = [];
+  ranking.ranked.forEach((rank) => {
+    sharing[rank.id] = {
+      others: rank.sharedWith.map((y) => match.getPlayerById(y).info.name),
+    };
+  });
 
   ranking.ranked.forEach((rank) => {
     const sets = ranking.rankedSets.filter(
@@ -170,6 +219,37 @@
 
     return { won, lost };
   }
+
+  function changeRank({
+    move,
+    rank,
+  }: {
+    move: "up" | "down";
+    rank: TTPlayerRank<PoolPlayer>;
+  }) {
+    var index = ranking.ranked.indexOf(rank);
+    const leftPlayer = rank;
+    var rightPlayer: TTPlayerRank<PoolPlayer> = undefined;
+    if (move == "down" && index < ranking.ranked.length) {
+      // Find player below
+      rightPlayer = ranking.ranked[index + 1];
+    }
+    if (move == "up" && index > 0) {
+      // Find player above
+      rightPlayer = ranking.ranked[index - 1];
+    }
+
+    if (!leftPlayer.sharedWith.includes(rightPlayer.id)) {
+      throw new Error("Players that are not sharing rank can not be swapped");
+    }
+
+    // Swap the numbers
+    const c = leftPlayer.player.sameRankOrder;
+    leftPlayer.player.sameRankOrder = rightPlayer.player.sameRankOrder;
+    rightPlayer.player.sameRankOrder = c;
+
+    updatePool(pool);
+  }
 </script>
 
 <table>
@@ -181,13 +261,20 @@
       <th style="text-align: center">WO/WA</th>
       <th>Games</th>
       <th>Score</th>
+      <th />
+      <th />
     </tr>
   </thead>
   <tbody>
     {#each ranking.ranked as ranked, index}
-      <tr>
+      <tr
+        data-test={"place-" + (index + 1)}
+        data-test-player={ranked.player.info.name}
+      >
         <td class="center">{index + 1}.</td>
-        <td>{ranked.player.info.name}</td>
+        <td data-test={"place-" + (index + 1) + "-name"}
+          >{ranked.player.info.name}</td
+        >
         <td class="right">{ranked.points}</td>
         <td
           ><Ratio
@@ -211,6 +298,14 @@
           ><Ratio
             win={totals[ranked.id].score.won}
             lose={totals[ranked.id].score.lost}
+          /></td
+        >
+        <td data-test="shares-rank">{sharing[ranked.id].others.join(",")}</td>
+        <td
+          ><RankSelector
+            rank={ranked}
+            {ranking}
+            on:changeRank={(ev) => changeRank(ev.detail)}
           /></td
         >
       </tr>

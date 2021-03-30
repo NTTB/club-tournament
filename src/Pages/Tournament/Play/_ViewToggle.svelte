@@ -8,7 +8,7 @@
     {
       href: `#/tournament/${id}/ranking` + (poolId ? `/${poolId}` : ""),
       selected: mode == "ranking",
-      text: "Ranglijsten",
+      text: "Resultaten",
     },
     {
       href: `#/tournament/${id}/matches` + (poolId ? `/${poolId}` : ""),

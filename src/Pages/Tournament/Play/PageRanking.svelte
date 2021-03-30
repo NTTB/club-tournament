@@ -64,7 +64,9 @@
           - MK{$activePool$.players.length}
         </div>
         <div class="right__content">
-          <PoolRanking pool={$activePool$} {tournament} />
+          {#key $activePool$}
+            <PoolRanking pool={$activePool$} {tournament} />
+          {/key}
         </div>
       {/if}
     </div>

@@ -6,5 +6,13 @@ export interface PoolPlayer {
    * @see TournamentPlayer
    */
   playerTournamentId: number;
+  /**
+   * Information over the player
+   */
   info: PlayerInfo;
+  /**
+   * The order when player has the same rank
+   * Default is 0 
+   */
+  sameRankOrder: number;
 }
