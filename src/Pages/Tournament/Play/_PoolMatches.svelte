@@ -16,7 +16,7 @@
     rounds[s.roundId].push(s);
   });
 
-  function updateSet(ev: CustomEvent<MatchSet>) {
+  function updateSet() {
     updatePool(pool);
   }
 </script>

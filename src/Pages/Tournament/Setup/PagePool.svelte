@@ -84,7 +84,7 @@
     }
   }
 
-  function onPlayerClick(player) {
+  function onPlayerClick(player: TournamentPlayer) {
     selectedPlayer = player;
   }
 
@@ -152,7 +152,11 @@
         {/each}
       </div>
       <div class="left__bottom">
-        <button class="tab new" data-test="new-pool-button" on:click={createPool}>+</button>
+        <button
+          class="tab new"
+          data-test="new-pool-button"
+          on:click={createPool}>+</button
+        >
         <button class="tab active" on:click={selectReservePool}>RES</button>
       </div>
     </div>

@@ -23,11 +23,11 @@
     players$ = customPlayerService.find(Array.from(splitValue));
   }
 
-  function onFilterUpdate(query) {
+  function onFilterUpdate(query: string) {
     filterValue = query;
   }
 
-  function onDeleteClick(player) {
+  function onDeleteClick(player: CustomPlayer) {
     const deleteConfirmed = confirm(
       'Weet je zeker dat je "' + player.name + '" wilt verwijderen?'
     );

@@ -21,7 +21,7 @@
     }
   }
 
-  function isCurrent(url) {
+  function isCurrent(url: string) {
     return location.hash === url;
   }
 </script>
