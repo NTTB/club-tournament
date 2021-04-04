@@ -33,4 +33,4 @@ jobs:
           username: ${{secrets.SFTP_USERNAME}}
           password: ${{secrets.SFTP_PASSWORD}}
           local-dir: public/
-          server-dir: /var/www/ranglijsten/clubtoernooi
+          server-dir: /var/www/ranglijsten/clubtoernooi/
