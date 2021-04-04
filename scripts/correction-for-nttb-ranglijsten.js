@@ -5,11 +5,11 @@ async function main() {
   var content = contentBuffer.toString();
 
   var regex = /(href|src)=['"](.+)['"]/g;
-  var final = content.replace(regex, (substring, attributeName, sub) => {
+  var final = content.replace(regex, (_, attributeName, sub) => {
     return attributeName + "=\'" + `/clubtoernooi` + sub + "\'";
   });
 
-  writeFile("./public/index.php", final);
+  writeFile("./public/index.html", final);
 
   console.log(final);
 }
