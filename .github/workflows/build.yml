@@ -1,23 +1,20 @@
 # This is a basic workflow to help you get started with Actions
-
-name: Build NTTB Tournament Web App
+name: Continues integration
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
   workflow_dispatch:
 
 jobs:
   build:
-    environment: nttb-ranglijsten
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
+      - uses: actions/checkout@v2
       - run: npm ci
       - run: npm run build
       - name: Upload a Build Artifact
@@ -25,6 +22,30 @@ jobs:
         with:
           name: nttb-tournament-web
           path: public/*
+      - name: Upload a scripts Artifact
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: nttb-tournament-scripts
+          path: scripts/*
+
+  deploy-to-nttb-ranglijsten:
+    environment: nttb-ranglijsten
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Only deploy if
+    needs: build
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+      - name: Download build
+        uses: actions/download-artifact@v2
+        with:
+          name: nttb-tournament-web
+          path: public
+      - name: Download scripts
+        uses: actions/download-artifact@v2
+        with:
+          name: nttb-tournament-scripts
+          path: scripts
       - run: node ./scripts/correction-for-nttb-ranglijsten.js
       - uses: sand4rt/ftp-deployer@v1.3
         with:
