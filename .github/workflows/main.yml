@@ -32,5 +32,5 @@ jobs:
           protocol: ftps
           username: ${{secrets.SFTP_USERNAME}}
           password: ${{secrets.SFTP_PASSWORD}}
-          local-dir: public
+          local-dir: public/
           server-dir: /var/www/ranglijsten/clubtoernooi
