@@ -26,11 +26,13 @@ jobs:
           name: nttb-tournament-web
           path: public/*
       - run: node ./scripts/correction-for-nttb-ranglijsten.js
-      - uses: SamKirkland/FTP-Deploy-Action@4.0.0
+      - uses: sand4rt/ftp-deployer@v1.3
         with:
-          server: nttb-ranglijsten.nl
-          protocol: ftps
+          host: nttb-ranglijsten.nl
+          port: 22
+          sftp: true
           username: ${{secrets.SFTP_USERNAME}}
           password: ${{secrets.SFTP_PASSWORD}}
-          local-dir: public/
-          server-dir: /var/www/ranglijsten/clubtoernooi/
+          local_folder: public/
+          remote_folder: /var/www/ranglijsten/clubtoernooi/
+          cleanup: true
