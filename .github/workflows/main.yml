@@ -12,6 +12,7 @@ on:
 
 jobs:
   build:
+    environment: nttb-ranglijsten
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2      
@@ -24,3 +25,12 @@ jobs:
         with:
           name: nttb-tournament-web
           path: public/*
+      - run: node ./scripts/correction-for-nttb-ranglijsten.js
+      - uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: nttb-ranglijsten.nl
+          protocol: ftps
+          username: ${{secrets.SFTP_USERNAME}}
+          password: ${{secrets.SFTP_PASSWORD}}
+          local-dir: public
+          server-dir: /var/www/ranglijsten/clubtoernooi
