@@ -2,7 +2,7 @@
 
 1. Checkout the repository
    ```
-   git clone https://github.com/DevWouter/nttb-tournament.git
+   git clone https://github.com/NTTB/nttb-tournament.git
    ```
 2. Install the dependencies
     ```bash
