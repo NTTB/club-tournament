@@ -2,6 +2,8 @@
   import FaArrowLeft from "svelte-icons/fa/FaArrowLeft.svelte";
   import MdMenu from "svelte-icons/md/MdMenu.svelte";
   import MdClose from "svelte-icons/md/MdClose.svelte";
+  import IoMdExit from "svelte-icons/io/IoMdExit.svelte";
+  import NttbIcon from "../icon.svelte";
   import type { HeaderAction } from "./HeaderAction";
   let menuState = "closed";
   export let title = "";
@@ -60,6 +62,11 @@
         {menuAction.title}
       </a>
     {/each}
+    <div class="seperator" />
+    <a href="/" class="menu-action menu-action--split">
+      <NttbIcon />
+      Terug naar ranglijsten
+    </a>
   </div>
 {/if}
 
@@ -104,20 +111,20 @@
     width: 300px;
     top: 56px;
     bottom: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   .header {
-    background-color: var(--nttb-blue);
+    background-color: var(--nttb-orange);
     color: var(--text-white);
     height: 56px;
     font-size: 20px;
     font-weight: bold;
-
     display: grid;
     grid-template-columns: 48px 1fr auto;
     gap: 8px;
     align-items: center;
-    box-shadow: 0 0 3px black inset;
   }
 
   .icon {
@@ -130,6 +137,9 @@
     grid-column-start: 2;
     overflow: hidden;
     white-space: pre;
+    display: flex;
+    align-items: center;
+    align-content: center;
   }
 
   a.back-button {
@@ -145,5 +155,15 @@
     border-radius: 0;
     width: 48px;
     height: 48px;
+  }
+  .seperator {
+    flex-grow: 1;
+    max-height: 80px;
+  }
+
+  .menu-action.menu-action--split {
+    align-items: center;
+    display: flex;
+    gap: 8px;
   }
 </style>

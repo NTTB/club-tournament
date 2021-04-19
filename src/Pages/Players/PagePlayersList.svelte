@@ -88,10 +88,11 @@
     min-height: 48px;
     display: grid;
     align-content: center;
-    background-color: var(--nttb-orange);
+    background-color: var(--nttb-blue-lighter);
     padding-left: 8px;
     padding-right: 8px;
   }
+
   table {
     width: 100%;
     border-collapse: collapse;
