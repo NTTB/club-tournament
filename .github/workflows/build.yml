@@ -16,12 +16,14 @@ jobs:
         uses: actions/setup-node@v2.1.5
       - uses: actions/checkout@v2
       - run: npm ci
+        working-directory: apps/web
       - run: npm run build
+        working-directory: apps/web
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
         with:
           name: nttb-tournament-web
-          path: public/*
+          path: apps/web/public/*
       - name: Upload a scripts Artifact
         uses: actions/upload-artifact@v2.2.2
         with:
