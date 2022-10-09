@@ -2,7 +2,6 @@
   import FaArrowLeft from "svelte-icons/fa/FaArrowLeft.svelte";
   import MdMenu from "svelte-icons/md/MdMenu.svelte";
   import MdClose from "svelte-icons/md/MdClose.svelte";
-  import IoMdExit from "svelte-icons/io/IoMdExit.svelte";
   import NttbIcon from "../icon.svelte";
   import type { HeaderAction } from "./HeaderAction";
   let menuState = "closed";
