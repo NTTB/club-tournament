@@ -14,6 +14,12 @@ import PageTournamentList from './Pages/Tournament/PageList.svelte';
 import PageTournamentPlayRanking from "./Pages/Tournament/Play/PageRanking.svelte";
 import PageTournamentMatches from "./Pages/Tournament/Play/PageMatches.svelte";
 
+// Data pages
+import PageDataIndex from './Pages/Data/PageDataIndex.svelte';
+import PageDataImport from './Pages/Data/PageDataImport.svelte';
+import PageDataExport from './Pages/Data/PageDataExport.svelte';
+import PageDataDemoSvelte from './Pages/Data/PageDataDemo.svelte';
+
 // Generic Pages
 import Page404 from './Pages/404.svelte';
 
@@ -23,6 +29,12 @@ function smartPath(url: string): RegExp {
 }
 
 export const routes: Route[] = [
+  // Data
+  { name: "data", path: smartPath("data"), component: PageDataIndex },
+  { name: "data-import", path: smartPath("data/import"), component: PageDataImport },
+  { name: "data-export", path: smartPath("data/export"), component: PageDataExport },
+  { name: "data-demo", path: smartPath("data/load-demo"), component: PageDataDemoSvelte },
+  
   // Players
   { name: "players", path: smartPath("players"), component: PagePlayersList },
   { name: "players-create", path: smartPath("players/create"), component: PagePlayersCreate },

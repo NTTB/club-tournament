@@ -11,7 +11,7 @@ export interface Tournament {
   started: boolean;
 }
 
-interface TournamentStorageTable {
+export interface TournamentStorageTable {
   nextId: number;
   items: Tournament[];
 }
@@ -111,6 +111,17 @@ export async function startTournament(tournamentId: number) {
   tournament.started = true;
 
   await updateTournament(tournament);
+}
+
+export function exportTournaments() {
+  return tournamentStorageTable;
+}
+
+export function importTournaments(value: TournamentStorageTable) {
+  if (value == null || value == undefined) {
+    throw new Error("Value is null or undefined");
+  }
+  return tournamentStorageTable.set(value);
 }
 
 export function getAllTournaments(): Readable<Tournament[]> {

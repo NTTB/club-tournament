@@ -4,7 +4,7 @@ import type { Readable } from "svelte/store";
 
 const STORAGE_KEY = "data.customPlayers";
 
-interface CustomPlayerStorageTable {
+export interface CustomPlayerStorageTable {
   nextId: number;
   items: CustomPlayer[];
 }
@@ -36,6 +36,17 @@ class CustomPlayerService {
       console.info("No tournament players");
       // Load data
     }
+  }
+
+  exportPlayers() {
+    return this.store$;
+  }
+
+  importPlayers(value: CustomPlayerStorageTable) {
+    if (value == null || value == undefined) {
+      throw new Error("Value is null or undefined");
+    }
+    this.store$.set(value)
   }
 
   create(player: CustomPlayer): Promise<CustomPlayer> {

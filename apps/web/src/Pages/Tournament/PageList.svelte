@@ -12,10 +12,12 @@
   } from "../../data/tournament";
   import type { Tournament } from "../../data/tournament";
   import type { HeaderAction } from "../../Shared/HeaderAction";
+  import Hint from "../../Common/Hint.svelte";
 
   var menuActions: HeaderAction[] = [
     { title: "Toernooien", url: "#/" },
     { title: "Spelers", url: "#/players" },
+    { title: "Data", url: "#/data" },
   ];
 
   var items = getAllTournaments();
@@ -108,6 +110,10 @@
         </button>
       </div>
     {/each}
+    {#if items.length == 0}
+      <Hint>Er zijn nog geen toernooien aangemaakt. <br>
+        Wil je alleen rondkijken? <a href="#/data/load-demo">Klik dan hier om een demonstratie toernooi te laden</a>.</Hint>
+    {/if}
   {/await}
 
   <div class="right">

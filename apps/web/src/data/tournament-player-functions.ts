@@ -4,7 +4,7 @@ import type { TournamentPlayer } from "./tournament-player";
 
 import { removePlayerFromTournamentPool } from "./pool-functions";
 
-interface TournamentPlayerStorageTable {
+export interface TournamentPlayerStorageTable {
   nextId: number;
   items: TournamentPlayer[];
 }
@@ -25,6 +25,17 @@ try {
 tournamentPlayers.subscribe(values => {
   localStorage.setItem("data.tournamentplayers", JSON.stringify(values, undefined, 2));
 });
+
+export function exportTournamentPlayers() {
+  return tournamentPlayers;
+}
+
+export function importTournamentPlayers(value: TournamentPlayerStorageTable) {
+  if (value == null || value == undefined) {
+    throw new Error("Value is null or undefined");
+  }
+  tournamentPlayers.set(value);
+}
 
 export function addPlayerToTournament(tournamentId: number, info: PlayerInfo, nttbId?: number) {
   tournamentPlayers.update((src) => {

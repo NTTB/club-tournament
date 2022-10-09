@@ -45,7 +45,7 @@ function getPoolConfig(playerCount: number) {
   }
 }
 
-interface PoolStorageTable {
+export interface PoolStorageTable {
   nextId: number;
   items: Pool[];
 }
@@ -83,6 +83,17 @@ function generatePoolName(n: number) {
     letters.push(alpha.charAt(element));
   });
   return letters.join("");
+}
+
+export function exportPools() {
+  return pools;
+}
+
+export function importPools(value: PoolStorageTable) {
+  if (value == null || value == undefined) {
+    throw new Error("Value is null or undefined");
+  }
+  pools.set(value);
 }
 
 export function updatePool(pool: Pool) {
