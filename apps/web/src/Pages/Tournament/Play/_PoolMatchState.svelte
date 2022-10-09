@@ -81,7 +81,7 @@
   }
   .score-button.active,
   .score-button.active:hover {
-    color: yellow;
+    color: var(--nttb-orange);
   }
   .giveup-button.active,
   .giveup-button.active:hover {
