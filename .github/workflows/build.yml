@@ -20,7 +20,7 @@ jobs:
       - run: npm run build
         working-directory: apps/web
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: nttb-tournament-web
           path: apps/web/public/*
@@ -44,7 +44,7 @@ jobs:
           name: nttb-tournament-web
           path: public
       - name: Download scripts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v6.0.0
         with:
           name: nttb-tournament-scripts
           path: scripts
