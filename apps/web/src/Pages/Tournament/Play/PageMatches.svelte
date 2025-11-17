@@ -51,7 +51,7 @@
   <div class="container">
     <div class="left">
       {#each $poolRoutes$ as poolRoute}
-        <a class="pool-nav" href="/#/tournament/{id}/matches/{poolRoute.id}"
+        <a class="pool-nav" href="#/tournament/{id}/matches/{poolRoute.id}"
           >{poolRoute.name}</a
         >
       {/each}
